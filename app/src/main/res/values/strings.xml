@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="icon_name">身份证验证Ver1.0</string>
+    <string name="app_name">读取身份证</string>
+    <string name="action_settings">设置</string>
+    <string name="hello_world">请刷身份证!</string>
+
+</resources>
