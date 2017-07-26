@@ -19,10 +19,12 @@ import org.json.JSONObject;
 import java.util.Map;
 
 /**
- * 服务端接口API
- * <p>
- * Created by wangdan on 17/2/11.
- */
+*
+*@author lyj
+*@description 服务端接口api
+*@date 2017/7/26
+*/
+
 public class SDK extends ABizLogic {
     private static Activity context;
 

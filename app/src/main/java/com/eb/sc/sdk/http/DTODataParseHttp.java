@@ -12,13 +12,12 @@ import com.eb.sc.sdk.bean.BaseBean;
 import org.aisen.android.network.http.DefHttpUtility;
 import org.aisen.android.network.task.TaskException;
 
-
 /**
- * 将服务端的接口数据中的Data包装体转换成DTO
- *
- * Created by wangdan on 17/2/12.
- */
-
+*
+*@author lyj
+*@description  将服务端的接口数据中的Data包装体转换成DTO
+*@date 2017/7/26
+*/
 public class DTODataParseHttp extends DefHttpUtility {
       private Activity context;
     public DTODataParseHttp(Activity context){

@@ -1,6 +1,4 @@
-package com.eb.sc.sdk.bean;/**
- * Created by Administrator on 2017/7/26.
- */
+package com.eb.sc.sdk.bean;
 
 import java.io.Serializable;
 
