@@ -5,5 +5,5 @@
     <color name="transparent1">#9000</color>
     <color name="sysinfo_dec">#003a6c</color>
     <color name="sysinfo_value">#faa755</color>
-    
+    <color name="color_theme">#00d2ec</color>
 </resources>

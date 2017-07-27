@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.eb.sc.base.BaseActivity;
 import com.zkteco.android.IDReader.IDPhotoHelper;
 import com.zkteco.android.IDReader.WLTService;
 import com.zkteco.android.biometric.core.device.ParameterHelper;
@@ -36,11 +37,13 @@ import com.zkteco.android.biometric.module.idcard.IDCardReaderFactory;
 import com.zkteco.android.biometric.module.idcard.exception.IDCardReaderException;
 import com.zkteco.android.biometric.module.idcard.meta.IDCardInfo;
 
+import org.aisen.android.support.inject.ViewInject;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
     private IDCardReader idCardReader = null;
     private FingerprintSensor fingerprintSensor = null;
     private byte[] feature = null;
@@ -52,22 +55,35 @@ public class MainActivity extends Activity {
     final static String fpPower = "rfid power,scan power";
 
     final static int baudrate = 115200;
+    @ViewInject(id=R.id.main_textview)
+     TextView textView;
+    @ViewInject(id=R.id.user_name)
+    TextView infoName;
+    @ViewInject(id=R.id.user_sex)
+     TextView infoSex;
+    @ViewInject(id=R.id.user_nation)
+     TextView infoNation;
+    @ViewInject(id=R.id.user_birth)
+     TextView infoBirth;
+    @ViewInject(id=R.id.user_address)
+     TextView infoAddress;
+    @ViewInject(id=R.id.user_id)
+     TextView infoIdcard;
+    @ViewInject(id=R.id.user_certifying)
+     TextView infoCertifying;
+    @ViewInject(id=R.id.user_data)
+     TextView infoData;
+    @ViewInject(id=R.id.user_number)
+     TextView infoNumber;
+    @ViewInject(id=R.id.editText)
+     EditText infoResult;
+    @ViewInject(id=R.id.idPhoto)
+     ImageView image;
+    @ViewInject(id=R.id.checkFinger)
+     CheckBox checkFinger = null;
+    @ViewInject(id=R.id.btnVerify)
+     Button btnVerify = null;
 
-    private TextView textView;
-    private TextView infoView;
-    private TextView infoName;
-    private TextView infoSex;
-    private TextView infoNation;
-    private TextView infoBirth;
-    private TextView infoAddress;
-    private TextView infoIdcard;
-    private TextView infoCertifying;
-    private TextView infoData;
-    private TextView infoNumber;
-    private EditText infoResult;
-    private ImageView image;
-    private CheckBox checkFinger = null;
-    private Button btnVerify = null;
     private boolean mbStop = false;
 
     private MediaPlayer mMediaPlayer = null;
@@ -76,19 +92,20 @@ public class MainActivity extends Activity {
 
     private WorkThread workThread = null;
     private WorkThreadVerFP workThreadVerFP = null;
-
     private boolean mbVerifying = false;
     private String mLastName = "";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    public void initView() {
         initSounds();
-        super.onCreate(savedInstanceState);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
         LogHelper.setLevel(Log.VERBOSE);
         initUI();
         startIDCardReader();
@@ -97,6 +114,12 @@ public class MainActivity extends Activity {
             textView.setText("Open device failed!");
         }
     }
+
+    @Override
+    public void initData() {
+        super.initData();
+    }
+
 
     private void startIDCardReader() {
         // Start fingerprint sensor
@@ -150,24 +173,11 @@ public class MainActivity extends Activity {
     }
 
     private void initUI() {
-        textView = (TextView) findViewById(R.id.main_textview);
-        infoName = (TextView) findViewById(R.id.user_name);
-        infoSex = (TextView) findViewById(R.id.user_sex);
-        infoNation = (TextView) findViewById(R.id.user_nation);
-        infoBirth = (TextView) findViewById(R.id.user_birth);
-        infoAddress = (TextView) findViewById(R.id.user_address);
-        infoIdcard = (TextView) findViewById(R.id.user_id);
-        infoCertifying = (TextView) findViewById(R.id.user_certifying);
-        infoData = (TextView) findViewById(R.id.user_data);
-        infoNumber = (TextView) findViewById(R.id.user_number);
-        infoResult = (EditText) findViewById(R.id.editText);
         infoResult.setFocusable(false);
         infoResult.setEnabled(false);
         infoResult.setMovementMethod(ScrollingMovementMethod.getInstance());
         infoResult.setMovementMethod(ScrollingMovementMethod.getInstance());
         image = (ImageView) findViewById(R.id.idPhoto);
-        checkFinger = (CheckBox) findViewById(R.id.checkFinger);
-        btnVerify = (Button) findViewById(R.id.btnVerify);
         btnVerify.setVisibility(View.INVISIBLE);
     }
 
@@ -405,10 +415,10 @@ public class MainActivity extends Activity {
 
     public void dialog_Exit(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Are you sure to exit?");
-        builder.setTitle("Reminder");
+        builder.setMessage("确定要退出程序?");
+        builder.setTitle("注意");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
                 dialog.dismiss();
                 // android.os.Process.killProcess(android.os.Process.myPid());
@@ -417,7 +427,7 @@ public class MainActivity extends Activity {
         });
 
 
-        builder.setNegativeButton("NO",
+        builder.setNegativeButton("否",
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -428,7 +438,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         mbStop = true;
         // Destroy fingerprint sensor when it's not used
