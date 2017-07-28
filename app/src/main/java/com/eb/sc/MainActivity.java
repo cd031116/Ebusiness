@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,6 +23,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eb.sc.base.BaseActivity;
 import com.zkteco.android.IDReader.IDPhotoHelper;
@@ -118,6 +120,11 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
+        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        String DEVICE_ID = tm.getDeviceId();
+
+        Toast.makeText(this,""+DEVICE_ID,Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -132,7 +139,7 @@ public class MainActivity extends BaseActivity {
         idCardReader = IDCardReaderFactory.createIDCardReader(this, TransportType.SERIALPORT, idrparams);
     }
 
-    private void startFPSensor() {
+    private void startFPSensor(){
         // Start fingerprint sensor
         Map fpparams = new HashMap();
         fpparams.put(ParameterHelper.PARAM_SERIAL_BAUDRATE, baudrate);
@@ -425,8 +432,6 @@ public class MainActivity extends BaseActivity {
                 onDestroy();
             }
         });
-
-
         builder.setNegativeButton("否",
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
