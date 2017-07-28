@@ -40,7 +40,6 @@ import com.zkteco.android.biometric.module.idcard.exception.IDCardReaderExceptio
 import com.zkteco.android.biometric.module.idcard.meta.IDCardInfo;
 
 import org.aisen.android.support.inject.ViewInject;
-
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -150,11 +149,11 @@ public class MainActivity extends BaseActivity {
         fingerprintSensor = FingerprintFactory.createFingerprintSensor(this, TransportType.SERIALPORT, fpparams);
     }
 
-    private boolean openDevices() {
+    private boolean openDevices(){
         boolean bRet = false;
         try {
             idCardReader.open(idPort);
-        } catch (IDCardReaderException e) {
+        } catch (IDCardReaderException e){
             e.printStackTrace();
             bRet = false;
             return bRet;

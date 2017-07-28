@@ -13,9 +13,12 @@
         android:label="Tests for com.dtr.zbar.scan.test"
         android:targetPackage="com.dtr.zbar.scan.test" />
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/app_name" >
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <application>
         <uses-library android:name="android.test.runner" />
     </application>
 
