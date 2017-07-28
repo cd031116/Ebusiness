@@ -58,4 +58,5 @@ dependencies {
     compile files('libs/zkandroidcore.jar')
     compile files('libs/zkandroididcardreader.jar')
     compile files('libs/zkandroidfpsensor.jar')
+    compile project(path: ':ScanLibrary')
 }
