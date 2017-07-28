@@ -87,7 +87,6 @@ public class MainActivity extends BaseActivity {
      Button btnVerify = null;
 
     private boolean mbStop = false;
-
     private MediaPlayer mMediaPlayer = null;
     private SoundPool soundPool = null;
     private HashMap<Integer, Integer> soundPoolMap = null;
