@@ -5,6 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -24,6 +31,7 @@
         <activity android:name=".MainActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="landscape"></activity>
+        <activity android:name=".activity.CaptureActivity"/>
     </application>
 
 </manifest>

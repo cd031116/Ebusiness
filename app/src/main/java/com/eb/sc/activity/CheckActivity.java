@@ -41,7 +41,7 @@ public class CheckActivity extends BaseActivity {
     void onBuy(View v) {
         switch (v.getId()){
             case R.id.scan:
-//                startActivity(new Intent(CheckActivity.this,CaptureActivity.class));
+                startActivity(new Intent(CheckActivity.this,CaptureActivity.class));
                 break;
             case R.id.idcard:
                 startActivity(new Intent(CheckActivity.this,MainActivity.class));
