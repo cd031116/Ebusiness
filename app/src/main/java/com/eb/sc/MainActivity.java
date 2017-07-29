@@ -118,10 +118,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        String DEVICE_ID = tm.getDeviceId();
-
-        Toast.makeText(this,""+DEVICE_ID,Toast.LENGTH_SHORT).show();
 
     }
 

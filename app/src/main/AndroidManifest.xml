@@ -4,13 +4,15 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <uses-permission android:name="android.permission.access_wifi_state" />
+    <uses-permission android:name="android.permission.access_network_state" />
 
     <application
         android:name=".base.MyApplication"
@@ -21,17 +23,29 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.CheckActivity"
-            android:screenOrientation="portrait"
-           >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="landscape"></activity>
-        <activity android:name=".activity.CaptureActivity"/>
+            android:screenOrientation="landscape" />
+        <activity android:name=".activity.CaptureActivity" />
+
+        <receiver android:name=".sdk.NetworkReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".activity.SettingActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
     </application>
 
 </manifest>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/top_layout"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#ffffff"
+    android:visibility="visible" >
+
+    <LinearLayout
+        android:id="@+id/top_left"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|center_vertical"
+        android:layout_alignParentLeft="true"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:visibility="visible" >
+
+        <ImageView
+            android:id="@+id/top_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:src="@mipmap/return_btn"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/top_left_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:visibility="visible"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/top_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1.0"
+        android:textStyle="bold"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:textColor="#333333"
+        android:textSize="17sp" />
+
+    <LinearLayout
+        android:id="@+id/top_r"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|center_vertical"
+        android:clickable="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="12dp"
+        android:paddingTop="5dp" >
+
+
+        <TextView
+            android:id="@+id/top_right_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</RelativeLayout>

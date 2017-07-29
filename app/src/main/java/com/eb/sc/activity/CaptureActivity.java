@@ -23,18 +23,15 @@ import com.eb.sc.R;
 import com.eb.sc.scan.CaptureActivityHandler;
 import com.eb.sc.scan.InactivityTimer;
 import com.eb.sc.scan.camera.CameraManager;
-
 import java.io.IOException;
 
-/**
- * 作者: 陈涛(1076559197@qq.com)
- * 
- * 时间: 2014年5月9日 下午12:25:31
- * 
- * 版本: V_1.0.0
- * 
- * 描述: 扫描界面
- */
+
+/*
+* create 2017-7-29    lyj
+* 二维码扫描
+* */
+
+
 public class CaptureActivity extends Activity implements Callback {
 
 	private CaptureActivityHandler handler;
