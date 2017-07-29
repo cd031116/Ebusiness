@@ -408,37 +408,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    public boolean onKeyDown(int keyCode, android.view.KeyEvent event) {
-        if (((keyCode == KeyEvent.KEYCODE_BACK) || keyCode == KeyEvent.KEYCODE_HOME)
-                && event.getRepeatCount() == 0) {
-            dialog_Exit(MainActivity.this);
-        }
-        return false;
-    }
-
-    ;
-
-    public void dialog_Exit(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("确定要退出程序?");
-        builder.setTitle("注意");
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int which){
-                dialog.dismiss();
-                // android.os.Process.killProcess(android.os.Process.myPid());
-                onDestroy();
-            }
-        });
-        builder.setNegativeButton("否",
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builder.create().show();
-    }
 
     @Override
     public void onDestroy() {
