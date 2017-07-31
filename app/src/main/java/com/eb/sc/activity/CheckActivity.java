@@ -1,8 +1,12 @@
 package com.eb.sc.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -12,6 +16,8 @@ import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.utils.AESCipher;
 import com.eb.sc.utils.Base64;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.widget.InputDialog;
 
 
 import butterknife.Bind;
@@ -31,6 +37,8 @@ public class CheckActivity extends BaseActivity {
     TextView top_title;
     @Bind(R.id.top_right_text)
     TextView top_right_text;
+    @Bind(R.id.right_bg)
+    ImageView mRight_bg;
     @Bind( R.id.scan)
     RelativeLayout scan;//检票
     @Bind( R.id.idcard)
@@ -48,6 +56,9 @@ public class CheckActivity extends BaseActivity {
         super.initView();
         top_left.setVisibility(View.GONE);
         top_title.setText("石燕湖大门核销点");
+        mRight_bg.setImageResource(R.mipmap.lianjie);
+        top_right_text.setText("链接");
+        top_right_text.setTextColor(Color.parseColor("#0973FD"));
     }
 
     @Override
@@ -73,9 +84,6 @@ public class CheckActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
     }
 
 
@@ -89,7 +97,19 @@ public class CheckActivity extends BaseActivity {
                 startActivity(new Intent(CheckActivity.this, MainActivity.class));
                 break;
             case R.id.setting:
-                startActivity(new Intent(CheckActivity.this, SettingActivity.class));
+                final BaseConfig bg=BaseConfig.getInstance(this);
+                new InputDialog(this, R.style.dialog, "请输入管理员密码？", new InputDialog.OnCloseListener() {
+                    @Override
+                    public void onClick(Dialog dialog, boolean confirm, String text) {
+                        if (confirm) {
+                            String psd=bg.getStringValue("","");
+                            dialog.dismiss();
+                            startActivity(new Intent(CheckActivity.this, SettingActivity.class));
+
+                        }
+
+                    }
+                }).setTitle("提示").show();
                 break;
         }
     }

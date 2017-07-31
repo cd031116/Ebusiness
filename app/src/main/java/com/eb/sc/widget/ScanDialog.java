@@ -1,28 +1,20 @@
 package com.eb.sc.widget;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
-
 import com.eb.sc.R;
 
-/*
-*
-* @author lyj
-* @describe  弹出框
-* @data 2017/7/29
-* */
+/**
+ * Created by lyj on 2017/7/31.
+ */
 
-
-public class CommomDialog extends Dialog implements View.OnClickListener{
-    private TextView tName;//名字
+public class ScanDialog extends Dialog implements View.OnClickListener{
     private TextView idcard;//号码
     private TextView tCode;//类型
     private TextView submit;
-
     private Context mContext;
     private String mName;
     private String mNum;
@@ -30,26 +22,25 @@ public class CommomDialog extends Dialog implements View.OnClickListener{
     private OnCloseListener listener;
     private String title;
 
-    public CommomDialog(Context context) {
+    public ScanDialog(Context context) {
         super(context);
         this.mContext = context;
     }
 
-    public CommomDialog(Context context, int themeResId, String names,String num,String code, OnCloseListener listener) {
+    public ScanDialog(Context context, int themeResId,String time,String code, OnCloseListener listener) {
         super(context, themeResId);
         this.mContext = context;
-        this.mName = names;
-        this.mNum = num;
+        this.mNum = time;
         this.mCode = code;
         this.listener = listener;
     }
 
-    protected CommomDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
+    protected ScanDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         this.mContext = context;
     }
 
-    public CommomDialog setTitle(String title){
+    public ScanDialog setTitle(String title){
         this.title = title;
         return this;
     }
@@ -64,13 +55,11 @@ public class CommomDialog extends Dialog implements View.OnClickListener{
     }
 
     private void initView(){
-        tName = (TextView)findViewById(R.id.name);
         idcard = (TextView)findViewById(R.id.idcard);
         submit = (TextView)findViewById(R.id.submit);
         tCode = (TextView)findViewById(R.id.tCode);
         submit.setOnClickListener(this);
 
-        tName.setText(mName);
         if(!TextUtils.isEmpty(mNum)){
             idcard.setText(mNum);
         }

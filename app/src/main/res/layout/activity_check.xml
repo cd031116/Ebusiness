@@ -16,7 +16,9 @@
         android:id="@+id/scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/check_bg"
         android:gravity="center"
@@ -27,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/return_btn" />
+            android:src="@mipmap/saoma" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -72,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/return_btn" />
+            android:src="@mipmap/mingxi" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -115,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/return_btn" />
+            android:src="@mipmap/tongbu" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -149,16 +151,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_marginTop="30dp"
         android:padding="20dp">
 
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_marginTop="50dp"
             android:layout_gravity="center"
-            android:text="设置"
-            android:textSize="25sp" />
+            android:src="@mipmap/setting"/>
 
     </RelativeLayout>
 

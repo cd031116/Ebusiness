@@ -1,6 +1,7 @@
 package com.eb.sc.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Point;
 import android.media.AudioManager;
@@ -23,6 +24,9 @@ import com.eb.sc.R;
 import com.eb.sc.scan.CaptureActivityHandler;
 import com.eb.sc.scan.InactivityTimer;
 import com.eb.sc.scan.camera.CameraManager;
+import com.eb.sc.widget.CommomDialog;
+import com.eb.sc.widget.ScanDialog;
+
 import java.io.IOException;
 
 
@@ -161,6 +165,9 @@ public class CaptureActivity extends Activity implements Callback {
 		Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT)
 				.show();
 
+        showDialog(result,"");
+
+
 		// 连续扫描，不发送此消息扫描一次结束后就不能再次扫描
 //		handler.sendEmptyMessage(R.id.restart_preview);
 	}
@@ -257,4 +264,21 @@ public class CaptureActivity extends Activity implements Callback {
 			mediaPlayer.seekTo(0);
 		}
 	};
+
+
+	private void showDialog(String num,String code){
+		new ScanDialog(this, R.style.dialog,num,code, new ScanDialog.OnCloseListener() {
+			@Override
+			public void onClick(Dialog dialog, boolean confirm) {
+				if (confirm) {
+
+					dialog.dismiss();
+				}
+
+			}
+		}).setTitle("提示").show();
+	}
+
+
+
 }

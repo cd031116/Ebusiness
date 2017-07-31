@@ -31,9 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="landscape" />
+            android:name=".MainActivity"/>
         <activity android:name=".activity.CaptureActivity" />
 
         <receiver android:name=".sdk.NetworkReceiver">
@@ -47,8 +45,11 @@
         <activity
             android:name=".activity.SettingActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-        <activity android:name=".activity.SelectActivity"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
+        <activity
+            android:name=".activity.SelectActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        <activity android:name=".activity.AmendActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
     </application>
 
 </manifest>

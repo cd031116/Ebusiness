@@ -16,10 +16,10 @@ import com.eb.sc.R;
  */
 
 public class InputDialog extends Dialog implements View.OnClickListener{
-    private TextView contentTxt;
+//    private TextView contentTxt;
     private TextView titleTxt;
     private TextView submitTxt;
-    private TextView cancelTxt;
+//    private TextView cancelTxt;
     private EditText in_put;
     private Context mContext;
     private String content;
@@ -76,27 +76,20 @@ public class InputDialog extends Dialog implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_input);
         setCanceledOnTouchOutside(false);
-        setCancelable(false);
+//        setCancelable(false);
         initView();
     }
 
     private void initView(){
-        contentTxt = (TextView)findViewById(R.id.content);
         titleTxt = (TextView)findViewById(R.id.title);
         submitTxt = (TextView)findViewById(R.id.submit);
         submitTxt.setOnClickListener(this);
-        cancelTxt = (TextView)findViewById(R.id.cancel);
         in_put= (EditText) findViewById(R.id.in_put);
-        cancelTxt.setOnClickListener(this);
 
-        contentTxt.setText(content);
         if(!TextUtils.isEmpty(positiveName)){
             submitTxt.setText(positiveName);
         }
 
-        if(!TextUtils.isEmpty(negativeName)){
-            cancelTxt.setText(negativeName);
-        }
 
         if(!TextUtils.isEmpty(title)){
             titleTxt.setText(title);
@@ -107,11 +100,6 @@ public class InputDialog extends Dialog implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.cancel:
-                if(listener != null){
-                    listener.onClick(this, false,null);
-                }
-                break;
             case R.id.submit:
                 if(listener != null){
                     String neirong=in_put.getText().toString();

@@ -23,7 +23,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/check_edt_bg"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="30dp">
 
             <EditText
                 android:id="@+id/password"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:hint="身份证号码"
-                android:inputType="number"
+                android:inputType="text|number"
                 android:padding="10dp"
                 android:textColor="#939999"
                 android:textColorHint="#939999"
@@ -91,7 +91,7 @@
             android:id="@id/scan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/select_bg"
             android:padding="10dp">
 

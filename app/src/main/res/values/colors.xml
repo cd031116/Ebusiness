@@ -9,4 +9,6 @@
     <color name="font_common_1">#424242</color>
     <color name="font_common_2">#a1a1a1</color>
     <color name="gray_g">#f0f0f0</color>
+    <color name="top_right_l">#EE4B52</color>
+    <color name="top_right_z">#0973FD</color>
 </resources>

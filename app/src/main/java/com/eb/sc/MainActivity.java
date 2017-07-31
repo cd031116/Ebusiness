@@ -1,31 +1,22 @@
 package com.eb.sc;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.widget.CommomDialog;
 import com.zkteco.android.IDReader.IDPhotoHelper;
 import com.zkteco.android.IDReader.WLTService;
 import com.zkteco.android.biometric.core.device.ParameterHelper;
@@ -39,7 +30,6 @@ import com.zkteco.android.biometric.module.idcard.IDCardReaderFactory;
 import com.zkteco.android.biometric.module.idcard.exception.IDCardReaderException;
 import com.zkteco.android.biometric.module.idcard.meta.IDCardInfo;
 
-import org.aisen.android.support.inject.ViewInject;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,34 +48,15 @@ public class MainActivity extends BaseActivity {
     final static String fpPower = "rfid power,scan power";
 
     final static int baudrate = 115200;
-    @Bind(R.id.main_textview)
-     TextView textView;
-    @Bind(R.id.user_name)
-    TextView infoName;
-    @Bind(R.id.user_sex)
-     TextView infoSex;
-    @Bind(R.id.user_nation)
-     TextView infoNation;
-    @Bind(R.id.user_birth)
-     TextView infoBirth;
-    @Bind(R.id.user_address)
-     TextView infoAddress;
-    @Bind(R.id.user_id)
-     TextView infoIdcard;
-    @Bind(R.id.user_certifying)
-     TextView infoCertifying;
-    @Bind(R.id.user_data)
-     TextView infoData;
-    @Bind(R.id.user_number)
-     TextView infoNumber;
-    @Bind(R.id.editText)
-     EditText infoResult;
-    @Bind(R.id.idPhoto)
-     ImageView image;
-    @Bind(R.id.checkFinger)
-     CheckBox checkFinger = null;
-    @Bind(R.id.btnVerify)
-     Button btnVerify = null;
+
+    @Bind(R.id.top_left)
+    LinearLayout top_left;
+    @Bind(R.id.top_title)
+    TextView top_title;
+    @Bind(R.id.top_right_text)
+    TextView top_right_text;
+
+
 
     private boolean mbStop = false;
     private MediaPlayer mMediaPlayer = null;
@@ -109,17 +80,18 @@ public class MainActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         LogHelper.setLevel(Log.VERBOSE);
-        initUI();
         startIDCardReader();
         startFPSensor();
         if (!openDevices()) {
-            textView.setText("Open device failed!");
+           Toast.makeText(MainActivity.this,"打开设备失败",Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void initData() {
         super.initData();
+        top_title.setText("身份证");
+
 
     }
 
@@ -175,14 +147,6 @@ public class MainActivity extends BaseActivity {
         return bRet;
     }
 
-    private void initUI() {
-        infoResult.setFocusable(false);
-        infoResult.setEnabled(false);
-        infoResult.setMovementMethod(ScrollingMovementMethod.getInstance());
-        infoResult.setMovementMethod(ScrollingMovementMethod.getInstance());
-        image = (ImageView) findViewById(R.id.idPhoto);
-        btnVerify.setVisibility(View.INVISIBLE);
-    }
 
     /**
      * initialize sounds
@@ -238,7 +202,8 @@ public class MainActivity extends BaseActivity {
                             if (!ReadCardInfo()) {
                                 //textView.setText("请放卡...");
                             } else {
-                                textView.setText("读卡成功，请放入下一张卡");
+//                                textView.setText("读卡成功，请放入下一张卡");
+
                             }
                         }
                     }
@@ -274,11 +239,11 @@ public class MainActivity extends BaseActivity {
                         strResult = "指纹核验失败...";
                         playSound(13, 1);
                     }
-                    infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
-                            mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
-                            + " " + mLastName + strResult + "\r\n");
-                    mbVerifying = false;
-                    textView.setText("请放卡...");
+//                    infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
+//                            mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
+//                            + " " + mLastName + strResult + "\r\n");
+//                    mbVerifying = false;
+//                    textView.setText("请放卡...");
                 }
             });
 
@@ -305,13 +270,10 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    public void OnBtnClear(View view) {
-        infoResult.setText("");
-    }
-
+//身份证以刷
     public void OnBtnVerify(View view) {
         if (null == feature) {
-            textView.setText("您的身份证未登记指纹！");
+//            textView.setText("您的身份证未登记指纹！");
             playSound(9, 1);
             return;
         }
@@ -320,7 +282,6 @@ public class MainActivity extends BaseActivity {
             //playSound(9, 1);
             return;
         }
-        textView.setText("请按手指...");
         workThreadVerFP = new WorkThreadVerFP();
         workThreadVerFP.start();// 线程启动
     }
@@ -336,10 +297,7 @@ public class MainActivity extends BaseActivity {
         }
         try {
             feature = null;
-            resetContent();
-            textView.setText("正在读卡...");
-            checkFinger.setChecked(false);
-            btnVerify.setVisibility(View.INVISIBLE);
+//            textView.setText("正在读卡...");//111111111111111--------------------------------------------------------
             final IDCardInfo idCardInfo = new IDCardInfo();
             boolean bReadCard = false;
             long nTickSet = System.currentTimeMillis();
@@ -353,29 +311,20 @@ public class MainActivity extends BaseActivity {
                 final Calendar mCalendar = Calendar.getInstance();
                 mCalendar.setTimeInMillis(time);
                 mLastName = idCardInfo.getName();
-                infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
-                        mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
-                        + " " + mLastName + "刷卡成功！\r\n");
-                infoName.setText(mLastName);
-                infoSex.setText(idCardInfo.getSex());
-                infoNation.setText(idCardInfo.getNation());
-                infoBirth.setText(idCardInfo.getBirth());
-                infoAddress.setText(idCardInfo.getAddress());
-                infoIdcard.setText(idCardInfo.getId());
-                infoCertifying.setText(idCardInfo.getDepart());
-                infoData.setText(idCardInfo.getValidityTime());
+//                infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
+//                        mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
+//                        + " " + mLastName + "刷卡成功！\r\n");
+
+                showDialog(mLastName,idCardInfo.getId(),"");
                 feature = idCardInfo.getFpdata();
-                if (feature != null) {
-                    checkFinger.setChecked(true);
-                    btnVerify.setVisibility(View.VISIBLE);
-                }
 
                 if (idCardInfo.getPhoto() != null) {
                     byte[] buf = new byte[WLTService.imgLength];
                     if (1 == WLTService.wlt2Bmp(idCardInfo.getPhoto(), buf)) {
                         Bitmap bitmap = IDPhotoHelper.Bgr2Bitmap(buf);
                         if (null != bitmap) {
-                            image.setImageBitmap(bitmap);
+
+
                         }
                     }
                 }
@@ -388,21 +337,8 @@ public class MainActivity extends BaseActivity {
         }
 
         playSound(11, 1);
-        textView.setText("读卡失败...");
+//        textView.setText("读卡失败...");//------------------------------------------------------------------------------------------------
         return false;
-    }
-
-
-    public void resetContent() {
-        infoName.setText("");
-        infoSex.setText("");
-        infoNation.setText("");
-        infoBirth.setText("");
-        infoAddress.setText("");
-        infoIdcard.setText("");
-        infoCertifying.setText("");
-        infoData.setText("");
-        image.setImageBitmap(null);
     }
 
 
@@ -416,5 +352,20 @@ public class MainActivity extends BaseActivity {
         FingerprintFactory.destroy(fingerprintSensor);
         System.exit(0);
     }
+
+
+    private void showDialog(String names,String num,String code){
+        new CommomDialog(this, R.style.dialog,names,num,code, new CommomDialog.OnCloseListener() {
+            @Override
+            public void onClick(Dialog dialog, boolean confirm) {
+                if (confirm) {
+
+                    dialog.dismiss();
+                }
+
+            }
+        }).setTitle("提示").show();
+    }
+
 }
 
