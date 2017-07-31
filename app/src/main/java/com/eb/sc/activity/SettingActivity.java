@@ -3,6 +3,7 @@ package com.eb.sc.activity;
 import android.app.Dialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,21 +16,26 @@ import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.InputDialog;
 
+import org.aisen.android.common.setting.Setting;
 import org.aisen.android.support.inject.OnClick;
 import org.aisen.android.support.inject.ViewInject;
 
+import java.io.UnsupportedEncodingException;
+
+import butterknife.Bind;
+
 public class SettingActivity extends BaseActivity {
-    @ViewInject(id = R.id.top_left)
+    @Bind(R.id.top_left)
     LinearLayout top_left;
-    @ViewInject(id = R.id.top_title)
+    @Bind(R.id.top_title)
     TextView top_title;
-    @ViewInject(id = R.id.top_right_text)
+    @Bind(R.id.top_right_text)
     TextView top_right_text;
-    @ViewInject(id = R.id.ip_tcp)
+    @Bind(R.id.ip_tcp)
     EditText ip_tcp;
-    @ViewInject(id = R.id.ip_port)
+    @Bind(R.id.ip_port)
     EditText ip_port;
-    @ViewInject(id = R.id.state)
+    @Bind(R.id.state)
     EditText state;
 
     @Override
@@ -79,8 +85,6 @@ public class SettingActivity extends BaseActivity {
 
 
         }
-
-
     }
 
 

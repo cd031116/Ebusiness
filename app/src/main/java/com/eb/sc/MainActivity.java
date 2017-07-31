@@ -44,6 +44,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.Bind;
+
 public class MainActivity extends BaseActivity {
     private IDCardReader idCardReader = null;
     private FingerprintSensor fingerprintSensor = null;
@@ -56,33 +58,33 @@ public class MainActivity extends BaseActivity {
     final static String fpPower = "rfid power,scan power";
 
     final static int baudrate = 115200;
-    @ViewInject(id=R.id.main_textview)
+    @Bind(R.id.main_textview)
      TextView textView;
-    @ViewInject(id=R.id.user_name)
+    @Bind(R.id.user_name)
     TextView infoName;
-    @ViewInject(id=R.id.user_sex)
+    @Bind(R.id.user_sex)
      TextView infoSex;
-    @ViewInject(id=R.id.user_nation)
+    @Bind(R.id.user_nation)
      TextView infoNation;
-    @ViewInject(id=R.id.user_birth)
+    @Bind(R.id.user_birth)
      TextView infoBirth;
-    @ViewInject(id=R.id.user_address)
+    @Bind(R.id.user_address)
      TextView infoAddress;
-    @ViewInject(id=R.id.user_id)
+    @Bind(R.id.user_id)
      TextView infoIdcard;
-    @ViewInject(id=R.id.user_certifying)
+    @Bind(R.id.user_certifying)
      TextView infoCertifying;
-    @ViewInject(id=R.id.user_data)
+    @Bind(R.id.user_data)
      TextView infoData;
-    @ViewInject(id=R.id.user_number)
+    @Bind(R.id.user_number)
      TextView infoNumber;
-    @ViewInject(id=R.id.editText)
+    @Bind(R.id.editText)
      EditText infoResult;
-    @ViewInject(id=R.id.idPhoto)
+    @Bind(R.id.idPhoto)
      ImageView image;
-    @ViewInject(id=R.id.checkFinger)
+    @Bind(R.id.checkFinger)
      CheckBox checkFinger = null;
-    @ViewInject(id=R.id.btnVerify)
+    @Bind(R.id.btnVerify)
      Button btnVerify = null;
 
     private boolean mbStop = false;
