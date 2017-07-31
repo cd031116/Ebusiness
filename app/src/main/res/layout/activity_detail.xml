@@ -4,6 +4,70 @@
     android:layout_height="match_parent">
 
 
-    <include layout="@layout/view_top" />
+    <include
+        android:id="@+id/view_top"
+        layout="@layout/view_top" />
+    <RelativeLayout
+        android:id="@+id/ticket_door_layout"
+        android:layout_width="match_parent"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/view_top"
+        android:layout_marginLeft="10dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/ticket_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"/>
+        <TextView
+            android:id="@+id/ticket_door"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ticket_team_layout"
+        android:layout_below="@id/ticket_door_layout"
+        android:layout_width="match_parent"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/ticket_team_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"/>
+        <TextView
+            android:id="@+id/ticket_team"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ticket_child_layout"
+        android:layout_width="match_parent"
+        android:layout_below="@id/ticket_team_layout"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/ticket_child_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"/>
+        <TextView
+            android:id="@+id/ticket_child"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+    </RelativeLayout>
 
 </RelativeLayout>
