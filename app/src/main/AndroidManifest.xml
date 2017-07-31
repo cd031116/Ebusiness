@@ -31,8 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"/>
+        <activity android:name=".MainActivity" />
         <activity android:name=".activity.CaptureActivity" />
 
         <receiver android:name=".sdk.NetworkReceiver">
@@ -49,8 +48,11 @@
         <activity
             android:name=".activity.SelectActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-        <activity android:name=".activity.AmendActivity"
+        <activity
+            android:name=".activity.AmendActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <service android:name=".tcprequest.PushService" />
     </application>
 
 </manifest>
