@@ -6,4 +6,9 @@
     <string name="action_settings">设置</string>
     <string name="hello_world">请刷身份证!</string>
     <string name="scan_tips">将二维码图片对准扫描框即可自动扫描</string>
+    <string name="check_detail">当前核销明细</string>
+    <string name="check_ticket_total">合计</string>
+    <string name="ticket_type">票型</string>
+    <string name="people_num">人数</string>
+    <string name="ticket_time">核销时间</string>
 </resources>
