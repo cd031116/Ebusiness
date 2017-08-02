@@ -402,7 +402,6 @@ public class MainActivity extends BaseActivity {
                     }
                     dialog.dismiss();
                 }
-
             }
         }).setTitle("提示").show();
     }
