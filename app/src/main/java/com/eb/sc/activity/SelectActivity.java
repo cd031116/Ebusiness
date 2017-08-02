@@ -110,12 +110,13 @@ public class SelectActivity extends BaseActivity {
                 } else {
                     showDialog("",id_n, "");
                 }
+                id_num.setText("");
                 break;
         }
     }
 
     //长连接
-    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber(){
         @Override
         public void onEvent(ConnectEvent event) {
             BaseConfig bg = new BaseConfig(SelectActivity.this);

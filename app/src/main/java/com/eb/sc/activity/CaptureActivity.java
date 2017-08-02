@@ -193,21 +193,17 @@ public class CaptureActivity extends BaseActivity implements Callback {
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
 
+
         if (BusinessManager.isHave(result)) {//票已检
             showDialogMsg("无效票!");
         } else {
             if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this)) {//无网络
                 showresult(result);
-
             } else {//有网络
 
 
             }
-
-
         }
-
-
         // 连续扫描，不发送此消息扫描一次结束后就不能再次扫描
 //		handler.sendEmptyMessage(R.id.restart_preview);
     }
@@ -322,7 +318,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
                 }
-
             }
         }).setTitle("提示").show();
     }
