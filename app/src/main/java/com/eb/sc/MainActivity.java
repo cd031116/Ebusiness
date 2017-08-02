@@ -4,19 +4,32 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eb.sc.activity.DetailActivity;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.bean.DataInfo;
+import com.eb.sc.business.BusinessManager;
+import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.sdk.eventbus.ConnectEvent;
+import com.eb.sc.sdk.eventbus.ConnentSubscriber;
+import com.eb.sc.sdk.eventbus.EventSubscriber;
+import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.widget.CommomDialog;
+import com.eb.sc.widget.ShowMsgDialog;
 import com.zkteco.android.IDReader.IDPhotoHelper;
 import com.zkteco.android.IDReader.WLTService;
 import com.zkteco.android.biometric.core.device.ParameterHelper;
@@ -30,11 +43,14 @@ import com.zkteco.android.biometric.module.idcard.IDCardReaderFactory;
 import com.zkteco.android.biometric.module.idcard.exception.IDCardReaderException;
 import com.zkteco.android.biometric.module.idcard.meta.IDCardInfo;
 
+import org.aisen.android.component.eventbus.NotificationCenter;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
     private IDCardReader idCardReader = null;
@@ -55,8 +71,8 @@ public class MainActivity extends BaseActivity {
     TextView top_title;
     @Bind(R.id.top_right_text)
     TextView top_right_text;
-
-
+    @Bind(R.id.right_bg)
+    ImageView mRight_bg;
 
     private boolean mbStop = false;
     private MediaPlayer mMediaPlayer = null;
@@ -67,6 +83,8 @@ public class MainActivity extends BaseActivity {
     private WorkThreadVerFP workThreadVerFP = null;
     private boolean mbVerifying = false;
     private String mLastName = "";
+    BarAsyncTask task;
+    private boolean isconnect = true;
 
     @Override
     protected int getLayoutId() {
@@ -75,15 +93,15 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        initSounds();
-        getWindow().setFormat(PixelFormat.TRANSLUCENT);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         LogHelper.setLevel(Log.VERBOSE);
-        startIDCardReader();
-        startFPSensor();
-        if (!openDevices()) {
-           Toast.makeText(MainActivity.this,"打开设备失败",Toast.LENGTH_SHORT).show();
+        if(NetWorkUtils.isNetworkConnected(this)){
+            BaseConfig bg=new BaseConfig(this);
+            bg.setStringValue(Constants.havenet,"0");
+            changeview(true);
+        }else {
+            changeview(false);
         }
     }
 
@@ -91,8 +109,8 @@ public class MainActivity extends BaseActivity {
     public void initData() {
         super.initData();
         top_title.setText("身份证");
-
-
+        task = new BarAsyncTask();
+        task.execute();
     }
 
 
@@ -107,7 +125,7 @@ public class MainActivity extends BaseActivity {
         idCardReader = IDCardReaderFactory.createIDCardReader(this, TransportType.SERIALPORT, idrparams);
     }
 
-    private void startFPSensor(){
+    private void startFPSensor() {
         // Start fingerprint sensor
         Map fpparams = new HashMap();
         fpparams.put(ParameterHelper.PARAM_SERIAL_BAUDRATE, baudrate);
@@ -119,11 +137,11 @@ public class MainActivity extends BaseActivity {
         fingerprintSensor = FingerprintFactory.createFingerprintSensor(this, TransportType.SERIALPORT, fpparams);
     }
 
-    private boolean openDevices(){
+    private boolean openDevices() {
         boolean bRet = false;
         try {
             idCardReader.open(idPort);
-        } catch (IDCardReaderException e){
+        } catch (IDCardReaderException e) {
             e.printStackTrace();
             bRet = false;
             return bRet;
@@ -270,7 +288,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-//身份证以刷
+    //身份证以刷
     public void OnBtnVerify(View view) {
         if (null == feature) {
 //            textView.setText("您的身份证未登记指纹！");
@@ -315,9 +333,12 @@ public class MainActivity extends BaseActivity {
 //                        mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
 //                        + " " + mLastName + "刷卡成功！\r\n");
 
-                showDialog(mLastName,idCardInfo.getId(),"");
+                if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
+                    showDialogMsg("无效票!");
+                } else {
+                    showDialog(mLastName, idCardInfo.getId(), "");
+                }
                 feature = idCardInfo.getFpdata();
-
                 if (idCardInfo.getPhoto() != null) {
                     byte[] buf = new byte[WLTService.imgLength];
                     if (1 == WLTService.wlt2Bmp(idCardInfo.getPhoto(), buf)) {
@@ -342,29 +363,127 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
+        NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
         mbStop = true;
         // Destroy fingerprint sensor when it's not used
         IDCardReaderFactory.destroy(idCardReader);
         FingerprintFactory.destroy(fingerprintSensor);
-        System.exit(0);
     }
 
+    @OnClick({R.id.top_left})
+    void onclick(View v) {
+        switch (v.getId()) {
 
-    private void showDialog(String names,String num,String code){
-        new CommomDialog(this, R.style.dialog,names,num,code, new CommomDialog.OnCloseListener() {
+            case R.id.top_left:
+                MainActivity.this.finish();
+                break;
+        }
+    }
+
+    //有效票
+    private void showDialog(String names, final String num, String code) {
+        new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
+                    if (!NetWorkUtils.isNetworkConnected(MainActivity.this)) {//无网络
+                        DataInfo data = new DataInfo();
+                        data.setId(num);
+                        data.setUp(false);
+                        data.setType(1);
+                        data.setInsertTime(System.currentTimeMillis() + "");
+                        OfflLineDataDb.insert(data);
+                    } else {//有网络
 
+                    }
                     dialog.dismiss();
                 }
 
             }
         }).setTitle("提示").show();
+    }
+
+    //无效票
+    private void showDialogMsg(String names) {
+        new ShowMsgDialog(this, R.style.dialog, names, new ShowMsgDialog.OnCloseListener() {
+            @Override
+            public void onClick(Dialog dialog, boolean confirm) {
+                if (confirm) {
+                    dialog.dismiss();
+                }
+            }
+        }).setTitle("提示").show();
+    }
+
+
+    class BarAsyncTask extends AsyncTask<Integer, Integer, String> {
+        @Override
+        protected String doInBackground(Integer... params) {
+            startIDCardReader();
+            startFPSensor();
+            initSounds();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (!openDevices()) {
+                Toast.makeText(MainActivity.this, "打开设备失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    //长连接
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
+        @Override
+        public void onEvent(ConnectEvent event) {
+            BaseConfig bg = new BaseConfig(MainActivity.this);
+            String a = bg.getStringValue(Constants.havenet, "-1");
+            if (event.isConnect()) {
+                isconnect = true;
+                if ("1".equals(a)) {
+                    changeview(true);
+                } else {
+                    changeview(false);
+                }
+            } else {
+                isconnect = false;
+                changeview(false);
+            }
+
+        }
+    };
+    //网络
+    EventSubscriber netEventSubscriber = new EventSubscriber() {
+        @Override
+        public void onEvent(NetEvent event) {
+            if (event.isConnect()) {
+                if (isconnect) {
+                    changeview(true);
+                } else {
+                    changeview(false);
+                }
+            } else {
+                changeview(false);
+            }
+        }
+    };
+
+
+    private void changeview(boolean conect) {
+        if (conect) {
+            mRight_bg.setImageResource(R.mipmap.lianjie);
+            top_right_text.setText("链接");
+            top_right_text.setTextColor(Color.parseColor("#0973FD"));
+        } else {
+            mRight_bg.setImageResource(R.mipmap.lixian);
+            top_right_text.setText("离线");
+            top_right_text.setTextColor(Color.parseColor("#EF4B55"));
+        }
     }
 
 }

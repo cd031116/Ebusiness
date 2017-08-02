@@ -9,6 +9,13 @@ import android.net.wifi.WifiManager;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.eb.sc.sdk.eventbus.ConnectEvent;
+import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
+
+import org.aisen.android.component.eventbus.NotificationCenter;
+
 /**
  * Created by lyj on 2017/7/29.  监听网络变化
  */
@@ -65,13 +72,14 @@ public class NetworkReceiver extends BroadcastReceiver {
                 if (NetworkInfo.State.CONNECTED == info.getState() && info.isAvailable()) {
                     if (info.getType() == ConnectivityManager.TYPE_WIFI
                             || info.getType() == ConnectivityManager.TYPE_MOBILE) {
-                        Log.i("TAG", getConnectionType(info.getType()) + "连上");
-
-
-
+                        BaseConfig bg=new BaseConfig(context);
+                        bg.setStringValue(Constants.havenet,"0");
+                        NotificationCenter.defaultCenter().publish(new NetEvent(true));
                     }
                 } else {
-                    Log.i("TAG", getConnectionType(info.getType()) + "断开");
+                    BaseConfig bg=new BaseConfig(context);
+                    bg.setStringValue(Constants.havenet,"-1");
+                    NotificationCenter.defaultCenter().publish(new NetEvent(false));
                 }
             }
         }

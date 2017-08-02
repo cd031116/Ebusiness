@@ -6,6 +6,8 @@
     android:clipToPadding="true"
     android:fitsSystemWindows="true">
 
+
+
     <SurfaceView
         android:id="@+id/capture_preview"
         android:layout_width="match_parent"
@@ -14,7 +16,7 @@
     <ImageView
         android:id="@+id/top_mask"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="200dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/scan_mask"
         android:contentDescription="@string/app_name" />
@@ -25,6 +27,7 @@
         android:layout_height="380dp"
         android:layout_below="@id/top_mask"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:background="@drawable/capture"
         android:contentDescription="@string/app_name" >
 
@@ -79,4 +82,84 @@
         android:textColor="@android:color/white"
         android:textSize="15sp" />
 
+
+    <RelativeLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/scan_mask"
+        android:visibility="visible" >
+
+        <LinearLayout
+            android:id="@+id/top_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|center_vertical"
+            android:layout_alignParentLeft="true"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="20dp"
+            android:paddingTop="5dp"
+            android:visibility="visible" >
+
+            <ImageView
+                android:id="@+id/top_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:src="@mipmap/return_btn"
+                android:contentDescription="@string/app_name" />
+
+            <TextView
+                android:id="@+id/top_left_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:visibility="visible"
+                android:layout_marginLeft="5dp"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/top_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1.0"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:id="@+id/top_r"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center_vertical"
+            android:clickable="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="12dp"
+            android:paddingTop="5dp" >
+
+            <TextView
+                android:id="@+id/top_right_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:textColor="#333333"
+                android:gravity="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
 </RelativeLayout>

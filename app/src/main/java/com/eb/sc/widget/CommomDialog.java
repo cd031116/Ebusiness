@@ -60,6 +60,7 @@ public class CommomDialog extends Dialog implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_commom);
         setCanceledOnTouchOutside(false);
+        setCancelable(false);
         initView();
     }
 

@@ -7,7 +7,7 @@ package com.eb.sc.utils;
 public class Constants {
 
     /**
-     * 微信的APPID
+     *
      */
     public static final  String tcp_ip="tcp_ip";
 
@@ -16,5 +16,9 @@ public class Constants {
     public static final String admin_word="admin_word";
 
     public static final String address="address";
+
+
+
+    public static final String havenet="havenet";
 
 }

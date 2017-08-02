@@ -1,16 +1,11 @@
 package com.eb.sc.activity;
 
-import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.eb.sc.MainActivity;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
@@ -21,29 +16,25 @@ import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
 
-
 import org.aisen.android.component.eventbus.NotificationCenter;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 
-public class SelectActivity extends BaseActivity {
+public class DetailActivity extends BaseActivity {
     @Bind(R.id.top_left)
     LinearLayout top_left;
     @Bind(R.id.top_title)
     TextView top_title;
     @Bind(R.id.top_right_text)
     TextView top_right_text;
-    @Bind(R.id.idcard)
-    RelativeLayout idcard;
-    @Bind(R.id.scan)
-    RelativeLayout scan;
     @Bind(R.id.right_bg)
     ImageView mRight_bg;
     private boolean isconnect = true;
+
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_select;
+        return R.layout.activity_detail;
     }
 
     @Override
@@ -51,7 +42,7 @@ public class SelectActivity extends BaseActivity {
         super.initView();
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
-        top_title.setText("扫描检票");
+        top_title.setText("当前核销明细");
         if(NetWorkUtils.isNetworkConnected(this)){
             BaseConfig bg=new BaseConfig(this);
             bg.setStringValue(Constants.havenet,"0");
@@ -66,26 +57,20 @@ public class SelectActivity extends BaseActivity {
         super.initData();
     }
 
-    @OnClick({R.id.idcard,R.id.scan,R.id.top_left})
-    void onclick(View v){
-        switch (v.getId()){
-            case R.id.idcard:
-                startActivity(new Intent(SelectActivity.this,MainActivity.class));
-                break;
-            case R.id.scan:
-                startActivity(new Intent(SelectActivity.this,CaptureActivity.class));
-                break;
+    @OnClick({R.id.top_left})
+    void onBuy(View v) {
+        switch (v.getId()) {
             case R.id.top_left:
-                SelectActivity.this.finish();
+                DetailActivity.this.finish();
                 break;
+
         }
     }
-
     //长连接
     ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
         @Override
         public void onEvent(ConnectEvent event) {
-            BaseConfig bg = new BaseConfig(SelectActivity.this);
+            BaseConfig bg = new BaseConfig(DetailActivity.this);
             String a = bg.getStringValue(Constants.havenet, "-1");
             if (event.isConnect()) {
                 isconnect = true;
@@ -116,6 +101,8 @@ public class SelectActivity extends BaseActivity {
             }
         }
     };
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -134,5 +121,4 @@ public class SelectActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
-
 }

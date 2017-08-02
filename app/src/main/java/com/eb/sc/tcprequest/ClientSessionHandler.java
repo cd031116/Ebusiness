@@ -3,8 +3,12 @@ package com.eb.sc.tcprequest;
 import android.util.Log;
 
 import com.eb.sc.bean.Params;
+import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.utils.AESCipher;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
 
+import org.aisen.android.component.eventbus.NotificationCenter;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -24,12 +28,15 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     public void sessionOpened(IoSession session) throws Exception {
         super.sessionOpened(session);
         Log.e("ClientSessionHandler", "服务器与客户端连接打开...");
+        NotificationCenter.defaultCenter().publish(new ConnectEvent(true));
+
     }
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
         super.sessionClosed(session);
         Log.e("ClientSessionHandler", "服务器与客户端断开连接...");
+        NotificationCenter.defaultCenter().publish(new ConnectEvent(false));
     }
 
     @Override

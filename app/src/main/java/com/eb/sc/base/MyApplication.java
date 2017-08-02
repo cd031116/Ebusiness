@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
 
+import com.eb.sc.offline.OfflLineDataDb;
 
 import org.aisen.android.common.context.GlobalContext;
 
@@ -22,8 +23,8 @@ public class MyApplication extends GlobalContext {
         super.onCreate();
         instance = this;
         activityManager = ActivityManagerd.getScreenManager();
+        OfflLineDataDb.setup(instance);
     }
-
 
     public static MyApplication getInstance(){
         return instance;

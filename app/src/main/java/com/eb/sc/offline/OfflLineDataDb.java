@@ -18,7 +18,7 @@ import java.util.List;
 *@date 2017/7/28
 */
 public class OfflLineDataDb {
-    static void setup(Context context) {
+    public  static void setup(Context context) {
         new SqliteUtilityBuilder().configDBName("OffLineDB").configVersion(1).build(context);
     }
     public static SqliteUtility getDB() {

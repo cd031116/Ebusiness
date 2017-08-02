@@ -46,10 +46,5 @@ public class BusinessManager {
         OfflLineDataDb.updata(info);
     }
 
-    //团体票
-    public void updataUp(DataInfo info,int num){
-        info.setUseNum(num);
-        OfflLineDataDb.updata(info);
-    }
 
 }

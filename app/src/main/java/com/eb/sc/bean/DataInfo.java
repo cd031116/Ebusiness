@@ -18,10 +18,6 @@ public class DataInfo implements Serializable {
 
     private boolean isUp;//是否上传
 
-    private int num;//总人数
-
-    private int  useNum;//已用人数
-
     private int type;//类型,身份证（1）或二维码（2）
 
     private String code;//服务器给设备的编号
@@ -54,21 +50,6 @@ public class DataInfo implements Serializable {
         isUp = up;
     }
 
-    public int getNum() {
-        return num;
-    }
-
-    public void setNum(int num) {
-        this.num = num;
-    }
-
-    public int getUseNum() {
-        return useNum;
-    }
-
-    public void setUseNum(int useNum) {
-        this.useNum = useNum;
-    }
 
     public int getType() {
         return type;
