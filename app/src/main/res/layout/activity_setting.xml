@@ -109,7 +109,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:padding="10dp"
+                android:focusable="false"
                 android:textColor="#545454"
+                android:drawableRight="@mipmap/the_btn"
                 android:background="@null" />
 
         </LinearLayout>

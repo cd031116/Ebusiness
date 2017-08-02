@@ -1,11 +1,18 @@
 package com.eb.sc.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +28,9 @@ import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.Utils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -42,9 +52,17 @@ public class SettingActivity extends BaseActivity {
     RelativeLayout amend;
     @Bind(R.id.right_bg)
     ImageView mRight_bg;
-
     @Bind(R.id.code)
     EditText code;
+    //----------------------------
+    /** popup窗口里的ListView */
+    private ListView mTypeLv;
+    /** popup窗口 */
+    private PopupWindow typeSelectPopup;
+    /** 模拟的假数据 */
+    private List<String> testData;
+    /** 数据适配器 */
+    private ArrayAdapter<String> testDataAdapter;
     private boolean isconnect = true;
 
     @Override
@@ -73,7 +91,7 @@ public class SettingActivity extends BaseActivity {
         code.setText(Utils.getImui(this) + "");
     }
 
-    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend})
+    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend,R.id.state})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
@@ -86,7 +104,13 @@ public class SettingActivity extends BaseActivity {
             case R.id.amend:
                 startActivity(new Intent(SettingActivity.this, AmendActivity.class));
                 break;
-
+            case R.id.state:
+                // 使用isShowing()检查popup窗口是否在显示状态
+                initSelectPopup();
+                if (typeSelectPopup != null && !typeSelectPopup.isShowing()) {
+                    typeSelectPopup.showAsDropDown(state, 0, 10);
+                }
+                break;
         }
     }
 
@@ -145,6 +169,58 @@ public class SettingActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
+    /**
+     * 模拟假数据
+     */
+    private void TestData() {
+        testData = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            String str = new String("数据" + i);
+            testData.add(str);
+        }
+    }
+
+    /**
+     * 初始化popup窗口
+     */
+    private void initSelectPopup() {
+        mTypeLv = new ListView(this);
+        TestData();
+        // 设置适配器
+        testDataAdapter = new ArrayAdapter<String>(this, R.layout.popup_text_item, testData);
+        mTypeLv.setAdapter(testDataAdapter);
+
+        // 设置ListView点击事件监听
+        mTypeLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // 在这里获取item数据
+                String value = testData.get(position);
+                // 把选择的数据展示对应的TextView上
+                state.setText(value);
+
+
+                // 选择完后关闭popup窗口
+                typeSelectPopup.dismiss();
+            }
+        });
+
+        typeSelectPopup = new PopupWindow(mTypeLv, state.getWidth(), ActionBar.LayoutParams.WRAP_CONTENT, true);
+        // 取得popup窗口的背景图片
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.bg_corner);
+        typeSelectPopup.setBackgroundDrawable(drawable);
+        typeSelectPopup.setFocusable(true);
+        typeSelectPopup.setOutsideTouchable(true);
+        typeSelectPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                // 关闭popup窗口
+                typeSelectPopup.dismiss();
+            }
+        });
+    }
+
+
 
 
 }

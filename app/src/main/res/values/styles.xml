@@ -35,6 +35,10 @@
         <!--背景透明-->
         <item name="android:backgroundDimEnabled">true</item>
         <!--模糊-->
+    </style>
 
+    <style name="pay_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_marquee_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_marquee_out</item>
     </style>
 </resources>

@@ -17,8 +17,6 @@ public class Constants {
 
     public static final String address="address";
 
-
-
     public static final String havenet="havenet";
 
 }

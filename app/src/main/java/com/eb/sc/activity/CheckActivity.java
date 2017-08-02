@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eb.sc.MainActivity;
 import com.eb.sc.R;
@@ -65,17 +66,20 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
+        BaseConfig bg=new BaseConfig(this);
+        bg.setStringValue(Constants.admin_word,"123456");
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         top_left.setVisibility(View.GONE);
         top_title.setText("石燕湖大门核销点");
         if(NetWorkUtils.isNetworkConnected(this)){
-            BaseConfig bg=new BaseConfig(this);
             bg.setStringValue(Constants.havenet,"0");
             changeview(true);
         }else {
             changeview(false);
         }
+
+
     }
 
     @Override
@@ -103,9 +107,15 @@ public class CheckActivity extends BaseActivity {
                     @Override
                     public void onClick(Dialog dialog, boolean confirm, String text) {
                         if (confirm) {
-                            String psd = bg.getStringValue("", "");
+                            String psd = bg.getStringValue(Constants.admin_word, "-1");
+                            if(psd.equals(text)){
+                                startActivity(new Intent(CheckActivity.this, SettingActivity.class));
+                            }else{
+                                Toast.makeText(CheckActivity.this,"密码不正确",Toast.LENGTH_SHORT).show();
+                            }
+
                             dialog.dismiss();
-                            startActivity(new Intent(CheckActivity.this, SettingActivity.class));
+
                         }
                     }
                 }).setTitle("提示").show();
