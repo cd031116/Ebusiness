@@ -7,6 +7,8 @@ import android.text.TextUtils;
 
 
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
 
 import org.aisen.android.common.context.GlobalContext;
 
@@ -24,6 +26,9 @@ public class MyApplication extends GlobalContext {
         instance = this;
         activityManager = ActivityManagerd.getScreenManager();
         OfflLineDataDb.setup(instance);
+        BaseConfig bg=new BaseConfig(this);
+        bg.setStringValue(Constants.tcp_ip,"192.168.18.10:");
+        bg.setStringValue(Constants.ip_port,"2020");
     }
 
     public static MyApplication getInstance(){

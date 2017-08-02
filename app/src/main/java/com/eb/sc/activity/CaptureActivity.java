@@ -34,6 +34,7 @@ import com.eb.sc.scan.CaptureActivityHandler;
 import com.eb.sc.scan.InactivityTimer;
 import com.eb.sc.scan.camera.CameraManager;
 import com.eb.sc.utils.AnalysisHelp;
+import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ScanDialog;
@@ -201,6 +202,8 @@ public class CaptureActivity extends BaseActivity implements Callback {
                 showresult(result);
             } else {//有网络
 
+                byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(result));
+
 
             }
         }
@@ -346,7 +349,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
 //分析二维码
 
     private void showresult(String strs) {
-        int a = AnalysisHelp.StringScan(strs);
+        int a = AnalysisHelp.StringScan(CaptureActivity.this,strs);
         if (a == 1) {//1------可用
             showDialog(null, strs);
         } else if (a == 2) {

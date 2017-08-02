@@ -27,6 +27,7 @@ import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
@@ -398,7 +399,7 @@ public class MainActivity extends BaseActivity {
                         data.setInsertTime(System.currentTimeMillis() + "");
                         OfflLineDataDb.insert(data);
                     } else {//有网络
-
+                        byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(num));
                     }
                     dialog.dismiss();
                 }
