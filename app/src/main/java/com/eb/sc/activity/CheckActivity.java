@@ -60,6 +60,7 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
+
         BaseConfig bg=new BaseConfig(this);
         bg.setStringValue(Constants.admin_word,"123456");
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);

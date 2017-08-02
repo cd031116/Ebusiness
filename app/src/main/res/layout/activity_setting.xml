@@ -44,8 +44,7 @@
                 android:layout_marginLeft="10dp"
                 android:background="@null"
                 android:textColor="#545454"
-                android:padding="10dp"
-                android:focusable="false" />
+                android:padding="10dp"/>
 
         </LinearLayout>
 
@@ -77,8 +76,7 @@
                 android:layout_marginLeft="10dp"
                 android:padding="10dp"
                 android:textColor="#545454"
-                android:background="@null"
-                android:focusable="false" />
+                android:background="@null" />
 
         </LinearLayout>
 

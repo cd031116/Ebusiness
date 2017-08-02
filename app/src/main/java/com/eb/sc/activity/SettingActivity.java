@@ -98,7 +98,6 @@ public class SettingActivity extends BaseActivity {
                 SettingActivity.this.finish();
                 break;
             case R.id.top_right_text:
-
                 SettingActivity.this.finish();
                 break;
             case R.id.amend:
@@ -154,6 +153,7 @@ public class SettingActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
     }
@@ -198,8 +198,6 @@ public class SettingActivity extends BaseActivity {
                 String value = testData.get(position);
                 // 把选择的数据展示对应的TextView上
                 state.setText(value);
-
-
                 // 选择完后关闭popup窗口
                 typeSelectPopup.dismiss();
             }
