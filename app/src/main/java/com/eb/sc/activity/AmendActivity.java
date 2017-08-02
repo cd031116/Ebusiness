@@ -32,6 +32,7 @@ public class AmendActivity extends BaseActivity {
     EditText sure_psd;
     @Bind(R.id.submit)
     TextView submit;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_amend;
@@ -49,41 +50,41 @@ public class AmendActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.top_left,R.id.submit})
-    void onclick(View v){
-        BaseConfig bg=new BaseConfig(this);
-        switch (v.getId()){
+    @OnClick({R.id.top_left, R.id.submit})
+    void onclick(View v) {
+        BaseConfig bg = new BaseConfig(this);
+        switch (v.getId()) {
             case R.id.top_left:
                 AmendActivity.this.finish();
                 break;
             case R.id.submit:
-                String opsd=old_psd.getText().toString();
-              String psd=  bg.getStringValue(Constants.admin_word,"");
-               if(TextUtils.isEmpty(opsd)){
-                   Toast.makeText(AmendActivity.this,"请输入原密码",Toast.LENGTH_SHORT).show();
-                   return;
-               }
-                if(!opsd.equals(psd)){
-                    Toast.makeText(AmendActivity.this,"您输入原密码不正确",Toast.LENGTH_SHORT).show();
+                String opsd = old_psd.getText().toString();
+                String psd = bg.getStringValue(Constants.admin_word, "");
+                if (TextUtils.isEmpty(opsd)) {
+                    Toast.makeText(AmendActivity.this, "请输入原密码", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String npsd=new_psd.getText().toString();
-                String tnpsd=sure_psd.getText().toString();
-                if(TextUtils.isEmpty(npsd)){
-                    Toast.makeText(AmendActivity.this,"请输入新密码",Toast.LENGTH_SHORT).show();
+                if (!opsd.equals(psd)) {
+                    Toast.makeText(AmendActivity.this, "您输入原密码不正确", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(TextUtils.isEmpty(tnpsd)){
-                    Toast.makeText(AmendActivity.this,"请再次输入新密码",Toast.LENGTH_SHORT).show();
+                String npsd = new_psd.getText().toString();
+                String tnpsd = sure_psd.getText().toString();
+                if (TextUtils.isEmpty(npsd)) {
+                    Toast.makeText(AmendActivity.this, "请输入新密码", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(!npsd.equals(tnpsd)){
-                    Toast.makeText(AmendActivity.this,"您两次输入密码不一致",Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(tnpsd)) {
+                    Toast.makeText(AmendActivity.this, "请再次输入新密码", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!npsd.equals(tnpsd)) {
+                    Toast.makeText(AmendActivity.this, "您两次输入密码不一致", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                bg.setStringValue(Constants.admin_word,tnpsd);
-                Toast.makeText(AmendActivity.this,"修改成功",Toast.LENGTH_SHORT).show();
+                bg.setStringValue(Constants.admin_word, tnpsd);
+                Toast.makeText(AmendActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                 AmendActivity.this.finish();
                 break;
         }

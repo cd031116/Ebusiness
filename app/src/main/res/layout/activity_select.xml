@@ -31,9 +31,10 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:hint="身份证号码"
-                android:inputType="text|number"
+                android:digits="0123456789x"
                 android:padding="10dp"
                 android:textColor="#939999"
+                android:maxLength="18"
                 android:textColorHint="#939999"
                 android:textSize="25sp" />
 

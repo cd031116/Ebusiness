@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="姓名"
+            android:text="姓名:"
             android:textColor="#B6B6B6"
             android:textSize="25sp" />
 
@@ -24,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
+            android:textColor="#333333"
             android:textSize="25sp" />
 
 
@@ -38,7 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="身份证"
+            android:text="身份证:"
             android:textColor="#B6B6B6"
             android:textSize="25sp" />
 
@@ -47,6 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
+            android:textColor="#333333"
             android:textSize="25sp" />
 
     </LinearLayout>
@@ -60,7 +62,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="票型"
+            android:text="票型:"
             android:textColor="#B6B6B6"
             android:textSize="25sp" />
 
@@ -69,6 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
+            android:textColor="#333333"
             android:textSize="25sp" />
 
 

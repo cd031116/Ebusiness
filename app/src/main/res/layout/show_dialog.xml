@@ -27,8 +27,7 @@
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="姓名"
-            android:textColor="#B6B6B6"
+            android:textColor="#333333"
             android:textSize="25sp" />
     </LinearLayout>
 

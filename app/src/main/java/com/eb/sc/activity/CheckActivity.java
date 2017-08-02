@@ -3,8 +3,6 @@ package com.eb.sc.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,20 +10,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eb.sc.MainActivity;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
-import com.eb.sc.utils.AESCipher;
-import com.eb.sc.utils.Base64;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.widget.InputDialog;
-
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
@@ -55,7 +49,7 @@ public class CheckActivity extends BaseActivity {
     @Bind(R.id.sync)
     RelativeLayout sync;//设置
     @Bind(R.id.setting)
-    RelativeLayout setting;//设置
+    ImageView setting;//设置
     private boolean isconnect = true;
 
     @Override
@@ -178,6 +172,6 @@ public class CheckActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
-
+    
 
 }

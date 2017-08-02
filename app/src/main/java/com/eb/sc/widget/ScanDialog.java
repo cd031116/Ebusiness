@@ -49,7 +49,7 @@ public class ScanDialog extends Dialog implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_commom);
+        setContentView(R.layout.scan_dialog);
         setCanceledOnTouchOutside(false);
         setCancelable(false);
         initView();
