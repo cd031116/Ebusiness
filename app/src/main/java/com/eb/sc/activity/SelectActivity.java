@@ -71,7 +71,7 @@ public class SelectActivity extends BaseActivity {
         top_title.setText("扫描检票");
         if(NetWorkUtils.isNetworkConnected(this)){
             BaseConfig bg=new BaseConfig(this);
-            bg.setStringValue(Constants.havenet,"0");
+            bg.setStringValue(Constants.havenet,"1");
             changeview(true);
         }else {
             changeview(false);

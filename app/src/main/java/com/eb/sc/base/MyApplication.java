@@ -27,7 +27,7 @@ public class MyApplication extends GlobalContext {
         activityManager = ActivityManagerd.getScreenManager();
         OfflLineDataDb.setup(instance);
         BaseConfig bg=new BaseConfig(this);
-        bg.setStringValue(Constants.tcp_ip,"192.168.18.10:");
+        bg.setStringValue(Constants.tcp_ip,"192.168.18.114");
         bg.setStringValue(Constants.ip_port,"2020");
     }
 

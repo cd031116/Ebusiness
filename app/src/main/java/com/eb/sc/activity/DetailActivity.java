@@ -45,7 +45,7 @@ public class DetailActivity extends BaseActivity {
         top_title.setText("当前核销明细");
         if(NetWorkUtils.isNetworkConnected(this)){
             BaseConfig bg=new BaseConfig(this);
-            bg.setStringValue(Constants.havenet,"0");
+            bg.setStringValue(Constants.havenet,"1");
             changeview(true);
         }else {
             changeview(false);

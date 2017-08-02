@@ -10,7 +10,7 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 /**
- * Created by Administrator on 2017/7/28.
+ * Created by lyj on 2017/7/28.
  */
 
 public class PushService extends IntentService {
@@ -23,10 +23,10 @@ public class PushService extends IntentService {
     private static IoSession ioSession;
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-        //Mina库
+    protected void onHandleIntent(Intent intent){
         Log.e("dawns", "onHandleIntent: " );
         PushManager.getInstance().connect();
+
     }
 
 }

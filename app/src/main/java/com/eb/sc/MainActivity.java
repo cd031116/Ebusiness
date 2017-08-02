@@ -99,7 +99,7 @@ public class MainActivity extends BaseActivity {
         LogHelper.setLevel(Log.VERBOSE);
         if(NetWorkUtils.isNetworkConnected(this)){
             BaseConfig bg=new BaseConfig(this);
-            bg.setStringValue(Constants.havenet,"0");
+            bg.setStringValue(Constants.havenet,"1");
             changeview(true);
         }else {
             changeview(false);

@@ -16,6 +16,7 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
@@ -68,7 +69,7 @@ public class CheckActivity extends BaseActivity {
         top_left.setVisibility(View.GONE);
         top_title.setText("石燕湖大门核销点");
         if(NetWorkUtils.isNetworkConnected(this)){
-            bg.setStringValue(Constants.havenet,"0");
+            bg.setStringValue(Constants.havenet,"1");
             changeview(true);
         }else {
             changeview(false);
@@ -80,7 +81,7 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-
+        startService(new Intent(CheckActivity.this,PushService.class));
     }
 
 

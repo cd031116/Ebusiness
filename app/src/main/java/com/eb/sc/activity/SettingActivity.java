@@ -93,6 +93,16 @@ public class SettingActivity extends BaseActivity {
         BaseConfig bg=new BaseConfig(this);
         ip_tcp.setText( bg.getStringValue(Constants.tcp_ip,""));
         ip_port.setText(bg.getStringValue(Constants.ip_port,""));
+
+        String s= bg.getStringValue(Constants.address,"");
+        if(s.equals("1")){
+
+        }
+        if(s.equals("2")){
+
+        }
+
+
     }
 
     @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend,R.id.state})
