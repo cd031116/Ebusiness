@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -71,8 +72,14 @@ public class SelectActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         top_title.setText("扫描检票");
-        if(NetWorkUtils.isNetworkConnected(this)){
-            BaseConfig bg=new BaseConfig(this);
+        BaseConfig bg=new BaseConfig(this);
+        String b = bg.getStringValue(Constants.havelink, "-1");
+        if ("1".equals(b)) {
+            isconnect = true;
+        } else {
+            isconnect = false;
+        }
+        if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
             bg.setStringValue(Constants.havenet,"1");
             changeview(true);
         }else {
@@ -112,10 +119,20 @@ public class SelectActivity extends BaseActivity {
                     showDialogMsg("票已使用!");
                 } else {
                     if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
-                        byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,id_n)));
-                        PushManager.getInstance(this).sendMessage(updata);
+                            byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,id_n)));
+                          boolean a= PushManager.getInstance(this).sendMessage(updata);
+                        Log.i("tttt","ssss="+updata);
+                        if(a){
+                        //发送成功
+
+
+                        }else{
+                            showDialog("",id_n, "");
+                            Log.i("tttt","ssss=失败");
+                        }
                     }else{
                         showDialog("",id_n, "");
+                        Log.i("tttt","ssss=isNetworkConnected");
                     }
                 }
                 id_num.setText("");

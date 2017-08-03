@@ -36,7 +36,8 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         super.sessionOpened(session);
         Log.e("ClientSessionHandler", "服务器与客户端连接打开...");
         NotificationCenter.defaultCenter().publish(new ConnectEvent(true));
-
+        BaseConfig bg=new BaseConfig(mcontext);
+        bg.setStringValue(Constants.havelink, "1");
     }
 
     @Override
@@ -44,6 +45,8 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         super.sessionClosed(session);
         Log.e("ClientSessionHandler", "服务器与客户端断开连接...");
         NotificationCenter.defaultCenter().publish(new ConnectEvent(false));
+        BaseConfig bg=new BaseConfig(mcontext);
+        bg.setStringValue(Constants.havelink, "-1");
     }
 
     @Override

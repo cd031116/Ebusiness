@@ -219,7 +219,16 @@ public class CaptureActivity extends BaseActivity implements Callback {
             } else {//有网络
                 Log.i("tttt","sssssssssss="+Utils.getscan(this,result));
                 byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getscan(this,result)));
-                PushManager.getInstance(this).sendMessage(updata);
+                  boolean zt=PushManager.getInstance(this).sendMessage(updata);
+                    if(zt){
+                //发送成功
+
+
+
+
+                    }else{
+                        showresult(result);
+                    }
             }
         }
         // 连续扫描，不发送此消息扫描一次结束后就不能再次扫描
@@ -385,6 +394,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             String a = bg.getStringValue(Constants.havenet, "-1");
             if (event.isConnect()) {
                 isconnect = true;
+
                 if ("1".equals(a)) {
 
                 } else {
@@ -392,7 +402,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
                 }
             } else {
                 isconnect = false;
-
             }
 
         }
@@ -401,6 +410,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     EventSubscriber netEventSubscriber = new EventSubscriber() {
         @Override
         public void onEvent(NetEvent event) {
+            BaseConfig bg = new BaseConfig(CaptureActivity.this);
             if (event.isConnect()) {
                 if (isconnect) {
 

@@ -43,8 +43,14 @@ public class DetailActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         top_title.setText("当前核销明细");
-        if(NetWorkUtils.isNetworkConnected(this)){
-            BaseConfig bg=new BaseConfig(this);
+        BaseConfig bg=new BaseConfig(this);
+        String b = bg.getStringValue(Constants.havelink, "-1");
+        if ("1".equals(b)) {
+            isconnect = true;
+        } else {
+            isconnect = false;
+        }
+        if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
             bg.setStringValue(Constants.havenet,"1");
             changeview(true);
         }else {

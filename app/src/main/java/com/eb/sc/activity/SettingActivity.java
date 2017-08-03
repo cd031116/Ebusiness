@@ -77,9 +77,14 @@ public class SettingActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         top_title.setText("设置");
-        if(NetWorkUtils.isNetworkConnected(this)){
-            BaseConfig bg=new BaseConfig(this);
-            bg.setStringValue(Constants.havenet,"0");
+        BaseConfig bg=new BaseConfig(this);
+        String b = bg.getStringValue(Constants.havelink, "-1");
+        if ("1".equals(b)) {
+            isconnect = true;
+        } else {
+            isconnect = false;
+        }
+        if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
             changeview(true);
         }else {
             changeview(false);

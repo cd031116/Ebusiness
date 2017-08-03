@@ -73,7 +73,7 @@ public class NetworkReceiver extends BroadcastReceiver {
                     if (info.getType() == ConnectivityManager.TYPE_WIFI
                             || info.getType() == ConnectivityManager.TYPE_MOBILE) {
                         BaseConfig bg=new BaseConfig(context);
-                        bg.setStringValue(Constants.havenet,"0");
+                        bg.setStringValue(Constants.havenet,"1");
                         NotificationCenter.defaultCenter().publish(new NetEvent(true));
                     }
                 } else {

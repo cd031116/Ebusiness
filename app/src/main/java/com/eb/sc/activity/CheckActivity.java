@@ -62,26 +62,30 @@ public class CheckActivity extends BaseActivity {
     public void initView() {
         super.initView();
 
-        BaseConfig bg=new BaseConfig(this);
-        bg.setStringValue(Constants.admin_word,"123456");
+        BaseConfig bg = new BaseConfig(this);
+        bg.setStringValue(Constants.admin_word, "123456");
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         top_left.setVisibility(View.GONE);
         top_title.setText("石燕湖大门核销点");
-        if(NetWorkUtils.isNetworkConnected(this)){
-            bg.setStringValue(Constants.havenet,"1");
+        String b = bg.getStringValue(Constants.havelink, "1");
+        if ("1".equals(b)) {
+            isconnect = true;
+        } else {
+            isconnect = false;
+        }
+        if (NetWorkUtils.isNetworkConnected(this)&&isconnect) {
+            bg.setStringValue(Constants.havenet, "1");
             changeview(true);
-        }else {
+        } else {
             changeview(false);
         }
-
-
     }
 
     @Override
     public void initData() {
         super.initData();
-        startService(new Intent(CheckActivity.this,PushService.class));
+        startService(new Intent(CheckActivity.this, PushService.class));
     }
 
 
@@ -95,6 +99,12 @@ public class CheckActivity extends BaseActivity {
                 startActivity(new Intent(CheckActivity.this, DetailActivity.class));
                 break;
             case R.id.sync:
+                //同步
+
+
+
+
+
 
                 break;
             case R.id.setting:
@@ -104,14 +114,12 @@ public class CheckActivity extends BaseActivity {
                     public void onClick(Dialog dialog, boolean confirm, String text) {
                         if (confirm) {
                             String psd = bg.getStringValue(Constants.admin_word, "-1");
-                            if(psd.equals(text)){
+                            if (psd.equals(text)) {
                                 startActivity(new Intent(CheckActivity.this, SettingActivity.class));
-                            }else{
-                                Toast.makeText(CheckActivity.this,"密码不正确",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(CheckActivity.this, "密码不正确", Toast.LENGTH_SHORT).show();
                             }
-
                             dialog.dismiss();
-
                         }
                     }
                 }).setTitle("提示").show();
@@ -163,8 +171,8 @@ public class CheckActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
     }
 
-    private void changeview(boolean conect){
-        if (conect){
+    private void changeview(boolean conect) {
+        if (conect) {
             mRight_bg.setImageResource(R.mipmap.lianjie);
             top_right_text.setText("链接");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));
@@ -174,6 +182,6 @@ public class CheckActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
-    
+
 
 }

@@ -99,8 +99,14 @@ public class MainActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         LogHelper.setLevel(Log.VERBOSE);
-        if(NetWorkUtils.isNetworkConnected(this)){
-            BaseConfig bg=new BaseConfig(this);
+        BaseConfig bg=new BaseConfig(this);
+        String b = bg.getStringValue(Constants.havelink, "-1");
+        if ("1".equals(b)) {
+            isconnect = true;
+        } else {
+            isconnect = false;
+        }
+        if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
             bg.setStringValue(Constants.havenet,"1");
             changeview(true);
         }else {
@@ -341,7 +347,15 @@ public class MainActivity extends BaseActivity {
                 } else {
                     if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
                         byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
-                        PushManager.getInstance(this).sendMessage(updata);
+                        boolean jg= PushManager.getInstance(this).sendMessage(updata);
+                        if(jg){
+                          //发送成功
+
+
+
+                        }else{
+                            showDialog(mLastName, idCardInfo.getId(), "");
+                        }
                     }else{
                         showDialog(mLastName, idCardInfo.getId(), "");
                     }
