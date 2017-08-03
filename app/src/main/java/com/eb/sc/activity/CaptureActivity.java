@@ -204,7 +204,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
 
                 byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(result));
 
-
             }
         }
         // 连续扫描，不发送此消息扫描一次结束后就不能再次扫描

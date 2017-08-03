@@ -12,7 +12,7 @@ public class Params {
     //应答超时
     public static final int REQUEST_TIMEOUT=3;
     //IP
-    public static final String HOSTNAME="192.168.18.114";
+    public static final String HOSTNAME="192.168.18.10";
 //    public static final String HOSTNAME="192.168.18.114";
     //端口号
     public static final int PORT = 2020;

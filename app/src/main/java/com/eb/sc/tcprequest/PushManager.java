@@ -1,9 +1,13 @@
 package com.eb.sc.tcprequest;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.eb.sc.bean.Params;
 import com.eb.sc.utils.AESCipher;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.HexStr;
 
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.future.WriteFuture;
@@ -68,7 +72,10 @@ public class PushManager {
      *
      * @return
      */
-    public boolean connect() {
+    public boolean connect(Context context) {
+        BaseConfig bg=new BaseConfig(context);
+
+
         if (connector != null && connector.isActive() &&
                 connectFuture != null && connectFuture.isConnected() &&
                 ioSession != null && ioSession.isConnected()) {
@@ -76,14 +83,14 @@ public class PushManager {
         }
         try {
             Log.e("dawns", "connect: ");
-            connectFuture = connector.connect(new InetSocketAddress(Params.HOSTNAME, Params.PORT));
+            connectFuture = connector.connect(new InetSocketAddress(bg.getStringValue(Constants.tcp_ip,"192.168.18.10"),Integer.parseInt(bg.getStringValue(Constants.ip_port,"2020"))));
             //等待是否连接成功，相当于是转异步执行为同步执行。
             connectFuture.awaitUninterruptibly();
             //连接成功后获取会话对象。如果没有上面的等待，由于connect()方法是异步的，session 可能会无法获取。
             ioSession = connectFuture.getSession();
-            String encrypt = AESCipher.encrypt(Params.KEY, Params.SEND);
-            Log.d("dawnws", "onClick: " + encrypt);
-            sendMessage(encrypt);
+//            String encrypt = AESCipher.encrypt(Params.KEY,);
+//            Log.d("dawnws", "onClick: " + encrypt);
+            sendMessage(HexStr.hex2byte(HexStr.str2HexStr(Params.SEND)));
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,7 +119,7 @@ public class PushManager {
      * @param message
      * @return
      */
-    public boolean sendMessage(String message) {
+    public boolean sendMessage(byte[] message) {
         Log.e("dawn", "sendMessage: "+message );
         if (ioSession == null || !ioSession.isConnected()) {
             return false;

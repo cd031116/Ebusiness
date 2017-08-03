@@ -1,5 +1,7 @@
 package com.eb.sc.utils;
 
+import android.text.TextUtils;
+
 /**
  * Created by lyj on 2017/8/2.
  */
@@ -134,23 +136,19 @@ public class HexStr {
         return str.toString();
     }
 
-    /**
-     * 十六进制串转化为byte数组
-     *
-     * @return the array of byte
-     */
-    public static final byte[] hex2byte(String hex)
-            throws IllegalArgumentException {
-        if (hex.length() % 2 != 0) {
-            throw new IllegalArgumentException();
+    public static byte[] hex2byte(String hexString) {
+        if (TextUtils.isEmpty(hexString))
+            throw new IllegalArgumentException("this hexString must not be empty");
+
+        hexString = hexString.toLowerCase();
+        final byte[] byteArray = new byte[hexString.length() / 2];
+        int k = 0;
+        for (int i = 0; i < byteArray.length; i++) {//因为是16进制，最多只会占用4位，转换成字节需要两个16进制的字符，高位在先
+            byte high = (byte) (Character.digit(hexString.charAt(k), 16) & 0xff);
+            byte low = (byte) (Character.digit(hexString.charAt(k + 1), 16) & 0xff);
+            byteArray[i] = (byte) (high << 4 | low);
+            k += 2;
         }
-        char[] arr = hex.toCharArray();
-        byte[] b = new byte[hex.length() / 2];
-        for (int i = 0, j = 0, l = hex.length(); i < l; i++, j++) {
-            String swap = "" + arr[i++] + arr[i];
-            int byteint = Integer.parseInt(swap, 16) & 0xFF;
-            b[j] = new Integer(byteint).byteValue();
-        }
-        return b;
+        return byteArray;
     }
 }

@@ -25,7 +25,7 @@ public class PushService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent){
         Log.e("dawns", "onHandleIntent: " );
-        PushManager.getInstance().connect();
+        PushManager.getInstance().connect(getApplicationContext());
 
     }
 
