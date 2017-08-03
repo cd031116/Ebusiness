@@ -25,10 +25,12 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
 import com.zkteco.android.IDReader.IDPhotoHelper;
@@ -335,9 +337,14 @@ public class MainActivity extends BaseActivity {
 //                        + " " + mLastName + "刷卡成功！\r\n");
 
                 if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
-                    showDialogMsg("无效票!");
+                    showDialogMsg("票已使用!");
                 } else {
-                    showDialog(mLastName, idCardInfo.getId(), "");
+                    if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
+                        byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
+                        PushManager.getInstance(this).sendMessage(updata);
+                    }else{
+                        showDialog(mLastName, idCardInfo.getId(), "");
+                    }
                 }
                 feature = idCardInfo.getFpdata();
                 if (idCardInfo.getPhoto() != null) {
@@ -391,17 +398,13 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
-                    if (!NetWorkUtils.isNetworkConnected(MainActivity.this)) {//无网络
                         DataInfo data = new DataInfo();
                         data.setId(num);
                         data.setUp(false);
                         data.setType(1);
                         data.setInsertTime(System.currentTimeMillis() + "");
                         OfflLineDataDb.insert(data);
-                    } else {//有网络
-                        byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(num));
-                    }
-                    dialog.dismiss();
+                     dialog.dismiss();
                 }
             }
         }).setTitle("提示").show();

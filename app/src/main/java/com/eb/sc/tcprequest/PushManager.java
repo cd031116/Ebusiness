@@ -33,13 +33,13 @@ public class PushManager {
     private static NioSocketConnector connector;
     private static ConnectFuture connectFuture;
     private static IoSession ioSession;
-
-    private PushManager() {
+    private static Context mcontext;
+    private PushManager(Context context) {
         Log.e("dawns", "PushManager: ");
         connector = new NioSocketConnector();
         connector.setConnectTimeoutMillis(Params.CONNECT_TIMEOUT);
         //为接收器设置管理服务
-        connector.setHandler(new ClientSessionHandler());
+        connector.setHandler(new ClientSessionHandler(context));
         //设置过滤器（使用Mina提供的文本换行符编解码器）
         connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"), LineDelimiter.WINDOWS.getValue(), LineDelimiter.WINDOWS.getValue())));
         //读写通道5秒内无操作进入空闲状态
@@ -58,10 +58,11 @@ public class PushManager {
         connector.getFilterChain().addLast("keepalive", heartBeat);
     }
 
-    public static PushManager getInstance() {
+    public static PushManager getInstance(Context context) {
+         mcontext=context;
         if (manager == null) {
             synchronized (PushManager.class) {
-                manager = new PushManager();
+                manager = new PushManager(mcontext);
             }
         }
         return manager;
@@ -72,9 +73,8 @@ public class PushManager {
      *
      * @return
      */
-    public boolean connect(Context context) {
-        BaseConfig bg=new BaseConfig(context);
-
+    public boolean connect() {
+        BaseConfig bg=new BaseConfig(mcontext);
 
         if (connector != null && connector.isActive() &&
                 connectFuture != null && connectFuture.isConnected() &&

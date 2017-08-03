@@ -163,8 +163,8 @@ public class CheckActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
     }
 
-    private void changeview(boolean conect) {
-        if (conect) {
+    private void changeview(boolean conect){
+        if (conect){
             mRight_bg.setImageResource(R.mipmap.lianjie);
             top_right_text.setText("链接");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));

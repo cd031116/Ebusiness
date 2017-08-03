@@ -24,10 +24,12 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.Utils;
 import com.eb.sc.utils.isIdNum;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
@@ -107,9 +109,14 @@ public class SelectActivity extends BaseActivity {
                  }
 
                 if (BusinessManager.isHave(id_n)) {//票已检
-                    showDialogMsg("已经使用!");
+                    showDialogMsg("票已使用!");
                 } else {
-                    showDialog("",id_n, "");
+                    if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
+                        byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,id_n)));
+                        PushManager.getInstance(this).sendMessage(updata);
+                    }else{
+                        showDialog("",id_n, "");
+                    }
                 }
                 id_num.setText("");
                 break;

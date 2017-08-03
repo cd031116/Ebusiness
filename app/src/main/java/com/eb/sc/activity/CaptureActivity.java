@@ -11,6 +11,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -33,12 +34,23 @@ import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.scan.CaptureActivityHandler;
 import com.eb.sc.scan.InactivityTimer;
 import com.eb.sc.scan.camera.CameraManager;
+import com.eb.sc.sdk.eventbus.ConnectEvent;
+import com.eb.sc.sdk.eventbus.ConnentSubscriber;
+import com.eb.sc.sdk.eventbus.EventSubscriber;
+import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.tcprequest.PushManager;
+import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.utils.AnalysisHelp;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ScanDialog;
 import com.eb.sc.widget.ShowMsgDialog;
+
+import org.aisen.android.component.eventbus.NotificationCenter;
 
 import java.io.IOException;
 
@@ -104,7 +116,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     public void setCropHeight(int cropHeight) {
         this.cropHeight = cropHeight;
     }
-
+    private boolean isconnect = true;
 
     @Override
     protected int getLayoutId() {
@@ -115,6 +127,8 @@ public class CaptureActivity extends BaseActivity implements Callback {
     public void initView() {
         super.initView();
         // 初始化 CameraManager
+        NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         CameraManager.init(getApplication());
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
@@ -188,6 +202,8 @@ public class CaptureActivity extends BaseActivity implements Callback {
     public void onDestroy() {
         inactivityTimer.shutdown();
         super.onDestroy();
+        NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
     }
 
     public void handleDecode(String result) {
@@ -198,12 +214,12 @@ public class CaptureActivity extends BaseActivity implements Callback {
         if (BusinessManager.isHave(result)) {//票已检
             showDialogMsg("无效票!");
         } else {
-            if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this)) {//无网络
+            if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this)||!isconnect) {//无网络
                 showresult(result);
             } else {//有网络
-
-                byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(result));
-
+                Log.i("tttt","sssssssssss="+Utils.getscan(this,result));
+                byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getscan(this,result)));
+                PushManager.getInstance(this).sendMessage(updata);
             }
         }
         // 连续扫描，不发送此消息扫描一次结束后就不能再次扫描
@@ -359,5 +375,43 @@ public class CaptureActivity extends BaseActivity implements Callback {
             showDialogMsg("未检测到票!");
         }
     }
+
+
+    //长连接
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
+        @Override
+        public void onEvent(ConnectEvent event) {
+            BaseConfig bg = new BaseConfig(CaptureActivity.this);
+            String a = bg.getStringValue(Constants.havenet, "-1");
+            if (event.isConnect()) {
+                isconnect = true;
+                if ("1".equals(a)) {
+
+                } else {
+
+                }
+            } else {
+                isconnect = false;
+
+            }
+
+        }
+    };
+    //网络
+    EventSubscriber netEventSubscriber = new EventSubscriber() {
+        @Override
+        public void onEvent(NetEvent event) {
+            if (event.isConnect()) {
+                if (isconnect) {
+
+                } else {
+
+                }
+            } else {
+
+            }
+        }
+    };
+
 
 }

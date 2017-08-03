@@ -19,4 +19,8 @@ public class Constants {
 
     public static final String havenet="havenet";
 
+    public static final String havelink="havelink";
+
+    public static final String shebeihao="shebeihao";
+
 }

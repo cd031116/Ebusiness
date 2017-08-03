@@ -1,5 +1,6 @@
 package com.eb.sc.tcprequest;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.eb.sc.bean.Params;
@@ -18,10 +19,16 @@ import org.apache.mina.core.session.IoSession;
  */
 
 public class ClientSessionHandler extends IoHandlerAdapter {
+   private Context mcontext;
+    public ClientSessionHandler( Context context){
+        this.mcontext=context;
+    }
+
     @Override
     public void sessionCreated(IoSession session) throws Exception {
         super.sessionCreated(session);
         Log.e("ClientSessionHandler", "服务器与客户端创建连接...");
+
     }
 
     @Override
@@ -49,8 +56,8 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     public void messageReceived(IoSession session, Object message) throws Exception {
         super.messageReceived(session, message);
         Log.e("ClientSessionHandler", "messageReceived: "+message.toString() );
-        AESCipher.decrypt(Params.KEY,message.toString());
-        Log.e("ClientSessionHandler", "客户端接受消息成功..."+AESCipher.decrypt(Params.KEY,message.toString()));
+
+        Log.e("ClientSessionHandler", "客户端接受消息成功..."+message.toString());
     }
 
     @Override
