@@ -3,6 +3,7 @@ package com.eb.sc.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.bean.Params;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -19,6 +21,7 @@ import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.widget.InputDialog;
 
@@ -61,7 +64,6 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-
         BaseConfig bg = new BaseConfig(this);
         bg.setStringValue(Constants.admin_word, "123456");
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
@@ -100,7 +102,6 @@ public class CheckActivity extends BaseActivity {
                 break;
             case R.id.sync:
                 //同步
-
 
 
 
@@ -182,6 +183,5 @@ public class CheckActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
-
 
 }

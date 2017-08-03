@@ -15,7 +15,7 @@ import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 
 /**
- * Created by Administrator on 2017/7/28.
+ * Created by lyj on 2017/7/28.
  */
 
 public class ClientSessionHandler extends IoHandlerAdapter {

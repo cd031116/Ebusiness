@@ -25,7 +25,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 
 /**
- * Created by Administrator on 2017/7/28.
+ * Created by lyj on 2017/7/28.
  */
 
 public class PushManager {
@@ -34,7 +34,7 @@ public class PushManager {
     private static ConnectFuture connectFuture;
     private static IoSession ioSession;
     private static Context mcontext;
-    private PushManager(Context context) {
+    private PushManager(Context context){
         Log.e("dawns", "PushManager: ");
         connector = new NioSocketConnector();
         connector.setConnectTimeoutMillis(Params.CONNECT_TIMEOUT);
@@ -70,12 +70,10 @@ public class PushManager {
 
     /**
      * 连接
-     *
      * @return
      */
     public boolean connect() {
         BaseConfig bg=new BaseConfig(mcontext);
-
         if (connector != null && connector.isActive() &&
                 connectFuture != null && connectFuture.isConnected() &&
                 ioSession != null && ioSession.isConnected()) {

@@ -10,24 +10,17 @@ public class HexStr {
     /**
      * 字符串转换成十六进制字符串
      *
-     * @param str 待转换的ASCII字符串
+     * @param // 待转换的ASCII字符串
      * @return String 每个Byte之间空格分隔，如: [61 6C 6B]
      */
-    public static String str2HexStr(String str) {
-
-        char[] chars = "0123456789ABCDEF".toCharArray();
-        StringBuilder sb = new StringBuilder("");
-        byte[] bs = str.getBytes();
-        int bit;
-
-        for (int i = 0; i < bs.length; i++) {
-            bit = (bs[i] & 0x0f0) >> 4;
-            sb.append(chars[bit]);
-            bit = bs[i] & 0x0f;
-            sb.append(chars[bit]);
-            sb.append(' ');
+    public static String str2HexStr(String strPart) {
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < strPart.length(); i++) {
+            int ch = (int) strPart.charAt(i);
+            String strHex = Integer.toHexString(ch);
+            hexString.append(strHex);
         }
-        return sb.toString().trim();
+        return hexString.toString();
     }
 
 
@@ -37,35 +30,38 @@ public class HexStr {
      * @param (//Byte之间无分隔符 如:[616C6B])
      * @return String 对应的字符串
      */
-    public static String hexStr2Str(String hexStr) {
-        String str = "0123456789ABCDEF";
-        char[] hexs = hexStr.toCharArray();
-        byte[] bytes = new byte[hexStr.length() / 2];
-        int n;
-
-        for (int i = 0; i < bytes.length; i++) {
-            n = str.indexOf(hexs[2 * i]) * 16;
-            n += str.indexOf(hexs[2 * i + 1]);
-            bytes[i] = (byte) (n & 0xff);
+    public static String hexStr2Str(String src) {
+        String temp = "";
+        for (int i = 0; i < src.length() / 2; i++) {
+            temp = temp
+                    + (char) Integer.valueOf(src.substring(i * 2, i * 2 + 2),
+                    16).byteValue();
         }
-        return new String(bytes);
+        return temp;
     }
+
 
     /**
      * bytes转换成十六进制字符串
      *
-     * @param b byte数组
+     * @param
      * @return String 每个Byte值之间空格分隔
      */
-    public static String byte2HexStr(byte[] b) {
-        String stmp = "";
-        StringBuilder sb = new StringBuilder("");
-        for (int n = 0; n < b.length; n++) {
-            stmp = Integer.toHexString(b[n] & 0xFF);
-            sb.append((stmp.length() == 1) ? "0" + stmp : stmp);
-            sb.append(" ");
+    public static String byte2HexStr(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        String tmp = null;
+        for (byte b : bytes) {
+            // 将每个字节与0xFF进行与运算，然后转化为10进制，然后借助于Integer再转化为16进制
+            tmp = Integer.toHexString(0xFF & b);
+            if (tmp.length() == 1)// 每个字节8为，转为16进制标志，2个16进制位
+            {
+                tmp = "0" + tmp;
+            }
+            sb.append(tmp);
         }
-        return sb.toString().toUpperCase().trim();
+
+        return sb.toString();
+
     }
 
     /**
@@ -136,19 +132,33 @@ public class HexStr {
         return str.toString();
     }
 
-    public static byte[] hex2byte(String hexString) {
-        if (TextUtils.isEmpty(hexString))
-            throw new IllegalArgumentException("this hexString must not be empty");
-
-        hexString = hexString.toLowerCase();
-        final byte[] byteArray = new byte[hexString.length() / 2];
-        int k = 0;
-        for (int i = 0; i < byteArray.length; i++) {//因为是16进制，最多只会占用4位，转换成字节需要两个16进制的字符，高位在先
-            byte high = (byte) (Character.digit(hexString.charAt(k), 16) & 0xff);
-            byte low = (byte) (Character.digit(hexString.charAt(k + 1), 16) & 0xff);
-            byteArray[i] = (byte) (high << 4 | low);
-            k += 2;
+    /**
+     * @Title:hexString2Bytes
+     * @Description:16进制字符串转字节数组
+     * @param src
+     *            16进制字符串
+     * @return 字节数组
+     * @throws
+     */
+    public static byte[] hex2byte(String src) {
+        int l = src.length() / 2;
+        byte[] ret = new byte[l];
+        for (int i = 0; i < l; i++) {
+            ret[i] = (byte) Integer
+                    .valueOf(src.substring(i * 2, i * 2 + 2), 16).byteValue();
         }
-        return byteArray;
+        return ret;
     }
+
+    /**
+     * @Title:char2Byte
+     * @Description:字符转成字节数据char-->integer-->byte
+     * @param src
+     * @return
+     * @throws
+     */
+    public static Byte char2Byte(Character src) {
+        return Integer.valueOf((int)src).byteValue();
+    }
+
 }
