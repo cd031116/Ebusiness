@@ -1,6 +1,8 @@
 package com.eb.sc.activity;
 
 import android.graphics.Color;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -8,15 +10,23 @@ import android.widget.TextView;
 
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.bean.DataInfo;
+import com.eb.sc.business.BusinessManager;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.sdk.recycle.CommonAdapter;
+import com.eb.sc.sdk.recycle.ViewHolder;
 import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.ChangeData;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -30,6 +40,15 @@ public class DetailActivity extends BaseActivity {
     TextView top_right_text;
     @Bind(R.id.right_bg)
     ImageView mRight_bg;
+    @Bind(R.id.ticket_list)
+    RecyclerView mRecy;
+    @Bind(R.id.total_num)
+    TextView total_num;
+
+
+    private CommonAdapter<DataInfo> mAdapter;
+    private List<DataInfo> mdata = new ArrayList<>();
+    LinearLayoutManager layoutManager;
     private boolean isconnect = true;
 
     @Override
@@ -38,7 +57,7 @@ public class DetailActivity extends BaseActivity {
     }
 
     @Override
-    public void initView() {
+    public void initView(){
         super.initView();
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
@@ -61,6 +80,39 @@ public class DetailActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
+        mAdapter = new CommonAdapter<DataInfo>(DetailActivity.this, R.layout.detail_item, mdata) {
+            @Override
+            protected void convert(ViewHolder holder, DataInfo info, int position) {
+                if(position==0){
+                    holder.setBackgroundColor(R.id.top, Color.parseColor("#ffffff"));
+                }else if (position % 2 == 1) {
+                    holder.setBackgroundColor(R.id.top, Color.parseColor("#EAEAEA"));
+                } else {
+                    holder.setBackgroundColor(R.id.top, Color.parseColor("#ffffff"));
+                }
+                holder.setText(R.id.address, "");
+                holder.setText(R.id.time, ChangeData.cuotoString(info.getInsertTime()));
+                if(!info.isUp()){
+                    holder.setText(R.id.state, "[离线]");
+                }else{
+                    holder.setText(R.id.state, "");
+                }
+            }
+        };
+        layoutManager = new LinearLayoutManager(DetailActivity.this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecy.setLayoutManager(layoutManager);
+        mRecy.setAdapter(mAdapter);
+        getdata();
+    }
+
+    private void getdata(){
+        if(mdata!=null){
+            mdata.clear();
+        }
+         mdata= BusinessManager.querAll();
+        mAdapter.notifyDataSetChanged();
+        total_num.setText(mdata.size()+"");
     }
 
     @OnClick({R.id.top_left})

@@ -37,7 +37,7 @@ public class OfflLineDataDb {
     }
 
     //删除
-    public void delete(DataInfo info){
+    public static void delete(DataInfo info){
         getDB().deleteById(null, DataInfo.class,info.getId());
     }
     //查询所有

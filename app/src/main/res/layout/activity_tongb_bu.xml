@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context="com.eb.sc.activity.TongbBuActivity">
+
+    <include layout="@layout/view_top" />
+
+    <RelativeLayout
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top_layout"
+        android:background="#EAEAEA"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#5DACFC"
+            android:textSize="25sp"
+            android:layout_alignParentLeft="true"
+            android:text="票型" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#5DACFC"
+            android:layout_centerHorizontal="true"
+            android:textSize="25sp"
+            android:text="核销时间" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#5DACFC"
+            android:layout_alignParentRight="true"
+            android:textSize="25sp"
+            android:text="状态" />
+
+    </RelativeLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/sycn"
+        android:layout_below="@+id/line" />
+
+
+    <TextView
+        android:id="@+id/sycn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/select_bg"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="同步"
+        android:textColor="#ffffff"
+        android:textSize="25sp" />
+
+
+</RelativeLayout>

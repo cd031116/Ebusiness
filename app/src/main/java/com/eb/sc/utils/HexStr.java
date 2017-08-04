@@ -2,6 +2,10 @@ package com.eb.sc.utils;
 
 import android.text.TextUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+
 /**
  * Created by lyj on 2017/8/2.
  */
@@ -14,13 +18,13 @@ public class HexStr {
      * @return String 每个Byte之间空格分隔，如: [61 6C 6B]
      */
     public static String str2HexStr(String strPart) {
-        StringBuffer hexString = new StringBuffer();
+        String str = "";
         for (int i = 0; i < strPart.length(); i++) {
             int ch = (int) strPart.charAt(i);
-            String strHex = Integer.toHexString(ch);
-            hexString.append(strHex);
+            String s4 = Integer.toHexString(ch);
+            str = str + s4;
         }
-        return hexString.toString();
+        return str;
     }
 
 
@@ -48,20 +52,15 @@ public class HexStr {
      * @return String 每个Byte值之间空格分隔
      */
     public static String byte2HexStr(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        String tmp = null;
-        for (byte b : bytes) {
-            // 将每个字节与0xFF进行与运算，然后转化为10进制，然后借助于Integer再转化为16进制
-            tmp = Integer.toHexString(0xFF & b);
-            if (tmp.length() == 1)// 每个字节8为，转为16进制标志，2个16进制位
-            {
-                tmp = "0" + tmp;
-            }
-            sb.append(tmp);
+        StringBuffer sb = new StringBuffer(bytes.length);
+        String sTemp;
+        for (int i = 0; i < bytes.length; i++) {
+            sTemp = Integer.toHexString(0xFF & bytes[i]);
+            if (sTemp.length() < 2)
+                sb.append(0);
+            sb.append(sTemp.toUpperCase());
         }
-
         return sb.toString();
-
     }
 
     /**
@@ -135,19 +134,42 @@ public class HexStr {
     /**
      * @Title:hexString2Bytes
      * @Description:16进制字符串转字节数组
-     * @param src
-     *            16进制字符串
+     * @param
+     *            //16进制字符串
      * @return 字节数组
      * @throws
      */
-    public static byte[] hex2byte(String src) {
-        int l = src.length() / 2;
-        byte[] ret = new byte[l];
-        for (int i = 0; i < l; i++) {
-            ret[i] = (byte) Integer
-                    .valueOf(src.substring(i * 2, i * 2 + 2), 16).byteValue();
+    public static byte[] hex2byte(String hexString) {
+//        int len = (hexString.length() / 2);
+//        byte[] result = new byte[len];
+//        char[] achar = hexString.toCharArray();
+//        for (int i = 0; i < len; i++) {
+//            int pos = i * 2;
+//            result[i] = (byte) (toByte(achar[pos]) << 4 | toByte(achar[pos + 1]));
+//        }
+//        return result;
+
+        if (hexString == null || hexString.equals("")) {
+            return null;
         }
-        return ret;
+        hexString = hexString.toUpperCase();
+        int length = hexString.length() / 2;
+        char[] hexChars = hexString.toCharArray();
+        byte[] d = new byte[length];
+        for (int i = 0; i < length; i++) {
+            int pos = i * 2;
+            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        }
+        return d;
+    }
+
+    public static byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
+    }
+
+    private static int toByte(char c) {
+        byte b = (byte) "0123456789ABCDEF".indexOf(c);
+        return b;
     }
 
     /**
@@ -160,5 +182,97 @@ public class HexStr {
     public static Byte char2Byte(Character src) {
         return Integer.valueOf((int)src).byteValue();
     }
+
+    public static byte[] charsToBytes(char[] src) {
+        CharBuffer charBuffer = CharBuffer.allocate(src.length);
+        charBuffer.put(src);
+        charBuffer.flip();
+        Charset cs = Charset.forName("ASCII");
+        System.out.println(cs.name());
+        ByteBuffer byteBuffer = cs.encode(charBuffer);
+        return byteBuffer.array();
+    }
+
+//   ------------------------------------------------
+   /* Convert byte[] to hex string.这里我们可以将byte转换成int，然后利用Integer.toHexString(int)来转换成16进制字符串。
+            * @param src byte[] data
+ * @return hex string
+ */
+    public static String bytesToHexString(byte[] src){
+        StringBuilder stringBuilder = new StringBuilder("");
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        for (int i = 0; i < src.length; i++) {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
+    }
+    /**
+     * Convert hex string to byte[]
+     * @param hexString the hex string
+     * @return byte[]
+     */
+    public static byte[] hexStringToBytes(String hexString) {
+        if (hexString == null || hexString.equals("")) {
+            return null;
+        }
+        hexString = hexString.toUpperCase();
+        int length = hexString.length() / 2;
+        char[] hexChars = hexString.toCharArray();
+        byte[] d = new byte[length];
+        for (int i = 0; i < length; i++) {
+            int pos = i * 2;
+            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        }
+        return d;
+    }
+    /**
+     * Convert char to byte
+     * @param c char
+     * @return byte
+     */
+    public  static byte charToByted(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
+    }
+
+
+    public static byte[] HexStringToBytes(String hexStr)
+    {
+        if (TextUtils.isEmpty(hexStr))
+        {
+            return new byte[0];
+        }
+
+        if (hexStr.startsWith("0x"))
+        {
+//            hexStr = hexStr.Remove(0, 2);
+            hexStr=hexStr.substring(2,hexStr.length());
+        }
+
+        int count = hexStr.length();
+
+        if (count % 2 == 1)
+        {
+//            throw new ArgumentException("Invalid length of bytes:" + count);
+        }
+
+        int byteCount = count / 2;
+        byte[] result = new byte[byteCount];
+        for (int ii = 0; ii < byteCount; ++ii)
+        {
+//            String tempBytes = Byte.parseByte(hexStr.substring(2 * ii,  2), System.Globalization.NumberStyles.HexNumber);
+//            result[ii] = tempBytes;
+        }
+        return result;
+    }
+
+
+
 
 }

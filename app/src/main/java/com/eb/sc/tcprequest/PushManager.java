@@ -90,7 +90,7 @@ public class PushManager {
 //            Log.d("dawnws", "onClick: " + encrypt);
             sendMessage(HexStr.hex2byte(HexStr.str2HexStr(Params.SEND)));
             return true;
-        } catch (Exception e) {
+        } catch (Exception e){
             e.printStackTrace();
         }
         return false;
@@ -113,7 +113,6 @@ public class PushManager {
 
     /**
      * 发送
-     *
      * @param message
      * @return
      */

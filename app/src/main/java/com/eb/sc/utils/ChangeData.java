@@ -1,5 +1,6 @@
 package com.eb.sc.utils;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.text.ParseException;
@@ -45,4 +46,32 @@ public class ChangeData {
     }
 
 
+    public static long getNowtime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = formatter.format(curDate);
+        long currenttime = 0;
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = simpleDateFormat.parse(str+" 00:00:00");
+            currenttime = date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return currenttime;
+
+    }
+
+
+    public static String cuotoString(String fs){
+        if(TextUtils.isEmpty(fs)){
+            return "";
+        }
+        ;
+        SimpleDateFormat format =  new SimpleDateFormat("MM-dd HH:mm");
+        String d = format.format(Long.parseLong(fs));
+        return  d;
+    }
 }

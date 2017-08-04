@@ -410,8 +410,8 @@ public class MainActivity extends BaseActivity {
     private void showDialog(String names, final String num, String code) {
         new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
             @Override
-            public void onClick(Dialog dialog, boolean confirm) {
-                if (confirm) {
+            public void onClick(Dialog dialog, boolean confirm){
+                if (confirm){
                         DataInfo data = new DataInfo();
                         data.setId(num);
                         data.setUp(false);

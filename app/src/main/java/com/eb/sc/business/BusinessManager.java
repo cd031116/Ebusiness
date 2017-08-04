@@ -25,7 +25,7 @@ public class BusinessManager {
     }
 
     //未上传的数据
-    public  List<DataInfo> querAll(){
+    public static List<DataInfo> querAll(){
         List<DataInfo> mList = new ArrayList<>();
         if(mList!=null){
             mList.clear();
@@ -41,7 +41,7 @@ public class BusinessManager {
     }
 
     //.上传成功后
-    public void updataUp(DataInfo info){
+    public static void updataUp(DataInfo info){
         info.setUp(true);
         OfflLineDataDb.updata(info);
     }

@@ -1,49 +1,38 @@
 package com.eb.sc.activity;
 
-import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
-import com.eb.sc.bean.Params;
 import com.eb.sc.business.BusinessManager;
-import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
-import com.eb.sc.tcprequest.PushService;
+import com.eb.sc.sdk.recycle.CommonAdapter;
+import com.eb.sc.sdk.recycle.ViewHolder;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.ChangeData;
 import com.eb.sc.utils.Constants;
-import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
-import com.eb.sc.widget.InputDialog;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-/*
-*
-* @author lyj
-* @describe  功能入口界面
-* @data 2017/7/29
-* */
 
-
-public class CheckActivity extends BaseActivity {
+public class TongbBuActivity extends BaseActivity {
     @Bind(R.id.top_left)
     LinearLayout top_left;
     @Bind(R.id.top_title)
@@ -52,30 +41,27 @@ public class CheckActivity extends BaseActivity {
     TextView top_right_text;
     @Bind(R.id.right_bg)
     ImageView mRight_bg;
-    @Bind(R.id.scan)
-    RelativeLayout scan;//检票
-    @Bind(R.id.idcard)
-    RelativeLayout idScan;//明细
-    @Bind(R.id.sync)
-    RelativeLayout sync;//设置
-    @Bind(R.id.setting)
-    ImageView setting;//设置
+    @Bind(R.id.sycn)
+    TextView sycn;
+    @Bind(R.id.mlist)
+    RecyclerView mlist;
     private boolean isconnect = true;
+    private CommonAdapter<DataInfo> mAdapter;
+    private List<DataInfo> mdata = new ArrayList<>();
+    LinearLayoutManager layoutManager;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_check;
+        return R.layout.activity_tongb_bu;
     }
 
     @Override
     public void initView() {
         super.initView();
+        top_title.setText("离线核销明细");
         BaseConfig bg = new BaseConfig(this);
-        bg.setStringValue(Constants.admin_word, "123456");
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
-        top_left.setVisibility(View.GONE);
-        top_title.setText("石燕湖大门核销点");
         String b = bg.getStringValue(Constants.havelink, "1");
         if ("1".equals(b)) {
             isconnect = true;
@@ -93,63 +79,73 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-        startService(new Intent(CheckActivity.this, PushService.class));
-        byte[] ad = HexStr.hexStringToBytes(HexStr.str2HexStr(Params.SEND));
-        Log.i("ClientSessionHandler", "gggg16=" + HexStr.str2HexStr(Params.SEND));
-        Log.i("ClientSessionHandler", "gggg=" + ad);
-        Log.i("ClientSessionHandler", "gggg1=" + HexStr.bytesToHexString(ad));
-        Log.i("ClientSessionHandler", "gggg1=" + HexStr.hexStr2Str(HexStr.byte2HexStr(ad)));
-        cleardata();
+        mAdapter = new CommonAdapter<DataInfo>(TongbBuActivity.this, R.layout.tongbu_item, mdata) {
+            @Override
+            protected void convert(ViewHolder holder, DataInfo info, int position) {
+                if(position==0){
+                    holder.setBackgroundColor(R.id.top, Color.parseColor("#ffffff"));
+                }else if (position % 2 == 1) {
+                    holder.setBackgroundColor(R.id.top, Color.parseColor("#EAEAEA"));
+                } else {
+                    holder.setBackgroundColor(R.id.top, Color.parseColor("#ffffff"));
+                }
+                holder.setText(R.id.address, "");
+                holder.setText(R.id.time, ChangeData.cuotoString(info.getInsertTime()));
+                if(!info.isUp()){
+                    holder.setText(R.id.state, "未同步");
+                    holder.setTextColor(R.id.state,Color.parseColor("#FD1E1D"));
+                }else{
+                    holder.setText(R.id.state, "未同步");
+                    holder.setTextColor(R.id.state,Color.parseColor("#5CE064"));
+                }
+            }
+        };
+        layoutManager = new LinearLayoutManager(TongbBuActivity.this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mlist.setLayoutManager(layoutManager);
+        mlist.setAdapter(mAdapter);
+        getdata();
     }
 
-    private void cleardata() {
-        List<DataInfo> mList = BusinessManager.querAll();
-        long times = ChangeData.getNowtime();
-        for (int i = 0; i < mList.size(); i++) {
-            if (Long.parseLong(mList.get(i).getInsertTime())<times) {
-                OfflLineDataDb.delete(mList.get(i));
+
+    private void getdata(){
+        if(mdata!=null){
+            mdata.clear();
+        }
+        List<DataInfo> mlist= BusinessManager.querAll();
+        for (int i=0;i<mlist.size();i++){
+            if(!mlist.get(i).isUp()){
+                mdata.add(mlist.get(i));
             }
         }
+        mAdapter.notifyDataSetChanged();
     }
 
-    @OnClick({R.id.scan, R.id.idcard, R.id.top_right_text, R.id.setting, R.id.sync})
+
+
+
+    @OnClick({R.id.top_left, R.id.sycn})
     void onBuy(View v) {
         switch (v.getId()) {
-            case R.id.scan:
-                startActivity(new Intent(CheckActivity.this, SelectActivity.class));
+            case R.id.top_left:
+                TongbBuActivity.this.finish();
                 break;
-            case R.id.idcard:
-                startActivity(new Intent(CheckActivity.this, DetailActivity.class));
-                break;
-            case R.id.sync:
-                //同步
-                startActivity(new Intent(CheckActivity.this, TongbBuActivity.class));
-                break;
-            case R.id.setting:
-                final BaseConfig bg = BaseConfig.getInstance(this);
-                new InputDialog(this, R.style.dialog, "请输入管理员密码？", new InputDialog.OnCloseListener() {
-                    @Override
-                    public void onClick(Dialog dialog, boolean confirm, String text) {
-                        if (confirm) {
-                            String psd = bg.getStringValue(Constants.admin_word, "-1");
-                            if (psd.equals(text)) {
-                                startActivity(new Intent(CheckActivity.this, SettingActivity.class));
-                            } else {
-                                Toast.makeText(CheckActivity.this, "密码不正确", Toast.LENGTH_SHORT).show();
-                            }
-                            dialog.dismiss();
-                        }
-                    }
-                }).setTitle("提示").show();
+            case R.id.sycn:
+                if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
+
+                } else {
+                    Toast.makeText(TongbBuActivity.this,"与服务器断开连接或网络不可用!",Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
 
+
     //长连接
-    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber(){
         @Override
         public void onEvent(ConnectEvent event) {
-            BaseConfig bg = new BaseConfig(CheckActivity.this);
+            BaseConfig bg = new BaseConfig(TongbBuActivity.this);
             String a = bg.getStringValue(Constants.havenet, "-1");
             if (event.isConnect()) {
                 isconnect = true;
@@ -166,7 +162,7 @@ public class CheckActivity extends BaseActivity {
         }
     };
     //网络
-    EventSubscriber netEventSubscriber = new EventSubscriber() {
+    EventSubscriber netEventSubscriber = new EventSubscriber(){
         @Override
         public void onEvent(NetEvent event) {
             if (event.isConnect()) {
@@ -200,5 +196,4 @@ public class CheckActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
-
 }

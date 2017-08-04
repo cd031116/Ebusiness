@@ -182,6 +182,8 @@ public class SettingActivity extends BaseActivity {
             bg.setStringValue(Constants.ip_port,http_code);
         }
 
+
+
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
     }

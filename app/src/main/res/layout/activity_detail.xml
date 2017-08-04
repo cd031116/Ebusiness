@@ -97,7 +97,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/ticket_child_layout"
         android:padding="10dp"
-        android:text="3"
         android:textColor="@color/red"
         android:textSize="22sp" />
 
@@ -130,6 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="50dp"
             android:layout_toLeftOf="@id/ticket_time"
+            android:visibility="gone"
             android:text="@string/people_num"
             android:textColor="@color/steelblue"
             android:textSize="20sp" />
