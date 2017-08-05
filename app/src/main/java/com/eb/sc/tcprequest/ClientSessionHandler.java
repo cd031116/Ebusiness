@@ -8,11 +8,14 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.utils.AESCipher;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.HexStr;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+
+import java.nio.ByteBuffer;
 
 /**
  * Created by lyj on 2017/7/28.
@@ -22,6 +25,11 @@ public class ClientSessionHandler extends IoHandlerAdapter {
    private Context mcontext;
     public ClientSessionHandler( Context context){
         this.mcontext=context;
+    }
+    private TcpResponse tcpResponse;
+
+    public void setTcpResponse(TcpResponse tcpResponse){
+        this.tcpResponse=tcpResponse;
     }
 
     @Override
@@ -58,9 +66,10 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
         super.messageReceived(session, message);
-        Log.e("ClientSessionHandler", "messageReceived: "+message.toString() );
 
-        Log.e("ClientSessionHandler", "客户端接受消息成功..."+message.toString());
+        tcpResponse.receivedMessage(message.toString().trim());
+
+        Log.e("ClientSessionHandler", "客户端接受消息成功..."+message);
     }
 
     @Override

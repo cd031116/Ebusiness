@@ -1,7 +1,9 @@
 package com.eb.sc.utils;
 
 import android.text.TextUtils;
+import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -132,55 +134,43 @@ public class HexStr {
     }
 
     /**
-     * @Title:hexString2Bytes
-     * @Description:16进制字符串转字节数组
-     * @param
-     *            //16进制字符串
+     * @param //16进制字符串
      * @return 字节数组
      * @throws
+     * @Title:hexString2Bytes
+     * @Description:16进制字符串转字节数组
      */
     public static byte[] hex2byte(String hexString) {
-//        int len = (hexString.length() / 2);
-//        byte[] result = new byte[len];
-//        char[] achar = hexString.toCharArray();
-//        for (int i = 0; i < len; i++) {
-//            int pos = i * 2;
-//            result[i] = (byte) (toByte(achar[pos]) << 4 | toByte(achar[pos + 1]));
-//        }
-//        return result;
-
         if (hexString == null || hexString.equals("")) {
             return null;
         }
-        hexString = hexString.toUpperCase();
+        //  hexString = hexString.toUpperCase();
         int length = hexString.length() / 2;
         char[] hexChars = hexString.toCharArray();
         byte[] d = new byte[length];
         for (int i = 0; i < length; i++) {
             int pos = i * 2;
             d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+            if (d[i]> 127){
+                d[i] = (byte)(d[i] - 256);
+            }
         }
         return d;
     }
 
     public static byte charToByte(char c) {
-        return (byte) "0123456789ABCDEF".indexOf(c);
-    }
-
-    private static int toByte(char c) {
-        byte b = (byte) "0123456789ABCDEF".indexOf(c);
-        return b;
+        return (byte) "0123456789ABCDEF".indexOf(c & 0xffff);
     }
 
     /**
-     * @Title:char2Byte
-     * @Description:字符转成字节数据char-->integer-->byte
      * @param src
      * @return
      * @throws
+     * @Title:char2Byte
+     * @Description:字符转成字节数据char-->integer-->byte
      */
     public static Byte char2Byte(Character src) {
-        return Integer.valueOf((int)src).byteValue();
+        return Integer.valueOf((int) src).byteValue();
     }
 
     public static byte[] charsToBytes(char[] src) {
@@ -193,12 +183,12 @@ public class HexStr {
         return byteBuffer.array();
     }
 
-//   ------------------------------------------------
+    //   ------------------------------------------------
    /* Convert byte[] to hex string.这里我们可以将byte转换成int，然后利用Integer.toHexString(int)来转换成16进制字符串。
             * @param src byte[] data
  * @return hex string
  */
-    public static String bytesToHexString(byte[] src){
+    public static String bytesToHexString(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder("");
         if (src == null || src.length <= 0) {
             return null;
@@ -213,59 +203,37 @@ public class HexStr {
         }
         return stringBuilder.toString();
     }
-    /**
-     * Convert hex string to byte[]
-     * @param hexString the hex string
-     * @return byte[]
-     */
-    public static byte[] hexStringToBytes(String hexString) {
-        if (hexString == null || hexString.equals("")) {
-            return null;
-        }
-        hexString = hexString.toUpperCase();
-        int length = hexString.length() / 2;
-        char[] hexChars = hexString.toCharArray();
-        byte[] d = new byte[length];
-        for (int i = 0; i < length; i++) {
-            int pos = i * 2;
-            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
-        }
-        return d;
-    }
+
     /**
      * Convert char to byte
+     *
      * @param c char
      * @return byte
      */
-    public  static byte charToByted(char c) {
+    public static byte charToByted(char c) {
         return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
 
-    public static byte[] HexStringToBytes(String hexStr)
-    {
-        if (TextUtils.isEmpty(hexStr))
-        {
+    public static byte[] HexStringToBytes(String hexStr) {
+        if (TextUtils.isEmpty(hexStr)) {
             return new byte[0];
         }
 
-        if (hexStr.startsWith("0x"))
-        {
+        if (hexStr.startsWith("0x")) {
 //            hexStr = hexStr.Remove(0, 2);
-            hexStr=hexStr.substring(2,hexStr.length());
+            hexStr = hexStr.substring(2, hexStr.length());
         }
 
         int count = hexStr.length();
 
-        if (count % 2 == 1)
-        {
+        if (count % 2 == 1) {
 //            throw new ArgumentException("Invalid length of bytes:" + count);
         }
 
         int byteCount = count / 2;
         byte[] result = new byte[byteCount];
-        for (int ii = 0; ii < byteCount; ++ii)
-        {
+        for (int ii = 0; ii < byteCount; ++ii) {
 //            String tempBytes = Byte.parseByte(hexStr.substring(2 * ii,  2), System.Globalization.NumberStyles.HexNumber);
 //            result[ii] = tempBytes;
         }
@@ -273,6 +241,34 @@ public class HexStr {
     }
 
 
-
-
+    public static byte[] hexToByte(String hexString) {
+//        String digital = "0123456789ABCDEF";
+//        char[] hex2char = hexString.toCharArray();
+//        byte[] bytes = new byte[hexString.length() / 2];
+//        int temp;
+//        for (int i = 0; i < bytes.length; i++) {
+//            // 其实和上面的函数是一样的 multiple 16 就是右移4位 这样就成了高4位了
+//            // 然后和低四位相加， 相当于 位操作"|"
+//            //相加后的数字 进行 位 "&" 操作 防止负数的自动扩展. {0xff byte最大表示数}
+//            temp = digital.indexOf(hex2char[2 * i]) * 16;
+//            temp += digital.indexOf(hex2char[2 * i + 1]);
+//            bytes[i] = (byte) (temp & 0xff);
+//        }
+//        return bytes;
+            byte[] b = new byte[hexString.length() / 2];
+            int j = 0;
+            for (int i = 0; i < b.length; i++) {
+                char c0 = hexString.charAt(j++);
+                char c1 = hexString.charAt(j++);
+                b[i] = (byte) ((parse(c0) << 4) | parse(c1));
+            }
+            return b;
+        }
+    private static int parse(char c) {
+        if (c >= 'a')
+            return (c - 'a' + 10) & 0x0f;
+        if (c >= 'A')
+            return (c - 'A' + 10) & 0x0f;
+        return (c - '0') & 0x0f;
+    }
 }

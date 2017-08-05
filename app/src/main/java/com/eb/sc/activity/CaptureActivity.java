@@ -218,7 +218,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                 showresult(result);
             } else {//有网络
                 Log.i("tttt","sssssssssss="+Utils.getscan(this,result));
-                byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getscan(this,result)));
+               String updata =HexStr.str2HexStr(Utils.getscan(this,result));
                   boolean zt=PushManager.getInstance(this).sendMessage(updata);
                     if(zt){
                 //发送成功

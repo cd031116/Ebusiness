@@ -21,7 +21,9 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
+import com.eb.sc.tcprequest.TcpResponse;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.ChangeData;
 import com.eb.sc.utils.Constants;
@@ -31,6 +33,15 @@ import com.eb.sc.widget.InputDialog;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import butterknife.Bind;
@@ -94,11 +105,6 @@ public class CheckActivity extends BaseActivity {
     public void initData() {
         super.initData();
         startService(new Intent(CheckActivity.this, PushService.class));
-        byte[] ad = HexStr.hexStringToBytes(HexStr.str2HexStr(Params.SEND));
-        Log.i("ClientSessionHandler", "gggg16=" + HexStr.str2HexStr(Params.SEND));
-        Log.i("ClientSessionHandler", "gggg=" + ad);
-        Log.i("ClientSessionHandler", "gggg1=" + HexStr.bytesToHexString(ad));
-        Log.i("ClientSessionHandler", "gggg1=" + HexStr.hexStr2Str(HexStr.byte2HexStr(ad)));
         cleardata();
     }
 
@@ -106,10 +112,22 @@ public class CheckActivity extends BaseActivity {
         List<DataInfo> mList = BusinessManager.querAll();
         long times = ChangeData.getNowtime();
         for (int i = 0; i < mList.size(); i++) {
-            if (Long.parseLong(mList.get(i).getInsertTime())<times) {
+            if (Long.parseLong(mList.get(i).getInsertTime())<times){
                 OfflLineDataDb.delete(mList.get(i));
             }
         }
+        PushManager.getInstance(getApplicationContext()).getClientSessionHandler().setTcpResponse(new TcpResponse() {
+            @Override
+            public void receivedMessage(String trim) {
+                Log.e("dawn", "receivedMessage: "+trim);
+            }
+
+            @Override
+            public void breakConnect() {
+
+            }
+        });
+
     }
 
     @OnClick({R.id.scan, R.id.idcard, R.id.top_right_text, R.id.setting, R.id.sync})
@@ -187,6 +205,7 @@ public class CheckActivity extends BaseActivity {
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        stopService(new Intent(CheckActivity.this, PushService.class));
     }
 
     private void changeview(boolean conect) {
@@ -201,4 +220,6 @@ public class CheckActivity extends BaseActivity {
         }
     }
 
+    Socket socket = null;
+    //--------------------------------------------
 }

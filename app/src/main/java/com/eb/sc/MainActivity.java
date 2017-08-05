@@ -346,7 +346,8 @@ public class MainActivity extends BaseActivity {
                     showDialogMsg("票已使用!");
                 } else {
                     if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
-                        byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
+//                        byte[] updatas = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
+                        String updata = HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId()));
                         boolean jg= PushManager.getInstance(this).sendMessage(updata);
                         if(jg){
                           //发送成功

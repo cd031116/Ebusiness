@@ -119,7 +119,7 @@ public class SelectActivity extends BaseActivity {
                     showDialogMsg("票已使用!");
                 } else {
                     if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
-                            byte[] updata = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,id_n)));
+                            String  updata =HexStr.str2HexStr(Utils.getIdcard(this,id_n));
                           boolean a= PushManager.getInstance(this).sendMessage(updata);
                         Log.i("tttt","ssss="+updata);
                         if(a){
