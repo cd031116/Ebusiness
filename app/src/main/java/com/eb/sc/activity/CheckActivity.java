@@ -116,18 +116,6 @@ public class CheckActivity extends BaseActivity {
                 OfflLineDataDb.delete(mList.get(i));
             }
         }
-        PushManager.getInstance(getApplicationContext()).getClientSessionHandler().setTcpResponse(new TcpResponse() {
-            @Override
-            public void receivedMessage(String trim) {
-                Log.e("dawn", "receivedMessage: "+trim);
-            }
-
-            @Override
-            public void breakConnect() {
-
-            }
-        });
-
     }
 
     @OnClick({R.id.scan, R.id.idcard, R.id.top_right_text, R.id.setting, R.id.sync})
@@ -169,6 +157,11 @@ public class CheckActivity extends BaseActivity {
         public void onEvent(ConnectEvent event) {
             BaseConfig bg = new BaseConfig(CheckActivity.this);
             String a = bg.getStringValue(Constants.havenet, "-1");
+            String piaox=bg.getStringValue(Constants.piaoxing,"-1");
+            if(!piaox.equals("1")){
+                PushManager.getInstance(CheckActivity.this).sendMessage(Params.SHEBEI);
+            }
+
             if (event.isConnect()) {
                 isconnect = true;
                 if ("1".equals(a)) {
@@ -219,7 +212,4 @@ public class CheckActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
-
-    Socket socket = null;
-    //--------------------------------------------
 }

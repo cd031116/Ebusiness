@@ -22,4 +22,8 @@ public class Params {
     //心跳包接受
     public static final String RECEIVE="4099000100017A";
     public static final String KEY="qwertyuiasdfghjk";
+
+
+
+    public static final String SHEBEI="4010000100017A";
 }

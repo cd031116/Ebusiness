@@ -26,6 +26,7 @@ import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.tcprequest.PushManager;
+import com.eb.sc.tcprequest.TcpResponse;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
@@ -348,15 +349,23 @@ public class MainActivity extends BaseActivity {
                     if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
 //                        byte[] updatas = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
                         String updata = HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId()));
-                        boolean jg= PushManager.getInstance(this).sendMessage(updata);
-                        if(jg){
+//                        boolean jg= PushManager.getInstance(this).sendMessage(updata);
+//                        if(jg){
                           //发送成功
-
-
-
-                        }else{
-                            showDialog(mLastName, idCardInfo.getId(), "");
-                        }
+                           PushManager.getInstance(MainActivity.this).getClientSessionHandler(updata).setTcpResponse(new TcpResponse() {
+                               @Override
+                               public void receivedMessage(String trim) {
+                                   showDialogd(mLastName, idCardInfo.getId(), "");
+                               }
+                               @Override
+                               public void breakConnect() {
+                                   showDialog(mLastName, idCardInfo.getId(), "");
+                               }
+                           });
+//                        }
+//                        else{
+//                            showDialog(mLastName, idCardInfo.getId(), "");
+//                        }
                     }else{
                         showDialog(mLastName, idCardInfo.getId(), "");
                     }
@@ -407,7 +416,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    //有效票
+    //有效票-无线
     private void showDialog(String names, final String num, String code) {
         new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
             @Override
@@ -415,7 +424,8 @@ public class MainActivity extends BaseActivity {
                 if (confirm){
                         DataInfo data = new DataInfo();
                         data.setId(num);
-                        data.setUp(false);
+                        data.setUp(true);
+                        data.setNet(false);
                         data.setType(1);
                         data.setInsertTime(System.currentTimeMillis() + "");
                         OfflLineDataDb.insert(data);
@@ -424,6 +434,29 @@ public class MainActivity extends BaseActivity {
             }
         }).setTitle("提示").show();
     }
+
+    //有效票-有线
+    private void showDialogd(String names, final String num, String code) {
+        new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
+            @Override
+            public void onClick(Dialog dialog, boolean confirm){
+                if (confirm){
+                    DataInfo data = new DataInfo();
+                    data.setId(num);
+                    data.setUp(false);
+                    data.setNet(true);
+                    data.setType(1);
+                    data.setInsertTime(System.currentTimeMillis() + "");
+                    OfflLineDataDb.insert(data);
+                    dialog.dismiss();
+                }
+            }
+        }).setTitle("提示").show();
+    }
+
+
+
+
 
     //无效票
     private void showDialogMsg(String names) {

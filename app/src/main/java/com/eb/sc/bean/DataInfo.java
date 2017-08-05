@@ -18,6 +18,8 @@ public class DataInfo implements Serializable {
 
     private boolean isUp;//是否上传
 
+    private boolean isNet;//是否无线
+
     private int type;//类型,身份证（1）或二维码（2）
 
     private String code;//服务器给设备的编号
@@ -81,5 +83,13 @@ public class DataInfo implements Serializable {
 
     public void setInsertTime(String insertTime) {
         this.insertTime = insertTime;
+    }
+
+    public boolean isNet() {
+        return isNet;
+    }
+
+    public void setNet(boolean net) {
+        isNet = net;
     }
 }

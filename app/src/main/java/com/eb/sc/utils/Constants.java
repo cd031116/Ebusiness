@@ -23,4 +23,6 @@ public class Constants {
 
     public static final String shebeihao="shebeihao";
 
+    public  static final String piaoxing="piaoxing";
+
 }

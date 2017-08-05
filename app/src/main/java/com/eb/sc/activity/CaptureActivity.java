@@ -40,6 +40,7 @@ import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
+import com.eb.sc.tcprequest.TcpResponse;
 import com.eb.sc.utils.AnalysisHelp;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -205,8 +206,9 @@ public class CaptureActivity extends BaseActivity implements Callback {
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
     }
-
+private  String scanstrs="";
     public void handleDecode(String result) {
+        this.scanstrs=result;
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
 
@@ -220,13 +222,19 @@ public class CaptureActivity extends BaseActivity implements Callback {
                 Log.i("tttt","sssssssssss="+Utils.getscan(this,result));
                String updata =HexStr.str2HexStr(Utils.getscan(this,result));
                   boolean zt=PushManager.getInstance(this).sendMessage(updata);
-                    if(zt){
-                //发送成功
-
-
-
-
-                    }else{
+                if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
+                    //发送成功
+                    PushManager.getInstance(CaptureActivity.this).getClientSessionHandler(updata).setTcpResponse(new TcpResponse() {
+                        @Override
+                        public void receivedMessage(String trim) {
+                            showresultd(scanstrs);
+                        }
+                        @Override
+                        public void breakConnect() {
+                            showresult(scanstrs);
+                        }
+                    });
+                }else{
                         showresult(result);
                     }
             }
@@ -337,6 +345,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     String arr[]=AnalysisHelp.arrayScan(code);
                     DataInfo dataInfo=new DataInfo();
                     dataInfo.setId(code);
+                    dataInfo.setNet(false);
                     dataInfo.setType(2);
                     dataInfo.setValidTime(arr[1]);
                     dataInfo.setInsertTime(System.currentTimeMillis()+"");
@@ -348,6 +357,28 @@ public class CaptureActivity extends BaseActivity implements Callback {
             }
         }).setTitle("提示").show();
     }
+    //有线
+    private void showDialogd(String num, final  String code) {
+        new ScanDialog(this, R.style.dialog, num, code, new ScanDialog.OnCloseListener() {
+            @Override
+            public void onClick(Dialog dialog, boolean confirm) {
+                if (confirm) {
+                    String arr[]=AnalysisHelp.arrayScan(code);
+                    DataInfo dataInfo=new DataInfo();
+                    dataInfo.setId(code);
+                    dataInfo.setNet(true);
+                    dataInfo.setType(2);
+                    dataInfo.setValidTime(arr[1]);
+                    dataInfo.setInsertTime(System.currentTimeMillis()+"");
+                    dataInfo.setUp(true);
+                    OfflLineDataDb.insert(dataInfo);
+                    handler.sendEmptyMessage(R.id.restart_preview);
+                    dialog.dismiss();
+                }
+            }
+        }).setTitle("提示").show();
+    }
+
 
     //无效票
     private void showDialogMsg(String names) {
@@ -370,8 +401,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                 break;
         }
     }
-//分析二维码
-
+//分析二维码-无线
     private void showresult(String strs) {
         int a = AnalysisHelp.StringScan(CaptureActivity.this,strs);
         if (a == 1) {//1------可用
@@ -384,7 +414,19 @@ public class CaptureActivity extends BaseActivity implements Callback {
             showDialogMsg("未检测到票!");
         }
     }
-
+    //分析二维码-无线
+    private void showresultd(String strs) {
+        int a = AnalysisHelp.StringScan(CaptureActivity.this,strs);
+        if (a == 1) {//1------可用
+            showDialogd(null, strs);
+        } else if (a == 2) {
+            showDialogMsg("票已过期!");
+        } else if (a == 3) {
+            showDialogMsg("票型不符合!");
+        } else {
+            showDialogMsg("未检测到票!");
+        }
+    }
 
     //长连接
     ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {

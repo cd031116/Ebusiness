@@ -37,7 +37,8 @@ public class PushManager {
     private static IoSession ioSession;
     private static Context mcontext;
     private static ClientSessionHandler clientSessionHandler = null;
-    public static ClientSessionHandler getClientSessionHandler() {
+    public static ClientSessionHandler getClientSessionHandler(String strs) {
+        sendMessage(strs);
         return clientSessionHandler;
     }
 
@@ -124,7 +125,7 @@ public class PushManager {
      * @param message
      * @return
      */
-    public boolean sendMessage(String message) {
+    public static  boolean sendMessage(String message) {
         Log.e("dawn", "sendMessage: "+message );
         if (ioSession == null || !ioSession.isConnected()) {
             return false;

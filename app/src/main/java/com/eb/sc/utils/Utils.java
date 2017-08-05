@@ -19,24 +19,37 @@ public class Utils {
 
     public static  String getscan(Context context,String str){
         BaseConfig bg=new BaseConfig(context);
-      String she=  bg.getStringValue(Constants.shebeihao,"");
-      String data= "4001"+she+(str.length()+"")+str;
-
+         String she=  bg.getStringValue(Constants.shebeihao,"");
+        String nr_16=HexStr.str2HexStr(str);
+        String leng_16=HexStr.str2HexStr(nr_16.length()+"");
+        String data= "4001"+she+leng_16+nr_16;
         return data;
     }
 
     public static  String getIdcard(Context context,String str){
         BaseConfig bg=new BaseConfig(context);
         String she=  bg.getStringValue(Constants.shebeihao,"");
-        String data= "4002"+ she+(str.length()+"")+str;
+        String nr_16=HexStr.str2HexStr(str);
+        String leng_16=HexStr.str2HexStr(nr_16.length()+"");
+        String data= "4002"+ she+leng_16+nr_16;
         return data;
     }
 
-    public static int byte2int(byte[] res) {
-// 一个byte数据左移24位变成0x??000000，再右移8位变成0x00??0000
+    public static  String getscan_t(Context context,String str){
+        BaseConfig bg=new BaseConfig(context);
+        String she=  bg.getStringValue(Constants.shebeihao,"");
+        String nr_16=HexStr.str2HexStr(str);
+        String leng_16=HexStr.str2HexStr(nr_16.length()+"");
+        String data= "4010"+she+leng_16+nr_16;
+        return data;
+    }
 
-        int targets = (res[0] & 0xff) | ((res[1] << 8) & 0xff00) // | 表示安位或
-                | ((res[2] << 24) >>> 8) | (res[3] << 24);
-        return targets;
+    public static  String getIdcard_t(Context context,String str){
+        BaseConfig bg=new BaseConfig(context);
+        String she=  bg.getStringValue(Constants.shebeihao,"");
+        String nr_16=HexStr.str2HexStr(str);
+        String leng_16=HexStr.str2HexStr(nr_16.length()+"");
+        String data= "4010"+ she+leng_16+nr_16;
+        return data;
     }
 }

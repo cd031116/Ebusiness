@@ -55,17 +55,24 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         NotificationCenter.defaultCenter().publish(new ConnectEvent(false));
         BaseConfig bg=new BaseConfig(mcontext);
         bg.setStringValue(Constants.havelink, "-1");
+        tcpResponse.breakConnect();
     }
 
     @Override
     public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
         super.exceptionCaught(session, cause);
         Log.e("ClientSessionHandler", "服务器发送异常...");
+        tcpResponse.breakConnect();
     }
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
         super.messageReceived(session, message);
+
+        if(message.toString()!=null){
+            BaseConfig bg=new BaseConfig(mcontext);
+            bg.setStringValue(Constants.shebeihao, "1");
+        }
 
         tcpResponse.receivedMessage(message.toString().trim());
 
