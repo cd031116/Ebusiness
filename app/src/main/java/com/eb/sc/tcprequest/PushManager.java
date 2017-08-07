@@ -36,6 +36,7 @@ public class PushManager {
     private static ConnectFuture connectFuture;
     private static IoSession ioSession;
     private static Context mcontext;
+
     private  ClientSessionHandler clientSessionHandler = null;
     public  ClientSessionHandler getClientSessionHandler(String strs) {
         sendMessage(strs);
