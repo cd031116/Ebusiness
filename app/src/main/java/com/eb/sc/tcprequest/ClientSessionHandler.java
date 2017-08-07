@@ -88,7 +88,6 @@ public class ClientSessionHandler extends IoHandlerAdapter {
             }
             bg.setStringValue(Constants.shebeihao,shebei);
         }
-
         //是
         if(Utils.pullItem(message.toString())){
             BaseConfig bg=new BaseConfig(mcontext);
