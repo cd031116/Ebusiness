@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 
@@ -72,11 +73,14 @@ public class NetworkReceiver extends BroadcastReceiver {
                 if (NetworkInfo.State.CONNECTED == info.getState() && info.isAvailable()) {
                     if (info.getType() == ConnectivityManager.TYPE_WIFI
                             || info.getType() == ConnectivityManager.TYPE_MOBILE) {
+                        Log.e("TAG", "isConnected=true:" );
                         BaseConfig bg=new BaseConfig(context);
                         bg.setStringValue(Constants.havenet,"1");
                         NotificationCenter.defaultCenter().publish(new NetEvent(true));
+                        PushManager.getInstance(context).add();
                     }
                 } else {
+                    Log.e("TAG", "isConnected=false:" );
                     BaseConfig bg=new BaseConfig(context);
                     bg.setStringValue(Constants.havenet,"-1");
                     NotificationCenter.defaultCenter().publish(new NetEvent(false));

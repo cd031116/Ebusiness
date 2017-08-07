@@ -1,13 +1,17 @@
 package com.eb.sc.tcprequest;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.eb.sc.MainActivity;
 import com.eb.sc.bean.Params;
 import com.eb.sc.utils.AESCipher;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
+import com.eb.sc.utils.NetWorkUtils;
 
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.future.ConnectFuture;
@@ -78,6 +82,17 @@ public class PushManager {
         }
         return manager;
     }
+
+
+    public   void add(){
+        if(!NetWorkUtils.isNetworkConnected(mcontext)){
+            manager=null;
+            return ;
+        }
+        BarAsyncTask task=new BarAsyncTask();
+        task.execute();
+    }
+
     /**
      * 连接
      * @return
@@ -104,6 +119,23 @@ public class PushManager {
         }
         return false;
     }
+
+    class BarAsyncTask extends AsyncTask<Integer, Integer, String> {
+        @Override
+        protected String doInBackground(Integer... params) {
+            connect();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+        }
+    }
+
+
+
+
 
     /**
      * 关闭

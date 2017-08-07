@@ -118,7 +118,7 @@ public class SettingActivity extends BaseActivity {
         String s = bg.getStringValue(Constants.address, "-1");
         if (!TextUtils.isEmpty(s)) {
             for (int i = 0; i < mList.size(); i++) {
-                if (s.equals(mList.get(i).getId())) {
+                if (s.equals(mList.get(i).getCode())) {
                     state.setText(mList.get(i).getName());
                 }
             }
@@ -254,7 +254,7 @@ public class SettingActivity extends BaseActivity {
                 state.setText(value);
                 for (int i = 0; i < mList.size(); i++) {
                     if (value.equals(mList.get(i).getName())) {
-                        bg.setStringValue(Constants.address, mList.get(i).getId());
+                        bg.setStringValue(Constants.address, mList.get(i).getCode());
                     }
 
                 }

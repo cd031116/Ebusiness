@@ -38,6 +38,8 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.sdk.eventbus.PutEvent;
+import com.eb.sc.sdk.eventbus.PutSubscriber;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.tcprequest.TcpResponse;
@@ -130,6 +132,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         // 初始化 CameraManager
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
         CameraManager.init(getApplication());
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
@@ -205,6 +208,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
     }
 private  String scanstrs="";
     public void handleDecode(String result) {
@@ -365,6 +369,18 @@ private  String scanstrs="";
         }).setTitle("提示").show();
     }
 
+    //在线成功
+    PutSubscriber putSubscriber=new PutSubscriber() {
+        @Override
+        public void onEvent(PutEvent putEvent) {
+            if(putEvent.getCode()==2){
+
+
+
+
+            }
+        }
+    };
 
     //无效票
     private void showDialogMsg(String names) {

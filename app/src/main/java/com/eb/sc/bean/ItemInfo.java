@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class ItemInfo implements Serializable{
     private String Id;
     private String Name;
-
+    private String Code;
     public String getId() {
         return Id;
     }
@@ -22,7 +22,15 @@ public class ItemInfo implements Serializable{
         return Name;
     }
 
-    public void setName(String name) {
+    public void setName(String name){
         Name = name;
+    }
+
+    public String getCode() {
+        return Code;
+    }
+
+    public void setCode(String code) {
+        Code = code;
     }
 }

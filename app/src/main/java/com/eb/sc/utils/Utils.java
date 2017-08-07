@@ -6,11 +6,34 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.eb.sc.bean.ItemInfo;
+
+import java.util.List;
+
 /**
  * Created by lyj on 2017/7/29.
  */
 
 public class Utils {
+
+    public static String  getXiangmu(Context context){
+        BaseConfig bg=new BaseConfig(context);
+        String s=bg.getStringValue(Constants.address,"-1");
+        String list_item = bg.getStringValue(Constants.px_list, "");
+        if(TextUtils.isEmpty(list_item)){
+            return "";
+        }
+        List<ItemInfo> mList = JSON.parseArray(list_item, ItemInfo.class);
+        for (int i = 0; i < mList.size(); i++) {
+           if(s.equals(mList.get(i).getCode())){
+               return  mList.get(i).getName();
+           }
+        }
+        return "";
+
+    }
+
     //获取设备码
     public static String getImui(Context context) {
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -100,6 +123,19 @@ public class Utils {
         Log.i("tttt","leng_16="+leng_16);
         String data= "40100001"+leng_16+nr_16;
         return data;
+    }
+
+    //检测到的是设备号
+    public static boolean pullShebei(String sty){
+        if(TextUtils.isEmpty(sty)){
+            return false;
+        }
+        String  sgs=sty.substring(2,4);
+        Log.i("tttt","sgs="+sgs);
+        if("10".equals(sgs)){
+            return  true;
+        }
+        return  false;
     }
 
 //检测是项目list

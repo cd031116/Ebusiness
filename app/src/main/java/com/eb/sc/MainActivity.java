@@ -387,6 +387,7 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
         mbStop = true;
         // Destroy fingerprint sensor when it's not used
         IDCardReaderFactory.destroy(idCardReader);
@@ -474,15 +475,12 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
-    PutSubscriber putSubscriber=new PutSubscriber() {
+    //在线成功
+    PutSubscriber putSubscriber=new PutSubscriber(){
         @Override
-        public void onEvent(PutEvent putEvent) {
+        public void onEvent(PutEvent putEvent){
             if(putEvent.getCode()==1){
-
-
-
-
+                showDialogd("","",Utils.getXiangmu(MainActivity.this));
             }
         }
     };

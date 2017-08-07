@@ -74,6 +74,21 @@ public class ClientSessionHandler extends IoHandlerAdapter {
 //            BaseConfig bg=new BaseConfig(mcontext);
 //            bg.setStringValue(Constants.shebeihao, "1");
 //        }
+
+        if(Utils.pullShebei(message.toString())){
+            BaseConfig bg=new BaseConfig(mcontext);
+          String sb=HexStr.hexStr2Str((message.toString()).substring(12,message.toString().length()));
+            String shebei=Integer.toHexString(Integer.parseInt(sb));
+            if(shebei.length()<=1){
+                shebei="000"+shebei;
+            }else if(shebei.length()<=2){
+                shebei="00"+shebei;
+            }else if(shebei.length()<=3){
+                shebei="0"+shebei;
+            }
+            bg.setStringValue(Constants.shebeihao,shebei);
+        }
+
         //是
         if(Utils.pullItem(message.toString())){
             BaseConfig bg=new BaseConfig(mcontext);
@@ -88,7 +103,7 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         if(Utils.pullScan(message.toString())){
             NotificationCenter.defaultCenter().publish(new PutEvent(2,message.toString()));
         }
-        //是二维码
+        //是同步
         if(Utils.pullSync(message.toString())){
 
             NotificationCenter.defaultCenter().publish(new PutEvent(2,message.toString()));
