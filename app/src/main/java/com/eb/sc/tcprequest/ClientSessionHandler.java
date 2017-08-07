@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.eb.sc.bean.Params;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
+import com.eb.sc.sdk.eventbus.TongbuEvent;
 import com.eb.sc.utils.AESCipher;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -57,6 +58,7 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         BaseConfig bg=new BaseConfig(mcontext);
         bg.setStringValue(Constants.havelink, "-1");
         tcpResponse.breakConnect();
+        NotificationCenter.defaultCenter().publish(new TongbuEvent("服务器与客户端断开连接...",false));
     }
 
     @Override
@@ -77,6 +79,8 @@ public class ClientSessionHandler extends IoHandlerAdapter {
             BaseConfig bg=new BaseConfig(mcontext);
             bg.setStringValue(Constants.px_list,Utils.pullString(message.toString()));
         }
+
+        NotificationCenter.defaultCenter().publish(new TongbuEvent("客户端接受消息成功..",false));
 //        tcpResponse.receivedMessage(message.toString().trim());
         Log.e("ClientSessionHandler", "客户端接受消息成功..."+HexStr.hexStr2Str((message.toString()).substring(12,message.toString().length())));
     }

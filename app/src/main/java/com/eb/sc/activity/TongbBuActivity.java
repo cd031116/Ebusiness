@@ -17,6 +17,8 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.sdk.eventbus.TongbuEvent;
+import com.eb.sc.sdk.eventbus.TongbuSubscriber;
 import com.eb.sc.sdk.recycle.CommonAdapter;
 import com.eb.sc.sdk.recycle.ViewHolder;
 import com.eb.sc.tcprequest.PushManager;
@@ -32,6 +34,7 @@ import org.aisen.android.component.eventbus.NotificationCenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -53,6 +56,7 @@ public class TongbBuActivity extends BaseActivity {
     private CommonAdapter<DataInfo> mAdapter;
     private List<DataInfo> mdata = new ArrayList<>();
     LinearLayoutManager layoutManager;
+    private boolean isReturn;
 
     @Override
     protected int getLayoutId() {
@@ -83,28 +87,6 @@ public class TongbBuActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-        for (int i = 0; i < mdata.size(); i++) {
-            String sendMsg = "";
-            DataInfo dataInfo = mdata.get(i);
-            //二维码，身份证信息
-            String id = dataInfo.getId();
-            if (dataInfo.getType() == 1)
-                sendMsg = Utils.getIdcard_t(this, id);
-            else if (dataInfo.getType() == 2)
-                sendMsg = Utils.getscan_t(this, id);
-            PushManager.getInstance(TongbBuActivity.this).getClientSessionHandler(sendMsg).setTcpResponse(new TcpResponse() {
-                @Override
-                public void receivedMessage(String trim) {
-
-                }
-
-                @Override
-                public void breakConnect() {
-
-                }
-            });
-
-        }
 
         mAdapter = new CommonAdapter<DataInfo>(TongbBuActivity.this, R.layout.tongbu_item, mdata) {
             @Override
@@ -116,7 +98,7 @@ public class TongbBuActivity extends BaseActivity {
                 } else {
                     holder.setBackgroundColor(R.id.top, Color.parseColor("#ffffff"));
                 }
-                holder.setText(R.id.address, "");
+                holder.setText(R.id.address, info.getName());
                 holder.setText(R.id.time, ChangeData.cuotoString(info.getInsertTime()));
                 if (!info.isUp()) {
                     holder.setText(R.id.state, "未同步");
@@ -157,12 +139,49 @@ public class TongbBuActivity extends BaseActivity {
                 break;
             case R.id.sycn:
                 if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
-
+                    sycnData();
                 } else {
                     Toast.makeText(TongbBuActivity.this, "与服务器断开连接或网络不可用!", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
+    }
+
+    private void sycnData() {
+
+        String sendMsg = "";
+        final CountDownLatch countDown = new CountDownLatch(mdata.size());
+        for (int i = 0; i < mdata.size(); i++) {
+            final DataInfo dataInfo = mdata.get(i);
+            NotificationCenter.defaultCenter().subscriber(TongbuEvent.class, new TongbuSubscriber() {
+                @Override
+                public void onEvent(TongbuEvent tongbuEvent) {
+
+                    dataInfo.setUp(tongbuEvent.isResponse());
+                    BusinessManager.updataUp(dataInfo);
+                    if (tongbuEvent.isResponse()) {
+                        mdata.remove(dataInfo);
+                    }
+                    countDown.countDown();
+                }
+            });
+            if (!dataInfo.isUp()) {
+                //二维码，身份证信息
+                String id = dataInfo.getId();
+                if (dataInfo.getType() == 1)
+                    sendMsg = Utils.getIdcard_t(this, id);
+                else if (dataInfo.getType() == 2)
+                    sendMsg = Utils.getscan_t(this, id);
+                PushManager.getInstance(TongbBuActivity.this).sendMessage(sendMsg);
+            }
+        }
+        try {
+            countDown.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        mAdapter.notifyDataSetChanged();
+        mlist.setAdapter(mAdapter);
     }
 
 
@@ -199,6 +218,19 @@ public class TongbBuActivity extends BaseActivity {
             } else {
                 changeview(false);
             }
+        }
+    };
+
+    //长连接
+    TongbuSubscriber tongbuEventSubscriber = new TongbuSubscriber() {
+        @Override
+        public void onEvent(TongbuEvent event) {
+            if (event.isResponse()) {
+
+            } else {
+
+            }
+
         }
     };
 
