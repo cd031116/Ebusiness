@@ -7,6 +7,7 @@ import android.util.Log;
 import com.eb.sc.bean.Params;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.Utils;
 
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.keepalive.KeepAliveMessageFactory;
@@ -22,7 +23,7 @@ public class ClientKeepAliveMessageFactoryImp implements KeepAliveMessageFactory
     }
     @Override
     public boolean isRequest(IoSession ioSession, Object o) {
-        if (o instanceof String && o.equals(Params.SEND)) {
+        if (o instanceof String && o.equals(Utils.xintiao(context))) {
             return true;
         }
         return false;
@@ -30,7 +31,7 @@ public class ClientKeepAliveMessageFactoryImp implements KeepAliveMessageFactory
 
     @Override
     public boolean isResponse(IoSession ioSession, Object o) {
-        if (o instanceof String && o.equals(Params.RECEIVE)) {
+        if (o instanceof String && o.equals(Utils.xintiao(context))) {
             return true;
         }
         return false;
@@ -42,7 +43,7 @@ public class ClientKeepAliveMessageFactoryImp implements KeepAliveMessageFactory
         BaseConfig bg = new BaseConfig(context);
         String she=  bg.getStringValue(Constants.shebeihao,"");
         if(!TextUtils.isEmpty(she)){
-            return Params.SEND;
+            return Utils.xintiao(context);
         }
        return null;
     }

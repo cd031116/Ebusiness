@@ -170,22 +170,6 @@ public class CheckActivity extends BaseActivity {
             String piaox=bg.getStringValue(Constants.piaoxing,"-1");
             Log.e("ClientSessionHandler", "11111111111");
             if (event.isConnect()) {
-                Log.e("ClientSessionHandler", "222222");
-                PushManager.getInstance(CheckActivity.this).getClientSessionHandler(Params.SEND).setTcpResponse(new TcpResponse() {
-                    @Override
-                    public void receivedMessage(String trim) {
-                        Toast.makeText(CheckActivity.this,"trim"+trim,Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void breakConnect() {
-
-                    }
-                });
-                if(!piaox.equals("1")){
-
-//                        sendMessage(Params.SHEBEI);
-                }
                 isconnect = true;
                 if ("1".equals(a)) {
                     changeview(true);
