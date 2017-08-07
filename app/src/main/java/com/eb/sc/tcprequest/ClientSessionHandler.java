@@ -83,6 +83,7 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     public void messageSent(IoSession session, Object message) throws Exception {
         super.messageSent(session, message);
         Log.e("ClientSessionHandler", "客户端发送消息成功..."+message.toString());
+
     }
 
     @Override

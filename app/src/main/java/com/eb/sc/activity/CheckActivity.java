@@ -105,6 +105,17 @@ public class CheckActivity extends BaseActivity {
     public void initData() {
         super.initData();
         startService(new Intent(CheckActivity.this, PushService.class));
+//        PushManager.getInstance(this).getClientSessionHandler(Params.SEND).setTcpResponse(new TcpResponse() {
+//            @Override
+//            public void receivedMessage(String trim) {
+//                Log.e("ClientSessionHandler", "receivedMessage: "+trim);
+//            }
+//
+//            @Override
+//            public void breakConnect() {
+//
+//            }
+//        });
         cleardata();
     }
 

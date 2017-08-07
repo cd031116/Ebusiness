@@ -19,10 +19,14 @@ import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.recycle.CommonAdapter;
 import com.eb.sc.sdk.recycle.ViewHolder;
+import com.eb.sc.tcprequest.PushManager;
+import com.eb.sc.tcprequest.TcpResponse;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.ChangeData;
 import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.Utils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
@@ -79,24 +83,47 @@ public class TongbBuActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
+        for (int i = 0; i < mdata.size(); i++) {
+            String sendMsg = "";
+            DataInfo dataInfo = mdata.get(i);
+            //二维码，身份证信息
+            String id = dataInfo.getId();
+            if (dataInfo.getType() == 1)
+                sendMsg = Utils.getIdcard_t(this, id);
+            else if (dataInfo.getType() == 2)
+                sendMsg = Utils.getscan_t(this, id);
+            PushManager.getInstance(TongbBuActivity.this).getClientSessionHandler(sendMsg).setTcpResponse(new TcpResponse() {
+                @Override
+                public void receivedMessage(String trim) {
+
+                }
+
+                @Override
+                public void breakConnect() {
+
+                }
+            });
+
+        }
+
         mAdapter = new CommonAdapter<DataInfo>(TongbBuActivity.this, R.layout.tongbu_item, mdata) {
             @Override
             protected void convert(ViewHolder holder, DataInfo info, int position) {
-                if(position==0){
+                if (position == 0) {
                     holder.setBackgroundColor(R.id.top, Color.parseColor("#ffffff"));
-                }else if (position % 2 == 1) {
+                } else if (position % 2 == 1) {
                     holder.setBackgroundColor(R.id.top, Color.parseColor("#EAEAEA"));
                 } else {
                     holder.setBackgroundColor(R.id.top, Color.parseColor("#ffffff"));
                 }
                 holder.setText(R.id.address, "");
                 holder.setText(R.id.time, ChangeData.cuotoString(info.getInsertTime()));
-                if(!info.isUp()){
+                if (!info.isUp()) {
                     holder.setText(R.id.state, "未同步");
-                    holder.setTextColor(R.id.state,Color.parseColor("#FD1E1D"));
-                }else{
+                    holder.setTextColor(R.id.state, Color.parseColor("#FD1E1D"));
+                } else {
                     holder.setText(R.id.state, "未同步");
-                    holder.setTextColor(R.id.state,Color.parseColor("#5CE064"));
+                    holder.setTextColor(R.id.state, Color.parseColor("#5CE064"));
                 }
             }
         };
@@ -108,20 +135,18 @@ public class TongbBuActivity extends BaseActivity {
     }
 
 
-    private void getdata(){
-        if(mdata!=null){
+    private void getdata() {
+        if (mdata != null) {
             mdata.clear();
         }
-        List<DataInfo> mlist= BusinessManager.querAll();
-        for (int i=0;i<mlist.size();i++){
-            if(!mlist.get(i).isUp()){
+        List<DataInfo> mlist = BusinessManager.querAll();
+        for (int i = 0; i < mlist.size(); i++) {
+            if (!mlist.get(i).isUp()) {
                 mdata.add(mlist.get(i));
             }
         }
         mAdapter.notifyDataSetChanged();
     }
-
-
 
 
     @OnClick({R.id.top_left, R.id.sycn})
@@ -134,7 +159,7 @@ public class TongbBuActivity extends BaseActivity {
                 if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
 
                 } else {
-                    Toast.makeText(TongbBuActivity.this,"与服务器断开连接或网络不可用!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TongbBuActivity.this, "与服务器断开连接或网络不可用!", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -142,7 +167,7 @@ public class TongbBuActivity extends BaseActivity {
 
 
     //长连接
-    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber(){
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
         @Override
         public void onEvent(ConnectEvent event) {
             BaseConfig bg = new BaseConfig(TongbBuActivity.this);
@@ -162,7 +187,7 @@ public class TongbBuActivity extends BaseActivity {
         }
     };
     //网络
-    EventSubscriber netEventSubscriber = new EventSubscriber(){
+    EventSubscriber netEventSubscriber = new EventSubscriber() {
         @Override
         public void onEvent(NetEvent event) {
             if (event.isConnect()) {
