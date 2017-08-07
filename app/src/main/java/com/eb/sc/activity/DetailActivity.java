@@ -22,6 +22,7 @@ import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.ChangeData;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.Utils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
@@ -44,7 +45,10 @@ public class DetailActivity extends BaseActivity {
     RecyclerView mRecy;
     @Bind(R.id.total_num)
     TextView total_num;
-
+    @Bind(R.id.ticket_num)
+    TextView ticket_num;
+    @Bind(R.id.ticket_door)
+    TextView ticket_door;
 
     private CommonAdapter<DataInfo> mAdapter;
     private List<DataInfo> mdata = new ArrayList<>();
@@ -80,6 +84,7 @@ public class DetailActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
+        getdata();
         mAdapter = new CommonAdapter<DataInfo>(DetailActivity.this, R.layout.detail_item, mdata) {
             @Override
             protected void convert(ViewHolder holder, DataInfo info, int position) {
@@ -90,7 +95,7 @@ public class DetailActivity extends BaseActivity {
                 } else {
                     holder.setBackgroundColor(R.id.top, Color.parseColor("#ffffff"));
                 }
-                holder.setText(R.id.address, "");
+                holder.setText(R.id.address,info.getName());
                 holder.setText(R.id.time, ChangeData.cuotoString(info.getInsertTime()));
                 if(!info.isUp()){
                     holder.setText(R.id.state, "[离线]");
@@ -103,7 +108,7 @@ public class DetailActivity extends BaseActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecy.setLayoutManager(layoutManager);
         mRecy.setAdapter(mAdapter);
-        getdata();
+
     }
 
     private void getdata(){
@@ -111,8 +116,9 @@ public class DetailActivity extends BaseActivity {
             mdata.clear();
         }
          mdata= BusinessManager.querAll();
-        mAdapter.notifyDataSetChanged();
         total_num.setText(mdata.size()+"");
+        ticket_num.setText(Utils.getXiangmu(DetailActivity.this));
+        ticket_door.setText(mdata.size()+"");
     }
 
     @OnClick({R.id.top_left})

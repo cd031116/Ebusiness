@@ -120,7 +120,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         this.cropHeight = cropHeight;
     }
     private boolean isconnect = true;
-
+    private String scansts="";
     @Override
     protected int getLayoutId() {
         return R.layout.activity_qr_scan;
@@ -210,23 +210,20 @@ public class CaptureActivity extends BaseActivity implements Callback {
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
     }
-private  String scanstrs="";
     public void handleDecode(String result) {
-        this.scanstrs=result;
+        this.scansts=result;
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
 
-
         if (BusinessManager.isHave(result)) {//票已检
-            showDialogMsg("无效票!");
+            showDialogMsg("已使用!");
         } else {
             if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this)||!isconnect) {//无网络
                 showresult(result);
             } else {//有网络
                 Log.i("tttt","sssssssssss="+Utils.getscan(this,result));
-               String updata =HexStr.str2HexStr(Utils.getscan(this,result));
+               String updata =Utils.getscan(this,result);
                 PushManager.getInstance(this).sendMessage(updata);
-
             }
         }
         // 连续扫描，不发送此消息扫描一次结束后就不能再次扫描
@@ -336,6 +333,7 @@ private  String scanstrs="";
                     DataInfo dataInfo=new DataInfo();
                     dataInfo.setId(code);
                     dataInfo.setNet(false);
+                    dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
                     dataInfo.setType(2);
                     dataInfo.setValidTime(arr[1]);
                     dataInfo.setInsertTime(System.currentTimeMillis()+"");
@@ -359,6 +357,7 @@ private  String scanstrs="";
                     dataInfo.setNet(true);
                     dataInfo.setType(2);
                     dataInfo.setValidTime(arr[1]);
+                    dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
                     dataInfo.setInsertTime(System.currentTimeMillis()+"");
                     dataInfo.setUp(true);
                     OfflLineDataDb.insert(dataInfo);
@@ -373,11 +372,14 @@ private  String scanstrs="";
     PutSubscriber putSubscriber=new PutSubscriber() {
         @Override
         public void onEvent(PutEvent putEvent) {
-            if(putEvent.getCode()==2){
 
-
-
-
+            String sgs = putEvent.getStrs().substring(0,2);
+            if ("01".equals(sgs)) {
+                showDialogMsg("无效票");
+            }else if("02".equals(sgs)){
+                showDialogMsg("已使用");
+            }else {
+                showDialogd(Utils.pullScan(putEvent.getStrs()),scansts);
             }
         }
     };
@@ -407,13 +409,13 @@ private  String scanstrs="";
     private void showresult(String strs) {
         int a = AnalysisHelp.StringScan(CaptureActivity.this,strs);
         if (a == 1) {//1------可用
-            showDialog(null, strs);
+            showDialog(Utils.getXiangmu(CaptureActivity.this), strs);
         } else if (a == 2) {
-            showDialogMsg("票已过期!");
+            showDialogMsg("无效票!");
         } else if (a == 3) {
             showDialogMsg("票型不符合!");
         } else {
-            showDialogMsg("未检测到票!");
+            showDialogMsg("无效票!");
         }
     }
     //分析二维码-无线

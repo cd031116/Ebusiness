@@ -28,6 +28,16 @@ public class DataInfo implements Serializable {
 
     private  String insertTime;//存入时间
 
+    private String pName;
+
+    public String getpName() {
+        return pName;
+    }
+
+    public void setpName(String pName) {
+        this.pName = pName;
+    }
+
     public String getId() {
         return id;
     }

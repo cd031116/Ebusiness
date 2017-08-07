@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 public class Utils {
-
+    //根据code得到项目
     public static String getXiangmu(Context context) {
         BaseConfig bg = new BaseConfig(context);
         String s = bg.getStringValue(Constants.address, "-1");
@@ -31,8 +31,25 @@ public class Utils {
             }
         }
         return "";
-
     }
+
+    //根据code得到id
+    public static String getItemId(Context context) {
+        BaseConfig bg = new BaseConfig(context);
+        String s = bg.getStringValue(Constants.address, "-1");
+        String list_item = bg.getStringValue(Constants.px_list, "");
+        if (TextUtils.isEmpty(list_item)) {
+            return "";
+        }
+        List<ItemInfo> mList = JSON.parseArray(list_item, ItemInfo.class);
+        for (int i = 0; i < mList.size(); i++) {
+            if (s.equals(mList.get(i).getCode())){
+                return mList.get(i).getId();
+            }
+        }
+        return "";
+    }
+
 
     //获取设备码
     public static String getImui(Context context) {
@@ -166,19 +183,30 @@ public class Utils {
         return false;
     }
 
-    //检测是二维码
-    public static boolean pullScan(String sty) {
+    //检测是
+    public static String pullScan(String sty) {
         if (TextUtils.isEmpty(sty)) {
-            return false;
+            return "";
         }
-        if (sty.length() < 12) {
-            return false;
-        }
-        String sgs = sty.substring(2, 4);
+
+        String sgs = sty.substring(0,2);
         if ("01".equals(sgs)) {
-            return true;
+            return "无效票";
+        }else if("02".equals(sgs)){
+            return "已使用";
+        }else if("03".equals(sgs)){
+            return "团队票";
+        }else if("04".equals(sgs)){
+            return "儿童票";
+        }else if("05".equals(sgs)){
+            return "成人票";
+        }else if("06".equals(sgs)){
+            return "老年票";
+        }else if("07".equals(sgs)){
+            return "优惠票";
+        }else {
+            return "无效票";
         }
-        return false;
     }
 
     //检测是同步

@@ -26,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
+            android:textColor="#7c7c7c"
             android:text="石燕湖大门票" />
     </LinearLayout>
 
@@ -35,7 +36,8 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+      android:layout_alignParentRight="true"
         android:textSize="20sp"
+        android:textColor="#7c7c7c"
         android:text="04-13 11:16" />
 </RelativeLayout>

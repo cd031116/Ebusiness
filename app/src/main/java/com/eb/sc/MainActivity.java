@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eb.sc.activity.CaptureActivity;
 import com.eb.sc.activity.DetailActivity;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
@@ -88,7 +89,7 @@ public class MainActivity extends BaseActivity {
     private WorkThread workThread = null;
     private WorkThreadVerFP workThreadVerFP = null;
     private boolean mbVerifying = false;
-    private String mLastName = "";
+    private String mLastName = "",idcard_id="";
     BarAsyncTask task;
     private boolean isconnect = true;
 
@@ -345,13 +346,13 @@ public class MainActivity extends BaseActivity {
 //                infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
 //                        mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
 //                        + " " + mLastName + "刷卡成功！\r\n");
-
+                idcard_id=idCardInfo.getId();
                 if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
                     showDialogMsg("票已使用!");
                 } else {
                     if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
 //                        byte[] updatas = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
-                        String updata = HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId()));
+                        String updata =Utils.getIdcard(this,idCardInfo.getId());
                         PushManager.getInstance(this).sendMessage(updata);
                     }else{
                         showDialog(mLastName, idCardInfo.getId(), "");
@@ -415,6 +416,7 @@ public class MainActivity extends BaseActivity {
                         data.setUp(true);
                         data.setNet(false);
                         data.setType(1);
+                     data.setName(Utils.getXiangmu(MainActivity.this));
                         data.setInsertTime(System.currentTimeMillis() + "");
                         OfflLineDataDb.insert(data);
                      dialog.dismiss();
@@ -434,6 +436,7 @@ public class MainActivity extends BaseActivity {
                     data.setUp(false);
                     data.setNet(true);
                     data.setType(1);
+                    data.setName(Utils.getXiangmu(MainActivity.this));
                     data.setInsertTime(System.currentTimeMillis() + "");
                     OfflLineDataDb.insert(data);
                     dialog.dismiss();
@@ -479,12 +482,16 @@ public class MainActivity extends BaseActivity {
     PutSubscriber putSubscriber=new PutSubscriber(){
         @Override
         public void onEvent(PutEvent putEvent){
-            if(putEvent.getCode()==1){
-                showDialogd("","",Utils.getXiangmu(MainActivity.this));
+            String sgs = putEvent.getStrs().substring(0,2);
+            if ("01".equals(sgs)) {
+                showDialogMsg("无效票");
+            }else if("02".equals(sgs)){
+                showDialogMsg("已使用");
+            }else {
+                showDialogd("",idcard_id,Utils.getXiangmu(MainActivity.this));
             }
         }
     };
-
 
     //长连接
     ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {

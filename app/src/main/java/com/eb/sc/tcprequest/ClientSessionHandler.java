@@ -24,14 +24,16 @@ import java.nio.ByteBuffer;
  */
 
 public class ClientSessionHandler extends IoHandlerAdapter {
-   private Context mcontext;
-    public ClientSessionHandler( Context context){
-        this.mcontext=context;
+    private Context mcontext;
+
+    public ClientSessionHandler(Context context) {
+        this.mcontext = context;
     }
+
     private TcpResponse tcpResponse;
 
-    public void setTcpResponse(TcpResponse tcpResponse){
-        this.tcpResponse=tcpResponse;
+    public void setTcpResponse(TcpResponse tcpResponse) {
+        this.tcpResponse = tcpResponse;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         super.sessionOpened(session);
         Log.e("ClientSessionHandler", "服务器与客户端连接打开...");
         NotificationCenter.defaultCenter().publish(new ConnectEvent(true));
-        BaseConfig bg=new BaseConfig(mcontext);
+        BaseConfig bg = new BaseConfig(mcontext);
         bg.setStringValue(Constants.havelink, "1");
     }
 
@@ -55,7 +57,7 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         super.sessionClosed(session);
         Log.e("ClientSessionHandler", "服务器与客户端断开连接...");
         NotificationCenter.defaultCenter().publish(new ConnectEvent(false));
-        BaseConfig bg=new BaseConfig(mcontext);
+        BaseConfig bg = new BaseConfig(mcontext);
         bg.setStringValue(Constants.havelink, "-1");
         tcpResponse.breakConnect();
     }
@@ -75,47 +77,50 @@ public class ClientSessionHandler extends IoHandlerAdapter {
 //            bg.setStringValue(Constants.shebeihao, "1");
 //        }
 
-        if(Utils.pullShebei(message.toString())){
-            BaseConfig bg=new BaseConfig(mcontext);
-          String sb=HexStr.hexStr2Str((message.toString()).substring(12,message.toString().length()));
-            String shebei=Integer.toHexString(Integer.parseInt(sb));
-            if(shebei.length()<=1){
-                shebei="000"+shebei;
-            }else if(shebei.length()<=2){
-                shebei="00"+shebei;
-            }else if(shebei.length()<=3){
-                shebei="0"+shebei;
+        if (Utils.pullShebei(message.toString())) {
+            BaseConfig bg = new BaseConfig(mcontext);
+            String sb = HexStr.hexStr2Str((message.toString()).substring(12, message.toString().length()));
+            String shebei = Integer.toHexString(Integer.parseInt(sb));
+            if (shebei.length() <= 1) {
+                shebei = "000" + shebei;
+            } else if (shebei.length() <= 2) {
+                shebei = "00" + shebei;
+            } else if (shebei.length() <= 3) {
+                shebei = "0" + shebei;
             }
-            bg.setStringValue(Constants.shebeihao,shebei);
+            bg.setStringValue(Constants.shebeihao, shebei);
         }
         //是
-        if(Utils.pullItem(message.toString())){
-            BaseConfig bg=new BaseConfig(mcontext);
-            bg.setStringValue(Constants.px_list,HexStr.hexStr2Str((message.toString()).substring(12,message.toString().length())));
+        if (Utils.pullItem(message.toString())) {
+            BaseConfig bg = new BaseConfig(mcontext);
+            bg.setStringValue(Constants.px_list, HexStr.hexStr2Str((message.toString()).substring(12, message.toString().length())));
         }
         //是身份证
-        if(Utils.pullIdCard(message.toString())){
-            NotificationCenter.defaultCenter().publish(new PutEvent(1,message.toString()));
+        if (Utils.pullIdCard(message.toString())) {
+            NotificationCenter.defaultCenter().publish(new PutEvent(1, message.toString()));
         }
         //是二维码
-        if(Utils.pullScan(message.toString())){
-            NotificationCenter.defaultCenter().publish(new PutEvent(2,message.toString()));
-        }
+//        if (Utils.pullScan(message.toString())) {
+//
+//        }
         //是同步
-        if(Utils.pullSync(message.toString())){
-
-            NotificationCenter.defaultCenter().publish(new PutEvent(2,message.toString()));
+//        if (Utils.pullSync(message.toString())) {
+//
+//            NotificationCenter.defaultCenter().publish(new PutEvent(2, message.toString()));
+//        }
+        if (message.toString().length() <12) {
+            NotificationCenter.defaultCenter().publish(new PutEvent(2, message.toString()));
         }
 
 //        tcpResponse.receivedMessage(message.toString().trim());
-        Log.e("ClientSessionHandler", "客户端接受消息成功..."+HexStr.hexStr2Str((message.toString()).substring(12,message.toString().length())));
+        Log.e("ClientSessionHandler", "客户端接受消息成功..." + HexStr.hexStr2Str((message.toString()).substring(12, message.toString().length())));
     }
 
     @Override
     public void messageSent(IoSession session, Object message) throws Exception {
         super.messageSent(session, message);
         tcpResponse.receivedMessage(message.toString().trim());
-        Log.e("ClientSessionHandler", "客户端发送消息成功..."+message.toString());
+        Log.e("ClientSessionHandler", "客户端发送消息成功..." + message.toString());
 
     }
 

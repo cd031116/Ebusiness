@@ -23,13 +23,12 @@ public class AnalysisHelp {
         if (strs.length <= 3) {
             return 0;//未检测到票
         }
-        if (!TextUtils.isEmpty(strs[1])) {//strs[1]
-            if (ChangeData.StringTolong("2017-7-29") < ChangeData.HaveTime()) {
+        if (!TextUtils.isEmpty(strs[1])) {
+            if (ChangeData.StringTolong(strs[1]) < ChangeData.HaveTime()){
                 boolean gt=false;
                 BaseConfig bg=new BaseConfig(context);
-                 String address= bg.getStringValue(Constants.address,"");
                 for (int i = 2; i < strs.length - 1; i++) {
-                    if (strs[i].equals(address)) {
+                    if (strs[i].equals(Utils.getItemId(context))) {
                         gt=true;
                     }
                 }
