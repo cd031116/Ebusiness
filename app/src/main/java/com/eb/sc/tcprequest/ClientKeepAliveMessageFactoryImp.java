@@ -1,17 +1,25 @@
 package com.eb.sc.tcprequest;
 
+import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.eb.sc.bean.Params;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
 
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.keepalive.KeepAliveMessageFactory;
 
 /**
- * Created by Administrator on 2017/7/28.
+ * Created by lyj on 2017/7/28.
  */
 
 public class ClientKeepAliveMessageFactoryImp implements KeepAliveMessageFactory {
+    private Context context;
+    public ClientKeepAliveMessageFactoryImp(Context context){
+        this.context=context;
+    }
     @Override
     public boolean isRequest(IoSession ioSession, Object o) {
         if (o instanceof String && o.equals(Params.SEND)) {
@@ -31,7 +39,12 @@ public class ClientKeepAliveMessageFactoryImp implements KeepAliveMessageFactory
     @Override
     public Object getRequest(IoSession ioSession) {
         Log.e("ClientKeepAliveMessageF", "发送心跳...");
-        return Params.SEND;
+        BaseConfig bg = new BaseConfig(context);
+        String she=  bg.getStringValue(Constants.shebeihao,"");
+        if(!TextUtils.isEmpty(she)){
+            return Params.SEND;
+        }
+       return null;
     }
 
     @Override

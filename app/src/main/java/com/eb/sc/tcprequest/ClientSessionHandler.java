@@ -9,6 +9,7 @@ import com.eb.sc.utils.AESCipher;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
+import com.eb.sc.utils.Utils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -68,20 +69,22 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
         super.messageReceived(session, message);
-
-        if(message.toString()!=null){
+//        if(message.toString()!=null){
+//            BaseConfig bg=new BaseConfig(mcontext);
+//            bg.setStringValue(Constants.shebeihao, "1");
+//        }
+        if(Utils.pullItem(message.toString())){
             BaseConfig bg=new BaseConfig(mcontext);
-            bg.setStringValue(Constants.shebeihao, "1");
+            bg.setStringValue(Constants.px_list,Utils.pullString(message.toString()));
         }
-
-        tcpResponse.receivedMessage(message.toString().trim());
-
-        Log.e("ClientSessionHandler", "客户端接受消息成功..."+message);
+//        tcpResponse.receivedMessage(message.toString().trim());
+        Log.e("ClientSessionHandler", "客户端接受消息成功..."+HexStr.hexStr2Str((message.toString()).substring(12,message.toString().length())));
     }
 
     @Override
     public void messageSent(IoSession session, Object message) throws Exception {
         super.messageSent(session, message);
+        tcpResponse.receivedMessage(message.toString().trim());
         Log.e("ClientSessionHandler", "客户端发送消息成功..."+message.toString());
 
     }

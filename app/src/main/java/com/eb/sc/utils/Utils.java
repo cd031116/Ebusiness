@@ -2,6 +2,7 @@ package com.eb.sc.utils;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 /**
@@ -52,4 +53,38 @@ public class Utils {
         String data= "4010"+ she+leng_16+nr_16;
         return data;
     }
+
+
+    public static boolean pullItem(String sty){
+        if(TextUtils.isEmpty(sty)){
+            return false;
+        }
+        String  sgs=sty.substring(3,5);
+            if("11".equals(sgs)){
+                return  true;
+            }
+
+        return  false;
+    }
+
+    //
+    public static  String pullString(String strs){
+        if(TextUtils.isEmpty(strs)){
+           return "";
+        }
+        if(strs.length()<12){
+            return "";
+        }
+        String arr=strs.substring(12,strs.length());
+        return  arr;
+    }
+
+
+
+
+
+
+
+
+
 }

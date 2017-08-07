@@ -7,6 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by lyj on 2017/8/2.
@@ -29,22 +32,36 @@ public class HexStr {
         return str;
     }
 
-
+    private static String hexString = "0123456789ABCDEF";
     /**
      * 十六进制转换字符串
      *
      * @param (//Byte之间无分隔符 如:[616C6B])
      * @return String 对应的字符串
      */
-    public static String hexStr2Str(String src) {
-        String temp = "";
-        for (int i = 0; i < src.length() / 2; i++) {
-            temp = temp
-                    + (char) Integer.valueOf(src.substring(i * 2, i * 2 + 2),
-                    16).byteValue();
+        public static String hexStr2Str(String datas) {
+            if (datas == null || datas.equals("")) {
+                return null;
+            }
+            datas = datas.replace(" ", "");
+            byte[] baKeyword = new byte[datas.length() / 2];
+            for (int i = 0; i < baKeyword.length; i++) {
+                try {
+                    baKeyword[i] = (byte) (0xff & Integer.parseInt(
+                            datas.substring(i * 2, i * 2 + 2), 16));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                datas = new String(baKeyword, "gbk");
+                new String();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            return datas;
         }
-        return temp;
-    }
+
 
 
     /**
@@ -141,21 +158,34 @@ public class HexStr {
      * @Description:16进制字符串转字节数组
      */
     public static byte[] hex2byte(String hexString) {
-        if (hexString == null || hexString.equals("")) {
-            return null;
+//        if (hexString == null || hexString.equals("")) {
+//            return null;
+//        }
+//        //  hexString = hexString.toUpperCase();
+//        int length = hexString.length() / 2;
+//        char[] hexChars = hexString.toCharArray();
+//        byte[] d = new byte[length];
+//        for (int i = 0; i < length; i++) {
+//            int pos = i * 2;
+//            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+//            if (d[i]> 127){
+//                d[i] = (byte)(d[i] - 256);
+//            }
+//        }
+//        return d;
+          /*对输入值进行规范化整理*/
+        hexString = hexString.trim().replace(" ", "").toUpperCase(Locale.US);
+        //处理值初始化
+        int m=0,n=0;
+        int iLen=hexString.length()/2; //计算长度
+        byte[] ret = new byte[iLen]; //分配存储空间
+
+        for (int i = 0; i < iLen; i++){
+            m=i*2+1;
+            n=m+1;
+            ret[i] = (byte)(Integer.decode("0x"+ hexString.substring(i*2, m) + hexString.substring(m,n)) & 0xFF);
         }
-        //  hexString = hexString.toUpperCase();
-        int length = hexString.length() / 2;
-        char[] hexChars = hexString.toCharArray();
-        byte[] d = new byte[length];
-        for (int i = 0; i < length; i++) {
-            int pos = i * 2;
-            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
-            if (d[i]> 127){
-                d[i] = (byte)(d[i] - 256);
-            }
-        }
-        return d;
+        return ret;
     }
 
     public static byte charToByte(char c) {

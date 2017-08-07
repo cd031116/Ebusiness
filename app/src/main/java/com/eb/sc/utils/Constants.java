@@ -25,4 +25,6 @@ public class Constants {
 
     public  static final String piaoxing="piaoxing";
 
+    public  static final String px_list="px_list";
+
 }

@@ -17,8 +17,10 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.bean.ItemInfo;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -56,15 +58,24 @@ public class SettingActivity extends BaseActivity {
     @Bind(R.id.code)
     EditText code;
     //----------------------------
-    /** popup窗口里的ListView */
+    /**
+     * popup窗口里的ListView
+     */
     private ListView mTypeLv;
-    /** popup窗口 */
+    /**
+     * popup窗口
+     */
     private PopupWindow typeSelectPopup;
-    /** 模拟的假数据 */
+    /**
+     * 模拟的假数据
+     */
     private List<String> testData;
-    /** 数据适配器 */
+    /**
+     * 数据适配器
+     */
     private ArrayAdapter<String> testDataAdapter;
     private boolean isconnect = true;
+    private List<ItemInfo> mList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -77,16 +88,16 @@ public class SettingActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         top_title.setText("设置");
-        BaseConfig bg=new BaseConfig(this);
+        BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
         } else {
             isconnect = false;
         }
-        if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
+        if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
             changeview(true);
-        }else {
+        } else {
             changeview(false);
         }
     }
@@ -94,23 +105,25 @@ public class SettingActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
+
         code.setText(Utils.getImui(this) + "");
-        BaseConfig bg=new BaseConfig(this);
-        ip_tcp.setText( bg.getStringValue(Constants.tcp_ip,""));
-        ip_port.setText(bg.getStringValue(Constants.ip_port,""));
+        BaseConfig bg = new BaseConfig(this);
+        ip_tcp.setText(bg.getStringValue(Constants.tcp_ip, ""));
+        ip_port.setText(bg.getStringValue(Constants.ip_port, ""));
 
-        String s= bg.getStringValue(Constants.address,"");
-        if(s.equals("1")){
-
+        String s = bg.getStringValue(Constants.address, "-1");
+        String list_item = bg.getStringValue(Constants.px_list, "");
+        if (!TextUtils.isEmpty(list_item)) {
+            for (int i = 0; i < mList.size(); i++) {
+                if (s.equals(mList.get(i).getId())) {
+                    state.setText(mList.get(i).getName());
+                }
+            }
         }
-        if(s.equals("2")){
-
-        }
-
 
     }
 
-    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend,R.id.state})
+    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
@@ -172,16 +185,15 @@ public class SettingActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        BaseConfig bg=new BaseConfig(this);
-        String http_url=ip_tcp.getText().toString();
-        String http_code=ip_port.getText().toString();
-        if(!TextUtils.isEmpty(http_url)){
-            bg.setStringValue(Constants.tcp_ip,http_url);
+        BaseConfig bg = new BaseConfig(this);
+        String http_url = ip_tcp.getText().toString();
+        String http_code = ip_port.getText().toString();
+        if (!TextUtils.isEmpty(http_url)) {
+            bg.setStringValue(Constants.tcp_ip, http_url);
         }
-        if(!TextUtils.isEmpty(http_code)){
-            bg.setStringValue(Constants.ip_port,http_code);
+        if (!TextUtils.isEmpty(http_code)) {
+            bg.setStringValue(Constants.ip_port, http_code);
         }
-
 
 
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
@@ -199,21 +211,23 @@ public class SettingActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
+
     /**
      * 模拟假数据
      */
     private void TestData() {
+        if (mList != null) {
+            mList.clear();
+        }
         testData = new ArrayList<>();
-        testData.add("大门票");  //1      T170401
-        testData.add("游船");  //2         T170402
-        testData.add("深林漫步"); //3       T170403
-        testData.add("激战鲨鱼岛");//4   T170404
-        testData.add("旋转木马");//5       T170405
-        testData.add("9D电影");//6       T170406
-        testData.add("飞碟");//7          T170407
-        testData.add("漂流"); //8          T170408
-        testData.add("丛林穿越");//9         T170409
-        testData.add("飞索");//10         T170411
+        BaseConfig bg = new BaseConfig(SettingActivity.this);
+        String list_item = bg.getStringValue(Constants.px_list, "");
+        if (!TextUtils.isEmpty(list_item)) {
+            mList = JSON.parseArray(list_item, ItemInfo.class);
+            for (int i = 0; i < mList.size(); i++) {
+                testData.add(mList.get(i).getName());
+            }
+        }
     }
 
     /**
@@ -230,38 +244,15 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // 在这里获取item数据
-                BaseConfig bg=new BaseConfig(SettingActivity.this);
+                BaseConfig bg = new BaseConfig(SettingActivity.this);
                 String value = testData.get(position);
                 // 把选择的数据展示对应的TextView上
                 state.setText(value);
-                if(value.contains("大门票")){
-                    bg.setStringValue(Constants.address,"1");
-                }
-                if(value.contains("游船")){
-                    bg.setStringValue(Constants.address,"2");
-                }
-                if(value.contains("深林漫步")){
-                    bg.setStringValue(Constants.address,"3");
-                }
-                if(value.contains("激战鲨鱼岛")){
-                    bg.setStringValue(Constants.address,"4");
-                }if(value.contains("旋转木马")){
-                    bg.setStringValue(Constants.address,"5");
-                }if(value.contains("9D电影")){
-                    bg.setStringValue(Constants.address,"6");
-                }
-                if(value.contains("飞碟")){
-                    bg.setStringValue(Constants.address,"7");
-                }
-                if(value.contains("漂流")){
-                    bg.setStringValue(Constants.address,"8");
-                }
+                for (int i = 0; i < mList.size(); i++) {
+                    if (value.equals(mList.get(i).getId())) {
+                        bg.setStringValue(Constants.address, mList.get(i).getName());
+                    }
 
-                if(value.contains("丛林穿越")){
-                    bg.setStringValue(Constants.address,"9");
-                }
-                if(value.contains("飞索")){
-                    bg.setStringValue(Constants.address,"10");
                 }
                 // 选择完后关闭popup窗口
                 typeSelectPopup.dismiss();
@@ -282,8 +273,6 @@ public class SettingActivity extends BaseActivity {
             }
         });
     }
-
-
 
 
 }

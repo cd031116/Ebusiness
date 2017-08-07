@@ -3,6 +3,7 @@ package com.eb.sc.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -117,6 +118,8 @@ public class CheckActivity extends BaseActivity {
 //            }
 //        });
         cleardata();
+        Log.i("tttt","ddd="+HexStr.str2HexStr("石燕湖"));
+        Log.i("tttt","ddd2="+HexStr.hexStr2Str(HexStr.str2HexStr("石燕湖")));
     }
 
     private void cleardata() {
@@ -133,6 +136,13 @@ public class CheckActivity extends BaseActivity {
     void onBuy(View v) {
         switch (v.getId()) {
             case R.id.scan:
+                BaseConfig bg = new BaseConfig(CheckActivity.this);
+                String address=bg.getStringValue(Constants.address,"");
+//                String she=  bg.getStringValue(Constants.shebeihao,"");
+                if(TextUtils.isEmpty(address)){
+                  Toast.makeText(CheckActivity.this,"您还没设置检票项目,请前往设置中心设置!",Toast.LENGTH_SHORT).show();
+                   return;
+                }
                 startActivity(new Intent(CheckActivity.this, SelectActivity.class));
                 break;
             case R.id.idcard:
@@ -143,12 +153,12 @@ public class CheckActivity extends BaseActivity {
                 startActivity(new Intent(CheckActivity.this, TongbBuActivity.class));
                 break;
             case R.id.setting:
-                final BaseConfig bg = BaseConfig.getInstance(this);
+                final BaseConfig bgd = BaseConfig.getInstance(this);
                 new InputDialog(this, R.style.dialog, "请输入管理员密码？", new InputDialog.OnCloseListener() {
                     @Override
                     public void onClick(Dialog dialog, boolean confirm, String text) {
                         if (confirm) {
-                            String psd = bg.getStringValue(Constants.admin_word, "-1");
+                            String psd = bgd.getStringValue(Constants.admin_word, "-1");
                             if (psd.equals(text)) {
                                 startActivity(new Intent(CheckActivity.this, SettingActivity.class));
                             } else {
@@ -169,11 +179,24 @@ public class CheckActivity extends BaseActivity {
             BaseConfig bg = new BaseConfig(CheckActivity.this);
             String a = bg.getStringValue(Constants.havenet, "-1");
             String piaox=bg.getStringValue(Constants.piaoxing,"-1");
-            if(!piaox.equals("1")){
-                PushManager.getInstance(CheckActivity.this).sendMessage(Params.SHEBEI);
-            }
-
+            Log.e("ClientSessionHandler", "11111111111");
             if (event.isConnect()) {
+                Log.e("ClientSessionHandler", "222222");
+                PushManager.getInstance(CheckActivity.this).getClientSessionHandler(Params.SEND).setTcpResponse(new TcpResponse() {
+                    @Override
+                    public void receivedMessage(String trim) {
+                        Toast.makeText(CheckActivity.this,"trim"+trim,Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void breakConnect() {
+
+                    }
+                });
+                if(!piaox.equals("1")){
+
+//                        sendMessage(Params.SHEBEI);
+                }
                 isconnect = true;
                 if ("1".equals(a)) {
                     changeview(true);

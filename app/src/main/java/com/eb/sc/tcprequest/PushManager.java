@@ -36,7 +36,6 @@ public class PushManager {
     private static ConnectFuture connectFuture;
     private static IoSession ioSession;
     private static Context mcontext;
-
     private  ClientSessionHandler clientSessionHandler = null;
     public  ClientSessionHandler getClientSessionHandler(String strs) {
         sendMessage(strs);
@@ -59,7 +58,7 @@ public class PushManager {
         //设置读取数据的缓冲区大小
         connector.getSessionConfig().setReadBufferSize(2048);
         //设置心跳
-        KeepAliveMessageFactory heartBeatFactory = new ClientKeepAliveMessageFactoryImp();
+        KeepAliveMessageFactory heartBeatFactory = new ClientKeepAliveMessageFactoryImp(context);
         KeepAliveRequestTimeoutHandler heartBeatHandler = new ClientKeepAliveMessageTimeoutFactoryImp();
         KeepAliveFilter heartBeat = new KeepAliveFilter(heartBeatFactory, IdleStatus.BOTH_IDLE,heartBeatHandler);
         //是否回发
@@ -98,7 +97,7 @@ public class PushManager {
             //连接成功后获取会话对象。如果没有上面的等待，由于connect()方法是异步的，session 可能会无法获取。
             ioSession = connectFuture.getSession();
 //            String encrypt = AESCipher.encrypt(Params.KEY,);
-            sendMessage(Params.SEND);
+            sendMessage(Params.SHEBEI);
             return true;
         } catch (Exception e){
             e.printStackTrace();
@@ -126,13 +125,14 @@ public class PushManager {
      * @param message
      * @return
      */
-    public static  boolean sendMessage(String message) {
+    public   boolean sendMessage(String message) {
         Log.e("dawn", "sendMessage: "+message );
         if (ioSession == null || !ioSession.isConnected()) {
             return false;
         }
         WriteFuture writeFuture = ioSession.write(message);
         if (writeFuture == null) {
+              Log.e("dawn", "writeFuture:" );
             return false;
         }
         writeFuture.awaitUninterruptibly();
@@ -142,6 +142,5 @@ public class PushManager {
             return false;
         }
     }
-
 
 }

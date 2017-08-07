@@ -27,7 +27,7 @@ public class AnalysisHelp {
             if (ChangeData.StringTolong("2017-7-29") < ChangeData.HaveTime()) {
                 boolean gt=false;
                 BaseConfig bg=new BaseConfig(context);
-             String address= bg.getStringValue(Constants.address,"");
+                 String address= bg.getStringValue(Constants.address,"");
                 for (int i = 2; i < strs.length - 1; i++) {
                     if (strs[i].equals(address)) {
                         gt=true;

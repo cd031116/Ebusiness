@@ -7,7 +7,7 @@ import org.apache.mina.filter.keepalive.KeepAliveFilter;
 import org.apache.mina.filter.keepalive.KeepAliveRequestTimeoutHandler;
 
 /**
- * Created by Administrator on 2017/7/28.
+ * Created by lyj on 2017/7/28.
  */
 
 public class ClientKeepAliveMessageTimeoutFactoryImp implements KeepAliveRequestTimeoutHandler {
