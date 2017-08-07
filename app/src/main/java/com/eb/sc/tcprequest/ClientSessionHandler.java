@@ -97,7 +97,6 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         //是身份证
         if(Utils.pullIdCard(message.toString())){
             NotificationCenter.defaultCenter().publish(new PutEvent(1,message.toString()));
-
         }
         //是二维码
         if(Utils.pullScan(message.toString())){
