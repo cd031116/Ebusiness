@@ -36,16 +36,14 @@ public class PushManager {
     private static ConnectFuture connectFuture;
     private static IoSession ioSession;
     private static Context mcontext;
-    private  String params;
     private  ClientSessionHandler clientSessionHandler = null;
     public  ClientSessionHandler getClientSessionHandler(String strs) {
         sendMessage(strs);
         return clientSessionHandler;
     }
 
-    private PushManager(Context context, String params){
+    private PushManager(Context context){
         Log.e("dawns", "PushManager: ");
-        this.params=params;
         connector = new NioSocketConnector();
         connector.setConnectTimeoutMillis(Params.CONNECT_TIMEOUT);
         //----------------------
@@ -71,11 +69,11 @@ public class PushManager {
         connector.getFilterChain().addLast("keepalive", heartBeat);
     }
 
-    public static PushManager getInstance(Context context,String params){
+    public static PushManager getInstance(Context context){
          mcontext=context;
         if (manager == null) {
             synchronized (PushManager.class) {
-                manager = new PushManager(mcontext,params);
+                manager = new PushManager(mcontext);
             }
         }
         return manager;
@@ -99,7 +97,7 @@ public class PushManager {
             //连接成功后获取会话对象。如果没有上面的等待，由于connect()方法是异步的，session 可能会无法获取。
             ioSession = connectFuture.getSession();
 //            String encrypt = AESCipher.encrypt(Params.KEY,);
-            sendMessage(params);
+            sendMessage(Params.SEND);
             return true;
         } catch (Exception e){
             e.printStackTrace();
