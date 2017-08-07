@@ -150,37 +150,44 @@ public class TongbBuActivity extends BaseActivity {
     private void sycnData() {
 
         String sendMsg = "";
-        final CountDownLatch countDown = new CountDownLatch(mdata.size());
-        for (int i = 0; i < mdata.size(); i++) {
-            final DataInfo dataInfo = mdata.get(i);
-            NotificationCenter.defaultCenter().subscriber(TongbuEvent.class, new TongbuSubscriber() {
-                @Override
-                public void onEvent(TongbuEvent tongbuEvent) {
+        synchronized (this) {
+            for (int i = 0; i < mdata.size(); i++) {
+                final DataInfo dataInfo = mdata.get(i);
+                NotificationCenter.defaultCenter().subscriber(TongbuEvent.class, new TongbuSubscriber() {
+                    @Override
+                    public void onEvent(TongbuEvent tongbuEvent) {
+                        //TODO 只有id相同，才设置是否上传
+                        String responseStr=tongbuEvent.getResponseStr().substring(0,tongbuEvent.getResponseStr().length()-2);
 
-                    dataInfo.setUp(tongbuEvent.isResponse());
-                    BusinessManager.updataUp(dataInfo);
-                    if (tongbuEvent.isResponse()) {
-                        mdata.remove(dataInfo);
+                        if (dataInfo.getId().equals(tongbuEvent.getResponseStr()))
+                            dataInfo.setUp(tongbuEvent.isResponse());
+                        BusinessManager.updataUp(dataInfo);
                     }
-                    countDown.countDown();
+                });
+                if (!dataInfo.isUp()) {
+                    //二维码，身份证信息
+                    String id = dataInfo.getId();
+                    if (dataInfo.getType() == 1)
+                        sendMsg = Utils.getIdcard_t(this, id);
+                    else if (dataInfo.getType() == 2)
+                        sendMsg = Utils.getscan_t(this, id);
+                    PushManager.getInstance(TongbBuActivity.this).sendMessage(sendMsg);
                 }
-            });
-            if (!dataInfo.isUp()) {
-                //二维码，身份证信息
-                String id = dataInfo.getId();
-                if (dataInfo.getType() == 1)
-                    sendMsg = Utils.getIdcard_t(this, id);
-                else if (dataInfo.getType() == 2)
-                    sendMsg = Utils.getscan_t(this, id);
-                PushManager.getInstance(TongbBuActivity.this).sendMessage(sendMsg);
             }
         }
-        try {
-            countDown.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        mAdapter.notifyDataSetChanged();
+        mAdapter = new CommonAdapter<DataInfo>(TongbBuActivity.this, R.layout.tongbu_item, mdata) {
+            @Override
+            protected void convert(ViewHolder holder, DataInfo info, int position) {
+                if (!info.isUp()) {
+                    holder.setText(R.id.state, "未同步");
+                    holder.setTextColor(R.id.state, Color.parseColor("#FD1E1D"));
+                } else {
+                    holder.setText(R.id.state, "同步");
+                    holder.setTextColor(R.id.state, Color.parseColor("#5CE064"));
+                }
+            }
+        };
+//        mAdapter.notifyDataSetChanged();
         mlist.setAdapter(mAdapter);
     }
 

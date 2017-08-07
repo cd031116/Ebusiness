@@ -87,7 +87,11 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         //是二维码
         if(Utils.pullScan(message.toString())){
             NotificationCenter.defaultCenter().publish(new PutEvent(2,message.toString()));
+        }
+        //是二维码
+        if(Utils.pullSync(message.toString())){
 
+            NotificationCenter.defaultCenter().publish(new PutEvent(2,message.toString()));
         }
 
 //        tcpResponse.receivedMessage(message.toString().trim());

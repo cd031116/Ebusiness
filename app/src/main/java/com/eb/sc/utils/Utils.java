@@ -144,6 +144,20 @@ public class Utils {
         return  false;
     }
 
+    //检测是同步
+    public static boolean pullSync(String sty){
+        if(TextUtils.isEmpty(sty)){
+            return false;
+        }
+        if(sty.length()<12){
+            return false;
+        }
+        String  sgs=sty.substring(2,4);
+        if("11".equals(sgs)){
+            return  true;
+        }
+        return  false;
+    }
 
     //
     public static  String pullString(String strs){

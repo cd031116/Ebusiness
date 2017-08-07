@@ -12,11 +12,11 @@ public class TongbuEvent {
         return isResponse;
     }
 
-    public String getResponse() {
+    public String getResponseStr() {
         return responseStr;
     }
 
-    public TongbuEvent(String responseStr,boolean isResponse) {
+    public TongbuEvent(String responseStr, boolean isResponse) {
         this.responseStr = responseStr;
         this.isResponse = isResponse;
     }
