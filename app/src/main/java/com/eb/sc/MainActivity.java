@@ -25,6 +25,8 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.sdk.eventbus.PutEvent;
+import com.eb.sc.sdk.eventbus.PutSubscriber;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.TcpResponse;
 import com.eb.sc.utils.BaseConfig;
@@ -99,6 +101,7 @@ public class MainActivity extends BaseActivity {
     public void initView() {
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
         LogHelper.setLevel(Log.VERBOSE);
         BaseConfig bg=new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
@@ -349,23 +352,7 @@ public class MainActivity extends BaseActivity {
                     if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
 //                        byte[] updatas = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
                         String updata = HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId()));
-//                        boolean jg= PushManager.getInstance(this).sendMessage(updata);
-//                        if(jg){
-                          //发送成功
-                           PushManager.getInstance(MainActivity.this).getClientSessionHandler(updata).setTcpResponse(new TcpResponse() {
-                               @Override
-                               public void receivedMessage(String trim) {
-                                   showDialogd(mLastName, idCardInfo.getId(), "");
-                               }
-                               @Override
-                               public void breakConnect() {
-                                   showDialog(mLastName, idCardInfo.getId(), "");
-                               }
-                           });
-//                        }
-//                        else{
-//                            showDialog(mLastName, idCardInfo.getId(), "");
-//                        }
+                        PushManager.getInstance(this).sendMessage(updata);
                     }else{
                         showDialog(mLastName, idCardInfo.getId(), "");
                     }
@@ -487,6 +474,19 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+
+    PutSubscriber putSubscriber=new PutSubscriber() {
+        @Override
+        public void onEvent(PutEvent putEvent) {
+            if(putEvent.getCode()==1){
+
+
+
+
+            }
+        }
+    };
+
 
     //长连接
     ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {

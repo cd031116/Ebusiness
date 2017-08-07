@@ -16,10 +16,9 @@ import com.eb.sc.R;
  */
 
 public class InputDialog extends Dialog implements View.OnClickListener{
-//    private TextView contentTxt;
     private TextView titleTxt;
     private TextView submitTxt;
-//    private TextView cancelTxt;
+    private TextView cancelTxt;
     private EditText in_put;
     private Context mContext;
     private String content;
@@ -72,7 +71,7 @@ public class InputDialog extends Dialog implements View.OnClickListener{
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_input);
         setCanceledOnTouchOutside(false);
@@ -83,9 +82,10 @@ public class InputDialog extends Dialog implements View.OnClickListener{
     private void initView(){
         titleTxt = (TextView)findViewById(R.id.title);
         submitTxt = (TextView)findViewById(R.id.submit);
+        cancelTxt = (TextView)findViewById(R.id.cancel);
         submitTxt.setOnClickListener(this);
+        cancelTxt.setOnClickListener(this);
         in_put= (EditText) findViewById(R.id.in_put);
-
         if(!TextUtils.isEmpty(positiveName)){
             submitTxt.setText(positiveName);
         }
@@ -111,6 +111,9 @@ public class InputDialog extends Dialog implements View.OnClickListener{
 
                     listener.onClick(this, true,neirong);
                 }
+                break;
+            case R.id.cancel:
+                listener.onClick(this, false,"");
                 break;
         }
     }

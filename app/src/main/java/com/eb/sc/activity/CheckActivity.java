@@ -106,20 +106,7 @@ public class CheckActivity extends BaseActivity {
     public void initData() {
         super.initData();
         startService(new Intent(CheckActivity.this, PushService.class));
-//        PushManager.getInstance(this).getClientSessionHandler(Params.SEND).setTcpResponse(new TcpResponse() {
-//            @Override
-//            public void receivedMessage(String trim) {
-//                Log.e("ClientSessionHandler", "receivedMessage: "+trim);
-//            }
-//
-//            @Override
-//            public void breakConnect() {
-//
-//            }
-//        });
         cleardata();
-        Log.i("tttt","ddd="+HexStr.str2HexStr("石燕湖"));
-        Log.i("tttt","ddd2="+HexStr.hexStr2Str(HexStr.str2HexStr("石燕湖")));
     }
 
     private void cleardata() {
@@ -164,6 +151,8 @@ public class CheckActivity extends BaseActivity {
                             } else {
                                 Toast.makeText(CheckActivity.this, "密码不正确", Toast.LENGTH_SHORT).show();
                             }
+                            dialog.dismiss();
+                        }else{
                             dialog.dismiss();
                         }
                     }
@@ -211,7 +200,7 @@ public class CheckActivity extends BaseActivity {
         }
     };
     //网络
-    EventSubscriber netEventSubscriber = new EventSubscriber() {
+    EventSubscriber netEventSubscriber = new EventSubscriber(){
         @Override
         public void onEvent(NetEvent event) {
             if (event.isConnect()) {

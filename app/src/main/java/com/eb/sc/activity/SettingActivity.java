@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,12 +26,15 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.Utils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,15 +109,14 @@ public class SettingActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-
+        TestData();
         code.setText(Utils.getImui(this) + "");
         BaseConfig bg = new BaseConfig(this);
         ip_tcp.setText(bg.getStringValue(Constants.tcp_ip, ""));
         ip_port.setText(bg.getStringValue(Constants.ip_port, ""));
 
         String s = bg.getStringValue(Constants.address, "-1");
-        String list_item = bg.getStringValue(Constants.px_list, "");
-        if (!TextUtils.isEmpty(list_item)) {
+        if (!TextUtils.isEmpty(s)) {
             for (int i = 0; i < mList.size(); i++) {
                 if (s.equals(mList.get(i).getId())) {
                     state.setText(mList.get(i).getName());
@@ -195,7 +198,8 @@ public class SettingActivity extends BaseActivity {
             bg.setStringValue(Constants.ip_port, http_code);
         }
 
-
+        PushManager.getInstance(SettingActivity.this).sendMessage(Utils.getShebeipul(this,Utils.getImui(this)));
+        Log.i("tttt","ooooooooo="+Utils.getShebeipul(this,Utils.getImui(this)));
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
     }
@@ -222,12 +226,13 @@ public class SettingActivity extends BaseActivity {
         testData = new ArrayList<>();
         BaseConfig bg = new BaseConfig(SettingActivity.this);
         String list_item = bg.getStringValue(Constants.px_list, "");
-        if (!TextUtils.isEmpty(list_item)) {
+        if(TextUtils.isEmpty(list_item)){
+           return;
+        }
             mList = JSON.parseArray(list_item, ItemInfo.class);
             for (int i = 0; i < mList.size(); i++) {
                 testData.add(mList.get(i).getName());
             }
-        }
     }
 
     /**
@@ -235,7 +240,6 @@ public class SettingActivity extends BaseActivity {
      */
     private void initSelectPopup() {
         mTypeLv = new ListView(this);
-        TestData();
         // 设置适配器
         testDataAdapter = new ArrayAdapter<String>(this, R.layout.popup_text_item, testData);
         mTypeLv.setAdapter(testDataAdapter);
@@ -249,8 +253,8 @@ public class SettingActivity extends BaseActivity {
                 // 把选择的数据展示对应的TextView上
                 state.setText(value);
                 for (int i = 0; i < mList.size(); i++) {
-                    if (value.equals(mList.get(i).getId())) {
-                        bg.setStringValue(Constants.address, mList.get(i).getName());
+                    if (value.equals(mList.get(i).getName())) {
+                        bg.setStringValue(Constants.address, mList.get(i).getId());
                     }
 
                 }

@@ -7,22 +7,22 @@ import java.io.Serializable;
  */
 
 public class ItemInfo implements Serializable{
-    private String id;
-    private String name;
+    private String Id;
+    private String Name;
 
     public String getId() {
-        return id;
+        return Id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        Id = id;
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        Name = name;
     }
 }

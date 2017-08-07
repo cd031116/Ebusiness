@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -31,6 +32,33 @@ public class HexStr {
         }
         return str;
     }
+
+
+    public static String str2Hex16(String strPart) {
+        byte[] b = strPart.getBytes();
+        try {
+            strPart=new String(b, "gbk");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Log.i("tttt","strPart="+strPart);
+        String str = "";
+        for (int i = 0; i < strPart.length(); i++) {
+            int ch = (int) strPart.charAt(i);
+            String s4 = Integer.toHexString(ch);
+            str = str + s4;
+        }
+        return str;
+    }
+
+
+
+    public static String shiTo16(int sss){
+        String ssp = Integer.toHexString(sss);
+        return ssp;
+    }
+
+
 
     private static String hexString = "0123456789ABCDEF";
     /**

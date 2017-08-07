@@ -221,22 +221,8 @@ private  String scanstrs="";
             } else {//有网络
                 Log.i("tttt","sssssssssss="+Utils.getscan(this,result));
                String updata =HexStr.str2HexStr(Utils.getscan(this,result));
-                  boolean zt=PushManager.getInstance(this).sendMessage(updata);
-                if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
-                    //发送成功
-                    PushManager.getInstance(CaptureActivity.this).getClientSessionHandler(updata).setTcpResponse(new TcpResponse() {
-                        @Override
-                        public void receivedMessage(String trim) {
-                            showresultd(scanstrs);
-                        }
-                        @Override
-                        public void breakConnect() {
-                            showresult(scanstrs);
-                        }
-                    });
-                }else{
-                        showresult(result);
-                    }
+                PushManager.getInstance(this).sendMessage(updata);
+
             }
         }
         // 连续扫描，不发送此消息扫描一次结束后就不能再次扫描

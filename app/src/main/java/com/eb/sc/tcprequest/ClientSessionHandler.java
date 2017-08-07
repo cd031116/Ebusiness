@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.eb.sc.bean.Params;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
-import com.eb.sc.sdk.eventbus.TongbuEvent;
+import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.utils.AESCipher;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -58,7 +58,6 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         BaseConfig bg=new BaseConfig(mcontext);
         bg.setStringValue(Constants.havelink, "-1");
         tcpResponse.breakConnect();
-        NotificationCenter.defaultCenter().publish(new TongbuEvent("服务器与客户端断开连接...",false));
     }
 
     @Override
@@ -75,12 +74,22 @@ public class ClientSessionHandler extends IoHandlerAdapter {
 //            BaseConfig bg=new BaseConfig(mcontext);
 //            bg.setStringValue(Constants.shebeihao, "1");
 //        }
+        //是
         if(Utils.pullItem(message.toString())){
             BaseConfig bg=new BaseConfig(mcontext);
-            bg.setStringValue(Constants.px_list,Utils.pullString(message.toString()));
+            bg.setStringValue(Constants.px_list,HexStr.hexStr2Str((message.toString()).substring(12,message.toString().length())));
+        }
+        //是身份证
+        if(Utils.pullIdCard(message.toString())){
+            NotificationCenter.defaultCenter().publish(new PutEvent(1,message.toString()));
+
+        }
+        //是二维码
+        if(Utils.pullScan(message.toString())){
+            NotificationCenter.defaultCenter().publish(new PutEvent(2,message.toString()));
+
         }
 
-        NotificationCenter.defaultCenter().publish(new TongbuEvent("客户端接受消息成功..",false));
 //        tcpResponse.receivedMessage(message.toString().trim());
         Log.e("ClientSessionHandler", "客户端接受消息成功..."+HexStr.hexStr2Str((message.toString()).substring(12,message.toString().length())));
     }
