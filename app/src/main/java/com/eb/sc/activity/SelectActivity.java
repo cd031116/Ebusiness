@@ -128,7 +128,6 @@ public class SelectActivity extends BaseActivity {
                         Log.i("tttt","ssss=isNetworkConnected");
                     }
                 }
-                id_num.setText("");
                 break;
         }
     }

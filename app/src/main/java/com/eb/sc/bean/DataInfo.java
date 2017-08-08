@@ -14,7 +14,7 @@ public class DataInfo implements Serializable {
     @PrimaryKey(column = "id")
     private String id; //身份证或者二维码
 
-    private String name;//地址名称
+    private String name;//地址名称--票类型
 
     private boolean isUp;//是否上传
 
@@ -28,7 +28,7 @@ public class DataInfo implements Serializable {
 
     private  String insertTime;//存入时间
 
-    private String pName;
+    private String pName;//
 
     public String getpName() {
         return pName;

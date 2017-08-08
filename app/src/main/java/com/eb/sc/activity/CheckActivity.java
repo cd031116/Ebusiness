@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import com.eb.sc.utils.AnalysisHelp;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.ChangeData;
 import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.DoubleClickExitHelper;
 import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.widget.InputDialog;
@@ -74,7 +76,7 @@ public class CheckActivity extends BaseActivity {
     @Bind(R.id.setting)
     ImageView setting;//设置
     private boolean isconnect = true;
-
+    private DoubleClickExitHelper mDoubleClickExit;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_check;
@@ -83,6 +85,7 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
+        mDoubleClickExit=new DoubleClickExitHelper(this);
         BaseConfig bg = new BaseConfig(this);
         bg.setStringValue(Constants.admin_word, "123456");
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
@@ -219,5 +222,12 @@ public class CheckActivity extends BaseActivity {
             top_right_text.setText("离线");
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            return mDoubleClickExit.onKeyDown(keyCode, event);
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
