@@ -22,6 +22,9 @@ import android.widget.TextView;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.tcprequest.PushService;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.NetWorkUtils;
 
 import org.aisen.android.network.task.TaskException;
 import org.aisen.android.network.task.WorkTask;
@@ -70,6 +73,12 @@ public class StartActivity extends BaseActivity {
     @Override
     public void initData(){
         super.initData();
+        BaseConfig bg = new BaseConfig(this);
+        if (NetWorkUtils.isNetworkConnected(this)) {
+            bg.setStringValue(Constants.havenet, "1");
+        }else {
+            bg.setStringValue(Constants.havenet, "-1");
+        }
         startService(new Intent(StartActivity.this, PushService.class));
     }
 

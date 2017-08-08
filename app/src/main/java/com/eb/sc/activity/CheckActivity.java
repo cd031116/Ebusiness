@@ -167,7 +167,6 @@ public class CheckActivity extends BaseActivity {
         public void onEvent(ConnectEvent event) {
             BaseConfig bg = new BaseConfig(CheckActivity.this);
             String a = bg.getStringValue(Constants.havenet, "-1");
-            String piaox = bg.getStringValue(Constants.piaoxing, "-1");
             Log.e("ClientSessionHandler", "11111111111");
             if (event.isConnect()) {
                 isconnect = true;
@@ -199,17 +198,15 @@ public class CheckActivity extends BaseActivity {
         }
     };
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
-        PushManager.close();
         stopService(new Intent(CheckActivity.this, PushService.class));
-        BaseConfig bg = new BaseConfig(this);
-        bg.setStringValue(Constants.havelink, "-1");
-        bg.setStringValue(Constants.havenet, "-1");
+//        BaseConfig bg = new BaseConfig(this);
+//        bg.setStringValue(Constants.havelink, "-1");
+//        bg.setStringValue(Constants.havenet, "-1");
     }
 
     private void changeview(boolean conect) {

@@ -63,4 +63,28 @@ public class AnalysisHelp {
     }
 
 
+    public static String getjieguo(String str){
+        if (TextUtils.isEmpty(str)) {
+            return "";//字符为空
+        }
+        String[] strs = str.split("\\&");
+         if(strs.length>1){
+             return  strs[0];
+         }
+        return "";
+    }
+
+    public static String getresylt(String str){
+        if (TextUtils.isEmpty(str)) {
+            return "";//字符为空
+        }
+        String[] strs = str.split("\\&");
+        if(strs.length>=1){
+            return  strs[1];
+        }
+        return "";
+    }
+
+
+
 }

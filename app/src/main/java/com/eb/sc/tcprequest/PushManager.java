@@ -2,6 +2,7 @@ package com.eb.sc.tcprequest;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -112,7 +113,11 @@ public class PushManager {
             //连接成功后获取会话对象。如果没有上面的等待，由于connect()方法是异步的，session 可能会无法获取。
             ioSession = connectFuture.getSession();
 //            String encrypt = AESCipher.encrypt(Params.KEY,);
-            sendMessage(Params.SHEBEI);
+
+          String by=  bg.getStringValue(Constants.px_list,"");
+            if(TextUtils.isEmpty(by)){
+                sendMessage(Params.SHEBEI);
+            }
             return true;
         } catch (Exception e){
             e.printStackTrace();
@@ -132,8 +137,6 @@ public class PushManager {
 
         }
     }
-
-
 
 
 

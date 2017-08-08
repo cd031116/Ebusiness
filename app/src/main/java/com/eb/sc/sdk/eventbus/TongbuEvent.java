@@ -6,18 +6,23 @@ package com.eb.sc.sdk.eventbus;
 
 public class TongbuEvent {
     private String responseStr;
-    private boolean isResponse;
-
-    public boolean isResponse() {
+    private String isResponse;
+    private String code;
+    public String getIsResponse() {
         return isResponse;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public String getResponseStr() {
         return responseStr;
     }
 
-    public TongbuEvent(String responseStr, boolean isResponse) {
+    public TongbuEvent(String responseStr, String isResponse,String code) {
         this.responseStr = responseStr;
         this.isResponse = isResponse;
+        this.code=code;
     }
 }

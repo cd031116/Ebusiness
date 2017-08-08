@@ -58,7 +58,6 @@ public class TongbBuActivity extends BaseActivity {
     private List<DataInfo> mdata = new ArrayList<>();
     LinearLayoutManager layoutManager;
     private boolean isReturn;
-    private  DataInfo dataInfo;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_tongb_bu;
@@ -71,6 +70,8 @@ public class TongbBuActivity extends BaseActivity {
         BaseConfig bg = new BaseConfig(this);
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(TongbuEvent.class, tongbuEventSubscriber);
+
         String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
@@ -83,24 +84,11 @@ public class TongbBuActivity extends BaseActivity {
         } else {
             changeview(false);
         }
-        NotificationCenter.defaultCenter().subscriber(TongbuEvent.class, new TongbuSubscriber() {
-            @Override
-            public void onEvent(TongbuEvent tongbuEvent) {
-                //TODO 只有id相同，才设置是否上传
-                String responseStr=tongbuEvent.getResponseStr().substring(0,tongbuEvent.getResponseStr().length()-2);
-                if (dataInfo.getId().equals(tongbuEvent.getResponseStr()))
-                    dataInfo.setUp(tongbuEvent.isResponse());
-                BusinessManager.updataUp(dataInfo);
-                mAdapter.notifyDataSetChanged();
-
-            }
-        });
     }
 
     @Override
     public void initData() {
         super.initData();
-
         mAdapter = new CommonAdapter<DataInfo>(TongbBuActivity.this, R.layout.tongbu_item, mdata) {
             @Override
             protected void convert(ViewHolder holder, DataInfo info, int position) {
@@ -117,7 +105,7 @@ public class TongbBuActivity extends BaseActivity {
                     holder.setText(R.id.state, "未同步");
                     holder.setTextColor(R.id.state, Color.parseColor("#FD1E1D"));
                 } else {
-                    holder.setText(R.id.state, "未同步");
+                    holder.setText(R.id.state, "已上传");
                     holder.setTextColor(R.id.state, Color.parseColor("#5CE064"));
                 }
             }
@@ -162,6 +150,7 @@ public class TongbBuActivity extends BaseActivity {
 
     private void sycnData() {
         String sendMsg = "";
+        DataInfo dataInfo=null;
         synchronized (this) {
             for (int i = 0; i < mdata.size(); i++) {
                  dataInfo = mdata.get(i);
@@ -172,13 +161,12 @@ public class TongbBuActivity extends BaseActivity {
                         sendMsg = Utils.getIdcard_t(this, id);
                     else if (dataInfo.getType() == 2)
                         sendMsg = Utils.getscan_t(this, id);
-                    Log.i("tttt","p="+Utils.getIdcard_t(this,"430725199012225511"));
-                    PushManager.getInstance(TongbBuActivity.this).sendMessage(Utils.getIdcard_t(this,"430725199012225511"));
+                    Log.e("ClientSessionHandler", "sendMsg..." + sendMsg);
+                    PushManager.getInstance(TongbBuActivity.this).sendMessage(sendMsg);
                 }
             }
         }
     }
-
 
     //长连接
     ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
@@ -216,16 +204,25 @@ public class TongbBuActivity extends BaseActivity {
         }
     };
 
-    //长连接
+    //上传信息
     TongbuSubscriber tongbuEventSubscriber = new TongbuSubscriber() {
         @Override
         public void onEvent(TongbuEvent event) {
-            if (event.isResponse()) {
-
-            } else {
-
-            }
-
+            DataInfo dataInfo=null;
+                if("1".equals(event.getIsResponse())){
+                    for (int i=0;i<mdata.size();i++){
+                      if(mdata.get(i).getId().equals(event.getResponseStr())){
+                          dataInfo=mdata.get(i);
+                          mdata.get(i).setUp(true);
+                          BusinessManager.updataUp(dataInfo);
+                          mAdapter.notifyDataSetChanged();
+                      }
+                    }
+                }else {
+                    if("1".equals(event.getCode())){
+                        Toast.makeText(TongbBuActivity.this,"身份证号:"+event.getResponseStr()+" 没有购买票!",Toast.LENGTH_SHORT).show();
+                    }
+                }
         }
     };
 
@@ -235,6 +232,7 @@ public class TongbBuActivity extends BaseActivity {
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(TongbuEvent.class, tongbuEventSubscriber);
     }
 
     private void changeview(boolean conect) {

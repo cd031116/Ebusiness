@@ -210,7 +210,7 @@ public class Utils {
         }
     }
 
-    //检测是同步
+    //检测是同步(身份证)
     public static boolean pullSync(String sty) {
         if (TextUtils.isEmpty(sty)) {
             return false;
@@ -219,11 +219,28 @@ public class Utils {
             return false;
         }
         String sgs = sty.substring(2, 4);
-        if ("11".equals(sgs)) {
+        if ("12".equals(sgs)) {
             return true;
         }
         return false;
     }
+
+    //检测是同步(二维码)
+    public static boolean pullscan(String sty) {
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        if (sty.length() < 12) {
+            return false;
+        }
+        String sgs = sty.substring(2, 4);
+        if ("13".equals(sgs)) {
+            return true;
+        }
+        return false;
+    }
+
+
 
     //
     public static String pullString(String strs) {

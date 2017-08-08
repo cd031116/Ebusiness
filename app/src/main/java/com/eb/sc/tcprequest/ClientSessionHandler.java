@@ -6,7 +6,9 @@ import android.util.Log;
 import com.eb.sc.bean.Params;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.PutEvent;
+import com.eb.sc.sdk.eventbus.TongbuEvent;
 import com.eb.sc.utils.AESCipher;
+import com.eb.sc.utils.AnalysisHelp;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
@@ -72,10 +74,6 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
         super.messageReceived(session, message);
-//        if(message.toString()!=null){
-//            BaseConfig bg=new BaseConfig(mcontext);
-//            bg.setStringValue(Constants.shebeihao, "1");
-//        }
 
         if (Utils.pullShebei(message.toString())) {
             BaseConfig bg = new BaseConfig(mcontext);
@@ -95,19 +93,20 @@ public class ClientSessionHandler extends IoHandlerAdapter {
             BaseConfig bg = new BaseConfig(mcontext);
             bg.setStringValue(Constants.px_list, HexStr.hexStr2Str((message.toString()).substring(12, message.toString().length())));
         }
-        //是身份证
-        if (Utils.pullIdCard(message.toString())) {
-            NotificationCenter.defaultCenter().publish(new PutEvent(1, message.toString()));
+//        是同步  身份证1
+        if (Utils.pullSync(message.toString())) {
+//            NotificationCenter.defaultCenter().publish(new TongbuEvent(2, message.toString()));
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(24, message.toString().length()));
+            Log.e("ClientSessionHandler", "pullSync..." + HexStr.hexStr2Str((message.toString()).substring(24, message.toString().length())));
+            NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo),"1"));
         }
-        //是二维码
-//        if (Utils.pullScan(message.toString())) {
-//
-//        }
-        //是同步
-//        if (Utils.pullSync(message.toString())) {
-//
-//            NotificationCenter.defaultCenter().publish(new PutEvent(2, message.toString()));
-//        }
+        //  二维码2
+        if (Utils.pullscan(message.toString())) {
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(24, message.toString().length()));
+            Log.e("ClientSessionHandler", "pullSync..." + HexStr.hexStr2Str((message.toString()).substring(24, message.toString().length())));
+            NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo),"2"));
+        }
+
         if (message.toString().length() <12) {
             NotificationCenter.defaultCenter().publish(new PutEvent(2, message.toString()));
         }
