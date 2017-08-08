@@ -47,18 +47,18 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     public void sessionOpened(IoSession session) throws Exception {
         super.sessionOpened(session);
         Log.e("ClientSessionHandler", "服务器与客户端连接打开...");
-        NotificationCenter.defaultCenter().publish(new ConnectEvent(true));
         BaseConfig bg = new BaseConfig(mcontext);
         bg.setStringValue(Constants.havelink, "1");
+        NotificationCenter.defaultCenter().publish(new ConnectEvent(true));
     }
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
         super.sessionClosed(session);
         Log.e("ClientSessionHandler", "服务器与客户端断开连接...");
-        NotificationCenter.defaultCenter().publish(new ConnectEvent(false));
         BaseConfig bg = new BaseConfig(mcontext);
         bg.setStringValue(Constants.havelink, "-1");
+        NotificationCenter.defaultCenter().publish(new ConnectEvent(false));
         tcpResponse.breakConnect();
     }
 
@@ -111,7 +111,6 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         if (message.toString().length() <12) {
             NotificationCenter.defaultCenter().publish(new PutEvent(2, message.toString()));
         }
-
 //        tcpResponse.receivedMessage(message.toString().trim());
         Log.e("ClientSessionHandler", "客户端接受消息成功..." + HexStr.hexStr2Str((message.toString()).substring(12, message.toString().length())));
     }

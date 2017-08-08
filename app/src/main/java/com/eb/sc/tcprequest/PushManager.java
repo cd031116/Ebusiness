@@ -140,7 +140,7 @@ public class PushManager {
     /**
      * 关闭
      */
-    public void close() {
+    public static  void close() {
         if (ioSession != null && ioSession.isConnected()) {
             ioSession.close(false);
         }

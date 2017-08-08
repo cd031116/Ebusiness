@@ -172,8 +172,8 @@ public class TongbBuActivity extends BaseActivity {
                         sendMsg = Utils.getIdcard_t(this, id);
                     else if (dataInfo.getType() == 2)
                         sendMsg = Utils.getscan_t(this, id);
-                    Log.i("tttt","p="+Utils.getscan_t(this,"430725199012225511"));
-                    PushManager.getInstance(TongbBuActivity.this).sendMessage(Utils.getscan_t(this,"430725199012225511"));
+                    Log.i("tttt","p="+Utils.getIdcard_t(this,"430725199012225511"));
+                    PushManager.getInstance(TongbBuActivity.this).sendMessage(Utils.getIdcard_t(this,"430725199012225511"));
                 }
             }
         }

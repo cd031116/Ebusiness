@@ -106,7 +106,6 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-        startService(new Intent(CheckActivity.this, PushService.class));
         cleardata();
     }
 
@@ -206,6 +205,7 @@ public class CheckActivity extends BaseActivity {
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        PushManager.close();
         stopService(new Intent(CheckActivity.this, PushService.class));
         BaseConfig bg = new BaseConfig(this);
         bg.setStringValue(Constants.havelink, "-1");

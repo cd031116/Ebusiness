@@ -72,7 +72,7 @@ public class Utils {
             leng_16 = "0" + leng_16;
         }
         String data = "4001" + she + leng_16 + nr_16;
-        return data;
+        return data.toUpperCase();
     }
 
     public static String getIdcard(Context context, String str) {
@@ -88,7 +88,7 @@ public class Utils {
             leng_16 = "0" + leng_16;
         }
         String data = "4002" + she + leng_16 + nr_16;
-        return data;
+        return data.toUpperCase();
     }
 
     public static String getscan_t(Context context, String str) {
@@ -103,8 +103,8 @@ public class Utils {
         } else if (leng_16.length() <= 3) {
             leng_16 = "0" + leng_16;
         }
-        String data = "4010" + she + leng_16 + nr_16;
-        return data;
+        String data = "4013" + she + leng_16 + nr_16;
+        return data.toUpperCase();
     }
 
     public static String getIdcard_t(Context context, String str) {
@@ -119,8 +119,8 @@ public class Utils {
         } else if (leng_16.length() <= 3) {
             leng_16 = "0" + leng_16;
         }
-        String data = "4010" + she + leng_16 + nr_16;
-        return data;
+        String data = "4012" + she + leng_16 + nr_16;
+        return data.toUpperCase();
     }
 
     public static String getShebeipul(Context context, String msg) {
