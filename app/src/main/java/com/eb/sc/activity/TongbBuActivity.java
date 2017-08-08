@@ -70,7 +70,7 @@ public class TongbBuActivity extends BaseActivity {
         BaseConfig bg = new BaseConfig(this);
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
-        String b = bg.getStringValue(Constants.havelink, "1");
+        String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
         } else {

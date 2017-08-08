@@ -88,7 +88,7 @@ public class CheckActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         top_left.setVisibility(View.GONE);
         top_title.setText("石燕湖大门核销点");
-        String b = bg.getStringValue(Constants.havelink, "1");
+        String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
         } else {
