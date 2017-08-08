@@ -25,6 +25,8 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.sdk.eventbus.PutEvent;
+import com.eb.sc.sdk.eventbus.PutSubscriber;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -58,8 +60,8 @@ public class SelectActivity extends BaseActivity {
     TextView cheeck;
     @Bind(R.id.password)
     EditText id_num;
-
-
+    String id_n="";
+    private boolean xiumian=true;
     private boolean isconnect = true;
     @Override
     protected int getLayoutId() {
@@ -71,6 +73,7 @@ public class SelectActivity extends BaseActivity {
         super.initView();
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
         top_title.setText("扫描检票");
         BaseConfig bg=new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
@@ -105,7 +108,7 @@ public class SelectActivity extends BaseActivity {
                 SelectActivity.this.finish();
                 break;
             case R.id.cheeck:
-                String id_n=id_num.getText().toString();
+                 id_n=id_num.getText().toString();
                  if(TextUtils.isEmpty(id_n)){
                      Toast.makeText(SelectActivity.this, "请输入身份证号码!", Toast.LENGTH_SHORT).show();
                      return;
@@ -119,17 +122,8 @@ public class SelectActivity extends BaseActivity {
                     showDialogMsg("票已使用!");
                 } else {
                     if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
-                            String  updata =HexStr.str2HexStr(Utils.getIdcard(this,id_n));
-                          boolean a= PushManager.getInstance(this).sendMessage(updata);
-                        Log.i("tttt","ssss="+updata);
-                        if(a){
-                        //发送成功
-
-
-                        }else{
-                            showDialog("",id_n, "");
-                            Log.i("tttt","ssss=失败");
-                        }
+                            String  updata =Utils.getIdcard(this,id_n);
+                            PushManager.getInstance(this).sendMessage(updata);
                     }else{
                         showDialog("",id_n, "");
                         Log.i("tttt","ssss=isNetworkConnected");
@@ -139,6 +133,24 @@ public class SelectActivity extends BaseActivity {
                 break;
         }
     }
+
+    //在线成功
+    PutSubscriber putSubscriber=new PutSubscriber(){
+        @Override
+        public void onEvent(PutEvent putEvent){
+            if(!xiumian){
+                String sgs = putEvent.getStrs().substring(0,2);
+                if ("01".equals(sgs)) {
+                    showDialogMsg("无效票");
+                }else if("02".equals(sgs)){
+                    showDialogMsg("已使用");
+                }else {
+                    showDialogd(Utils.pullScan(putEvent.getStrs()),id_n,Utils.getXiangmu(SelectActivity.this));
+                }
+            }
+
+        }
+    };
 
     //长连接
     ConnentSubscriber connectEventSubscriber = new ConnentSubscriber(){
@@ -180,6 +192,7 @@ public class SelectActivity extends BaseActivity {
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
     }
 
     private void changeview(boolean conect) {
@@ -193,7 +206,25 @@ public class SelectActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
-
+    //有效票-有线
+    private void showDialogd(String names, final String num, String code) {
+        new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
+            @Override
+            public void onClick(Dialog dialog, boolean confirm){
+                if (confirm){
+                    DataInfo data = new DataInfo();
+                    data.setId(num);
+                    data.setUp(true);
+                    data.setNet(true);
+                    data.setType(1);
+                    data.setName(Utils.getXiangmu(SelectActivity.this));
+                    data.setInsertTime(System.currentTimeMillis() + "");
+                    OfflLineDataDb.insert(data);
+                    dialog.dismiss();
+                }
+            }
+        }).setTitle("提示").show();
+    }
 
     //有效票
     private void showDialog(String names, final String nums, String code) {
@@ -205,6 +236,7 @@ public class SelectActivity extends BaseActivity {
                         DataInfo data = new DataInfo();
                         data.setId(nums);
                         data.setUp(false);
+                        data.setName(Utils.getXiangmu(SelectActivity.this));
                         data.setType(1);
                         data.setInsertTime(System.currentTimeMillis() + "");
                         OfflLineDataDb.insert(data);
@@ -228,5 +260,17 @@ public class SelectActivity extends BaseActivity {
                 }
             }
         }).setTitle("提示").show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        xiumian=false;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        xiumian=true;
     }
 }

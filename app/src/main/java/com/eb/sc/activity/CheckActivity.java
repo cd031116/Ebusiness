@@ -113,7 +113,7 @@ public class CheckActivity extends BaseActivity {
         List<DataInfo> mList = BusinessManager.querAll();
         long times = ChangeData.getNowtime();
         for (int i = 0; i < mList.size(); i++) {
-            if (Long.parseLong(mList.get(i).getInsertTime())<times){
+            if (Long.parseLong(mList.get(i).getInsertTime()) < times) {
                 OfflLineDataDb.delete(mList.get(i));
             }
         }
@@ -124,11 +124,11 @@ public class CheckActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.scan:
                 BaseConfig bg = new BaseConfig(CheckActivity.this);
-                String address=bg.getStringValue(Constants.address,"");
+                String address = bg.getStringValue(Constants.address, "");
 //                String she=  bg.getStringValue(Constants.shebeihao,"");
-                if(TextUtils.isEmpty(address)){
-                  Toast.makeText(CheckActivity.this,"您还没设置检票项目,请前往设置中心设置!",Toast.LENGTH_SHORT).show();
-                   return;
+                if (TextUtils.isEmpty(address)) {
+                    Toast.makeText(CheckActivity.this, "您还没设置检票项目,请前往设置中心设置!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 startActivity(new Intent(CheckActivity.this, SelectActivity.class));
                 break;
@@ -152,7 +152,7 @@ public class CheckActivity extends BaseActivity {
                                 Toast.makeText(CheckActivity.this, "密码不正确", Toast.LENGTH_SHORT).show();
                             }
                             dialog.dismiss();
-                        }else{
+                        } else {
                             dialog.dismiss();
                         }
                     }
@@ -167,7 +167,7 @@ public class CheckActivity extends BaseActivity {
         public void onEvent(ConnectEvent event) {
             BaseConfig bg = new BaseConfig(CheckActivity.this);
             String a = bg.getStringValue(Constants.havenet, "-1");
-            String piaox=bg.getStringValue(Constants.piaoxing,"-1");
+            String piaox = bg.getStringValue(Constants.piaoxing, "-1");
             Log.e("ClientSessionHandler", "11111111111");
             if (event.isConnect()) {
                 isconnect = true;
@@ -184,7 +184,7 @@ public class CheckActivity extends BaseActivity {
         }
     };
     //网络
-    EventSubscriber netEventSubscriber = new EventSubscriber(){
+    EventSubscriber netEventSubscriber = new EventSubscriber() {
         @Override
         public void onEvent(NetEvent event) {
             if (event.isConnect()) {
@@ -206,6 +206,9 @@ public class CheckActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
         stopService(new Intent(CheckActivity.this, PushService.class));
+        BaseConfig bg = new BaseConfig(this);
+        bg.setStringValue(Constants.havelink, "-1");
+        bg.setStringValue(Constants.havenet, "-1");
     }
 
     private void changeview(boolean conect) {

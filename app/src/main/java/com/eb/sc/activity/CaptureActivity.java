@@ -372,7 +372,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
     PutSubscriber putSubscriber=new PutSubscriber() {
         @Override
         public void onEvent(PutEvent putEvent) {
-
             String sgs = putEvent.getStrs().substring(0,2);
             if ("01".equals(sgs)) {
                 showDialogMsg("无效票");
@@ -440,7 +439,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
             String a = bg.getStringValue(Constants.havenet, "-1");
             if (event.isConnect()) {
                 isconnect = true;
-
                 if ("1".equals(a)) {
 
                 } else {
