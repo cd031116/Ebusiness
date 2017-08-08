@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.eb.sc.R;
@@ -18,15 +19,15 @@ import com.eb.sc.R;
 
 
 public class CommomDialog extends Dialog implements View.OnClickListener{
-    private TextView tName;//名字
-    private TextView idcard;//号码
-    private TextView tCode;//类型
+    private TextView tName;//票型
+    private TextView idcard;//号码(二维码 身份证)
+    private TextView tCode;//项目
     private TextView submit;
-
+    private LinearLayout xiangmu;
     private Context mContext;
-    private String mName;
+    private String mName;//票型
     private String mNum;
-    private String mCode;
+    private String mCode;//项目
     private OnCloseListener listener;
     private String title;
 
@@ -69,18 +70,22 @@ public class CommomDialog extends Dialog implements View.OnClickListener{
         idcard = (TextView)findViewById(R.id.idcard);
         submit = (TextView)findViewById(R.id.submit);
         tCode = (TextView)findViewById(R.id.tCode);
+        xiangmu= (LinearLayout) findViewById(R.id.xiangmu);
         submit.setOnClickListener(this);
 
-        tName.setText(mName);
-        if(!TextUtils.isEmpty(mNum)){
-            idcard.setText(mNum);
+        if(!TextUtils.isEmpty(mName)){
+            tName.setText(mName);
+            xiangmu.setVisibility(View.VISIBLE);
+        }else {
+            xiangmu.setVisibility(View.GONE);
         }
 
         if(!TextUtils.isEmpty(mCode)){
             tCode.setText(mCode);
         }
-
-
+        if(!TextUtils.isEmpty(mNum)){
+            idcard.setText(mNum);
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.eb.sc.activity;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -57,7 +58,7 @@ public class TongbBuActivity extends BaseActivity {
     private List<DataInfo> mdata = new ArrayList<>();
     LinearLayoutManager layoutManager;
     private boolean isReturn;
-
+    private  DataInfo dataInfo;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_tongb_bu;
@@ -82,6 +83,18 @@ public class TongbBuActivity extends BaseActivity {
         } else {
             changeview(false);
         }
+        NotificationCenter.defaultCenter().subscriber(TongbuEvent.class, new TongbuSubscriber() {
+            @Override
+            public void onEvent(TongbuEvent tongbuEvent) {
+                //TODO 只有id相同，才设置是否上传
+                String responseStr=tongbuEvent.getResponseStr().substring(0,tongbuEvent.getResponseStr().length()-2);
+                if (dataInfo.getId().equals(tongbuEvent.getResponseStr()))
+                    dataInfo.setUp(tongbuEvent.isResponse());
+                BusinessManager.updataUp(dataInfo);
+                mAdapter.notifyDataSetChanged();
+
+            }
+        });
     }
 
     @Override
@@ -148,22 +161,10 @@ public class TongbBuActivity extends BaseActivity {
     }
 
     private void sycnData() {
-
         String sendMsg = "";
         synchronized (this) {
             for (int i = 0; i < mdata.size(); i++) {
-                final DataInfo dataInfo = mdata.get(i);
-                NotificationCenter.defaultCenter().subscriber(TongbuEvent.class, new TongbuSubscriber() {
-                    @Override
-                    public void onEvent(TongbuEvent tongbuEvent) {
-                        //TODO 只有id相同，才设置是否上传
-                        String responseStr=tongbuEvent.getResponseStr().substring(0,tongbuEvent.getResponseStr().length()-2);
-
-                        if (dataInfo.getId().equals(tongbuEvent.getResponseStr()))
-                            dataInfo.setUp(tongbuEvent.isResponse());
-                        BusinessManager.updataUp(dataInfo);
-                    }
-                });
+                 dataInfo = mdata.get(i);
                 if (!dataInfo.isUp()) {
                     //二维码，身份证信息
                     String id = dataInfo.getId();
@@ -171,24 +172,11 @@ public class TongbBuActivity extends BaseActivity {
                         sendMsg = Utils.getIdcard_t(this, id);
                     else if (dataInfo.getType() == 2)
                         sendMsg = Utils.getscan_t(this, id);
-                    PushManager.getInstance(TongbBuActivity.this).sendMessage(sendMsg);
+                    Log.i("tttt","p="+Utils.getscan_t(this,"430725199012225511"));
+                    PushManager.getInstance(TongbBuActivity.this).sendMessage(Utils.getscan_t(this,"430725199012225511"));
                 }
             }
         }
-        mAdapter = new CommonAdapter<DataInfo>(TongbBuActivity.this, R.layout.tongbu_item, mdata) {
-            @Override
-            protected void convert(ViewHolder holder, DataInfo info, int position) {
-                if (!info.isUp()) {
-                    holder.setText(R.id.state, "未同步");
-                    holder.setTextColor(R.id.state, Color.parseColor("#FD1E1D"));
-                } else {
-                    holder.setText(R.id.state, "同步");
-                    holder.setTextColor(R.id.state, Color.parseColor("#5CE064"));
-                }
-            }
-        };
-//        mAdapter.notifyDataSetChanged();
-        mlist.setAdapter(mAdapter);
     }
 
 

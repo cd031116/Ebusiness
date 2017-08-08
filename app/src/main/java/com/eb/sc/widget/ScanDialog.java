@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.eb.sc.R;
 
@@ -15,6 +16,7 @@ public class ScanDialog extends Dialog implements View.OnClickListener{
     private TextView idcard;//号码
     private TextView tCode;//类型
     private TextView submit;
+    private LinearLayout xiangmu;
     private Context mContext;
     private String mName;
     private String mNum;
@@ -58,15 +60,19 @@ public class ScanDialog extends Dialog implements View.OnClickListener{
     private void initView(){
         idcard = (TextView)findViewById(R.id.idcard);
         submit = (TextView)findViewById(R.id.submit);
-        tCode = (TextView)findViewById(R.id.tCode);
+        tCode = (TextView)findViewById(R.id.tCode);//票型
+        xiangmu=(LinearLayout) findViewById(R.id.xiangmu);
         submit.setOnClickListener(this);
 
         if(!TextUtils.isEmpty(mNum)){
-            idcard.setText(mNum);
+            tCode.setText(mNum);
         }
 
         if(!TextUtils.isEmpty(mCode)){
-            tCode.setText(mCode);
+            xiangmu.setVisibility(View.VISIBLE);
+            idcard.setText(mCode);
+        }else{
+            xiangmu.setVisibility(View.GONE);
         }
 
 

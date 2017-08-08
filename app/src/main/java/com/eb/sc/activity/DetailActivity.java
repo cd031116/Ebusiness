@@ -116,9 +116,9 @@ public class DetailActivity extends BaseActivity {
             mdata.clear();
         }
          mdata= BusinessManager.querAll();
+        ticket_num.setText(mdata.size()+"");
+        ticket_door.setText(Utils.getXiangmu(DetailActivity.this));
         total_num.setText(mdata.size()+"");
-        ticket_num.setText(Utils.getXiangmu(DetailActivity.this));
-        ticket_door.setText(mdata.size()+"");
     }
 
     @OnClick({R.id.top_left})

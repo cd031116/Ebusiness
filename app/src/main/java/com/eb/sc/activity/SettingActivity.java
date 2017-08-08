@@ -199,7 +199,6 @@ public class SettingActivity extends BaseActivity {
         }
 
         PushManager.getInstance(SettingActivity.this).sendMessage(Utils.getShebeipul(this,Utils.getImui(this)));
-        Log.i("tttt","ooooooooo="+Utils.getShebeipul(this,Utils.getImui(this)));
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
     }

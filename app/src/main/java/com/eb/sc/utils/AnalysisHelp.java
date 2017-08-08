@@ -2,6 +2,7 @@ package com.eb.sc.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.eb.sc.activity.SettingActivity;
 
@@ -19,16 +20,20 @@ public class AnalysisHelp {
         if (TextUtils.isEmpty(str)) {
             return -1;//字符为空
         }
-        String[] strs = str.split("\\|");
+        String[] strs = str.split("\\&");
+
         if (strs.length <= 3) {
             return 0;//未检测到票
         }
         if (!TextUtils.isEmpty(strs[1])) {
-            if (ChangeData.StringTolong(strs[1]) < ChangeData.HaveTime()){
+            Log.i("tttt","ChangeData.StringTolong(strs[1])="+ChangeData.StringTolong(strs[1]));
+            Log.i("tttt","ChangeData.HaveTime()="+ChangeData.HaveTime());
+            if (ChangeData.StringTolong(strs[1])>ChangeData.HaveTime()){
                 boolean gt=false;
                 BaseConfig bg=new BaseConfig(context);
                 for (int i = 2; i < strs.length - 1; i++) {
-                    if (strs[i].equals(Utils.getItemId(context))) {
+                    if (strs[i].equals(Utils.getItemId(context))){
+                        Log.i("tttt","strs[i]="+strs[i]);
                         gt=true;
                     }
                 }
@@ -53,7 +58,7 @@ public class AnalysisHelp {
         if (TextUtils.isEmpty(str)) {
             return null;//字符为空
         }
-        String[] strs = str.split("\\|");
+        String[] strs = str.split("\\&");
         return strs;
     }
 

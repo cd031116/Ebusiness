@@ -323,9 +323,9 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }
     };
 
-
+//无线
     private void showDialog(String num, final  String code) {
-        new ScanDialog(this, R.style.dialog, num, code, new ScanDialog.OnCloseListener() {
+        new ScanDialog(this, R.style.dialog, num, "", new ScanDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
@@ -346,8 +346,8 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }).setTitle("提示").show();
     }
     //有线
-    private void showDialogd(String num, final  String code) {
-        new ScanDialog(this, R.style.dialog, num, code, new ScanDialog.OnCloseListener() {
+    private void showDialogd(String num, final  String code,String name) {
+        new ScanDialog(this, R.style.dialog, num, name, new ScanDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
@@ -378,7 +378,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             }else if("02".equals(sgs)){
                 showDialogMsg("已使用");
             }else {
-                showDialogd(Utils.pullScan(putEvent.getStrs()),scansts);
+                showDialogd(Utils.pullScan(putEvent.getStrs()),scansts,Utils.getXiangmu(CaptureActivity.this));
             }
         }
     };
@@ -406,11 +406,12 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 //分析二维码-无线
     private void showresult(String strs) {
+        Log.i("tttt","strs="+strs);
         int a = AnalysisHelp.StringScan(CaptureActivity.this,strs);
         if (a == 1) {//1------可用
             showDialog(Utils.getXiangmu(CaptureActivity.this), strs);
         } else if (a == 2) {
-            showDialogMsg("无效票!");
+            showDialogMsg("票已过期!");
         } else if (a == 3) {
             showDialogMsg("票型不符合!");
         } else {
@@ -421,7 +422,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private void showresultd(String strs) {
         int a = AnalysisHelp.StringScan(CaptureActivity.this,strs);
         if (a == 1) {//1------可用
-            showDialogd(null, strs);
+            showDialogd("", strs,Utils.getXiangmu(CaptureActivity.this));
         } else if (a == 2) {
             showDialogMsg("票已过期!");
         } else if (a == 3) {

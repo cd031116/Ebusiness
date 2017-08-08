@@ -117,7 +117,6 @@ public class SelectActivity extends BaseActivity {
                      Toast.makeText(SelectActivity.this, "您输入的身份证号码不正确!", Toast.LENGTH_SHORT).show();
                      return;
                  }
-
                 if (BusinessManager.isHave(id_n)) {//票已检
                     showDialogMsg("票已使用!");
                 } else {
@@ -125,7 +124,7 @@ public class SelectActivity extends BaseActivity {
                             String  updata =Utils.getIdcard(this,id_n);
                             PushManager.getInstance(this).sendMessage(updata);
                     }else{
-                        showDialog("",id_n, "");
+                        showDialog("",id_n,Utils.getXiangmu(SelectActivity.this));
                         Log.i("tttt","ssss=isNetworkConnected");
                     }
                 }
@@ -206,7 +205,7 @@ public class SelectActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
-    //有效票-有线
+    //有效票-有线   姓名    身份证    项目
     private void showDialogd(String names, final String num, String code) {
         new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
             @Override

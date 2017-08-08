@@ -25,6 +25,7 @@ import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.tcprequest.TcpResponse;
+import com.eb.sc.utils.AnalysisHelp;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.ChangeData;
 import com.eb.sc.utils.Constants;
@@ -184,7 +185,7 @@ public class CheckActivity extends BaseActivity {
         }
     };
     //网络
-    EventSubscriber netEventSubscriber = new EventSubscriber() {
+    EventSubscriber netEventSubscriber = new EventSubscriber(){
         @Override
         public void onEvent(NetEvent event) {
             if (event.isConnect()) {

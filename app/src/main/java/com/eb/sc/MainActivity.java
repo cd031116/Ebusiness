@@ -488,7 +488,7 @@ public class MainActivity extends BaseActivity {
             }else if("02".equals(sgs)){
                 showDialogMsg("已使用");
             }else {
-                showDialogd("",idcard_id,Utils.getXiangmu(MainActivity.this));
+                showDialogd(Utils.pullScan(putEvent.getStrs()),idcard_id,Utils.getXiangmu(MainActivity.this));
             }
         }
     };

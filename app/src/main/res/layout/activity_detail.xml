@@ -6,7 +6,6 @@
     android:fitsSystemWindows="true"
     android:background="@color/white">
 
-
     <include
         android:id="@+id/view_top"
         layout="@layout/view_top" />
@@ -25,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#7c7c7c"
+            android:textSize="20sp"
             android:layout_alignParentRight="true" />
 
         <TextView
@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:textColor="#7c7c7c"
+            android:textSize="20sp"
             android:singleLine="true" />
     </RelativeLayout>
 

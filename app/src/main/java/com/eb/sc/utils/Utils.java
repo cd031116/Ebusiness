@@ -139,6 +139,7 @@ public class Utils {
         Log.i("tttt", "getShebeipul=" + nr_16.length());
         Log.i("tttt", "leng_16=" + leng_16);
         String data = "40100001" + leng_16 + nr_16;
+        Log.i("tttt", "data=" + data);
         return data;
     }
 
