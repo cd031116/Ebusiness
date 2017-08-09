@@ -85,6 +85,26 @@ public class AnalysisHelp {
         return "";
     }
 
+    public static String getScanjieguo(String str){
+        if (TextUtils.isEmpty(str)) {
+            return "";//字符为空
+        }
+
+        String result=str.substring(0,str.length()-2);
+        return result;
+    }
+
+
+    public static String getScanresylt(String str){
+        if (TextUtils.isEmpty(str)) {
+            return "";//字符为空
+        }
+        String[] strs = str.split("\\&");
+        if(strs.length>=1){
+            return  strs[strs.length-1];
+        }
+        return "";
+    }
 
 
 }

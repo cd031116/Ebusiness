@@ -3,6 +3,7 @@ package com.eb.sc.activity;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,6 +13,7 @@ import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
+import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -115,7 +117,8 @@ public class DetailActivity extends BaseActivity {
         if(mdata!=null){
             mdata.clear();
         }
-         mdata= BusinessManager.querAll();
+         mdata= OfflLineDataDb.queryAll();
+        Log.i("tttt","");
         ticket_num.setText(mdata.size()+"");
         ticket_door.setText(Utils.getXiangmu(DetailActivity.this));
         total_num.setText(mdata.size()+"");
@@ -127,7 +130,6 @@ public class DetailActivity extends BaseActivity {
             case R.id.top_left:
                 DetailActivity.this.finish();
                 break;
-
         }
     }
     //长连接

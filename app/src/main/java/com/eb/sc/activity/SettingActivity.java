@@ -17,11 +17,13 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.ItemInfo;
+import com.eb.sc.bean.Params;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -61,6 +63,9 @@ public class SettingActivity extends BaseActivity {
     ImageView mRight_bg;
     @Bind(R.id.code)
     EditText code;
+    @Bind(R.id.tongbu)
+    RelativeLayout tongbu;
+
     //----------------------------
     /**
      * popup窗口里的ListView
@@ -126,7 +131,7 @@ public class SettingActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state})
+    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state,R.id.tongbu})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
@@ -144,6 +149,13 @@ public class SettingActivity extends BaseActivity {
                 if (typeSelectPopup != null && !typeSelectPopup.isShowing()) {
                     typeSelectPopup.showAsDropDown(state, 0, 10);
                 }
+                break;
+            case R.id.tongbu:
+                boolean a=  PushManager.getInstance(SettingActivity.this).sendMessage(Params.SHEBEI);
+                if(a){
+                    Toast.makeText(SettingActivity.this,"同步成功",Toast.LENGTH_SHORT).show();
+                }else
+                    Toast.makeText(SettingActivity.this,"同步失败",Toast.LENGTH_SHORT).show();
                 break;
         }
     }

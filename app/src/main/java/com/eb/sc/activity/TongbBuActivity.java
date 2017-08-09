@@ -205,7 +205,7 @@ public class TongbBuActivity extends BaseActivity {
     };
 
     //上传信息
-    TongbuSubscriber tongbuEventSubscriber = new TongbuSubscriber() {
+    TongbuSubscriber tongbuEventSubscriber = new TongbuSubscriber(){
         @Override
         public void onEvent(TongbuEvent event) {
             DataInfo dataInfo=null;

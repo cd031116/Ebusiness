@@ -89,7 +89,7 @@ public class MainActivity extends BaseActivity {
     private WorkThread workThread = null;
     private WorkThreadVerFP workThreadVerFP = null;
     private boolean mbVerifying = false;
-    private String mLastName = "",idcard_id="";
+    private String mLastName = "", idcard_id = "";
     BarAsyncTask task;
     private boolean isconnect = true;
 
@@ -104,17 +104,17 @@ public class MainActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
         LogHelper.setLevel(Log.VERBOSE);
-        BaseConfig bg=new BaseConfig(this);
+        BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
         } else {
             isconnect = false;
         }
-        if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
-            bg.setStringValue(Constants.havenet,"1");
+        if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
+            bg.setStringValue(Constants.havenet, "1");
             changeview(true);
-        }else {
+        } else {
             changeview(false);
         }
     }
@@ -346,29 +346,29 @@ public class MainActivity extends BaseActivity {
 //                infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
 //                        mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
 //                        + " " + mLastName + "刷卡成功！\r\n");
-                idcard_id=idCardInfo.getId();
+                idcard_id = idCardInfo.getId();
                 if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
                     showDialogMsg("票已使用!");
                 } else {
-                    if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
+                    if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
 //                        byte[] updatas = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
-                        String updata =Utils.getIdcard(this,idCardInfo.getId());
+                        String updata = Utils.getIdcard(this, idCardInfo.getId());
                         PushManager.getInstance(this).sendMessage(updata);
-                    }else{
+                    } else {
                         showDialog(mLastName, idCardInfo.getId(), "");
                     }
                 }
                 feature = idCardInfo.getFpdata();
-                if (idCardInfo.getPhoto() != null) {
-                    byte[] buf = new byte[WLTService.imgLength];
-                    if (1 == WLTService.wlt2Bmp(idCardInfo.getPhoto(), buf)) {
-                        Bitmap bitmap = IDPhotoHelper.Bgr2Bitmap(buf);
-                        if (null != bitmap) {
-
-
-                        }
-                    }
-                }
+//                if (idCardInfo.getPhoto() != null) {
+//                    byte[] buf = new byte[WLTService.imgLength];
+//                    if (1 == WLTService.wlt2Bmp(idCardInfo.getPhoto(), buf)) {
+//                        Bitmap bitmap = IDPhotoHelper.Bgr2Bitmap(buf);
+//                        if (null != bitmap) {
+//
+//
+//                        }
+//                    }
+//                }
                 return true;
             } else {
                 //playSound(9, 0);
@@ -398,7 +398,6 @@ public class MainActivity extends BaseActivity {
     @OnClick({R.id.top_left})
     void onclick(View v) {
         switch (v.getId()) {
-
             case R.id.top_left:
                 MainActivity.this.finish();
                 break;
@@ -409,17 +408,17 @@ public class MainActivity extends BaseActivity {
     private void showDialog(String names, final String num, String code) {
         new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
             @Override
-            public void onClick(Dialog dialog, boolean confirm){
-                if (confirm){
-                        DataInfo data = new DataInfo();
-                        data.setId(num);
-                        data.setUp(true);
-                        data.setNet(false);
-                        data.setType(1);
-                     data.setName(Utils.getXiangmu(MainActivity.this));
-                        data.setInsertTime(System.currentTimeMillis() + "");
-                        OfflLineDataDb.insert(data);
-                     dialog.dismiss();
+            public void onClick(Dialog dialog, boolean confirm) {
+                if (confirm) {
+                    DataInfo data = new DataInfo();
+                    data.setId(num);
+                    data.setUp(true);
+                    data.setNet(false);
+                    data.setType(1);
+                    data.setName(Utils.getXiangmu(MainActivity.this));
+                    data.setInsertTime(System.currentTimeMillis() + "");
+                    OfflLineDataDb.insert(data);
+                    dialog.dismiss();
                 }
             }
         }).setTitle("提示").show();
@@ -429,8 +428,8 @@ public class MainActivity extends BaseActivity {
     private void showDialogd(String names, final String num, String code) {
         new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
             @Override
-            public void onClick(Dialog dialog, boolean confirm){
-                if (confirm){
+            public void onClick(Dialog dialog, boolean confirm) {
+                if (confirm) {
                     DataInfo data = new DataInfo();
                     data.setId(num);
                     data.setUp(false);
@@ -444,9 +443,6 @@ public class MainActivity extends BaseActivity {
             }
         }).setTitle("提示").show();
     }
-
-
-
 
 
     //无效票
@@ -478,17 +474,18 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+
     //在线成功
-    PutSubscriber putSubscriber=new PutSubscriber(){
+    PutSubscriber putSubscriber = new PutSubscriber() {
         @Override
-        public void onEvent(PutEvent putEvent){
-            String sgs = putEvent.getStrs().substring(0,2);
+        public void onEvent(PutEvent putEvent) {
+            String sgs = putEvent.getStrs().substring(0, 2);
             if ("01".equals(sgs)) {
                 showDialogMsg("无效票");
-            }else if("02".equals(sgs)){
+            } else if ("02".equals(sgs)) {
                 showDialogMsg("已使用");
-            }else {
-                showDialogd(Utils.pullScan(putEvent.getStrs()),idcard_id,Utils.getXiangmu(MainActivity.this));
+            } else {
+                showDialogd(Utils.pullScan(putEvent.getStrs()), idcard_id, Utils.getXiangmu(MainActivity.this));
             }
         }
     };
