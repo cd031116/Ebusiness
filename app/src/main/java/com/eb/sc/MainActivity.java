@@ -425,7 +425,7 @@ public class MainActivity extends BaseActivity {
     }
 
     //有效票-有线
-    private void showDialogd(String names, final String num, String code,String renshu) {
+    private void showDialogd(String names, final String num, String code,final  String renshu) {
         new CommomDialog(this, R.style.dialog, names, num, code,renshu, new CommomDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
@@ -435,6 +435,7 @@ public class MainActivity extends BaseActivity {
                     data.setUp(true);
                     data.setNet(true);
                     data.setType(1);
+                    data.setpNum(renshu);
                     data.setName(Utils.getXiangmu(MainActivity.this));
                     data.setInsertTime(System.currentTimeMillis() + "");
                     OfflLineDataDb.insert(data);

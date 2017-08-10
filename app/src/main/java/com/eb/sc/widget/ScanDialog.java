@@ -66,10 +66,7 @@ public class ScanDialog extends Dialog implements View.OnClickListener{
         xiangmu=(LinearLayout) findViewById(R.id.xiangmu);
         renshu_l=(LinearLayout) findViewById(R.id.renshu_l);
         renshu_t=(TextView)findViewById(R.id.renshu);
-
-
         submit.setOnClickListener(this);
-
         if(!TextUtils.isEmpty(mNum)){
             tCode.setText(mNum);
         }

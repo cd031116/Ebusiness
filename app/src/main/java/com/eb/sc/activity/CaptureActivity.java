@@ -362,7 +362,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }).setTitle("提示").show();
     }
     //有线
-    private void showDialogd(String num, final  String code,String name,String renshu) {
+    private void showDialogd(String num, final  String code,String name,final  String renshu) {
         new ScanDialog(this, R.style.dialog, num, name, renshu,new ScanDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm){
@@ -371,6 +371,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     if(code.length()==6){
                         dataInfo.setId(code);
                         dataInfo.setNet(true);
+                        dataInfo.setpNum(renshu);
                         dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
                         dataInfo.setType(2);
                         dataInfo.setInsertTime(System.currentTimeMillis()+"");
@@ -378,6 +379,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     }else {
                         String arr[]=AnalysisHelp.arrayScan(code);
                         dataInfo.setId(code);
+                        dataInfo.setpNum(renshu);
                         dataInfo.setNet(true);
                         dataInfo.setType(2);
                         dataInfo.setValidTime(arr[1]);

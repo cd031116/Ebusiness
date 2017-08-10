@@ -30,6 +30,16 @@ public class DataInfo implements Serializable {
 
     private String pName;//
 
+    private String  pNum;//人数
+
+    public String getpNum() {
+        return pNum;
+    }
+
+    public void setpNum(String pNum) {
+        this.pNum = pNum;
+    }
+
     public String getpName() {
         return pName;
     }

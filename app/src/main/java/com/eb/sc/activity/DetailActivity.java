@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
+import com.eb.sc.bean.DetailInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
@@ -58,11 +59,18 @@ public class DetailActivity extends BaseActivity {
     @Bind(R.id.ticket_door_layout)
     RelativeLayout ticket_door_layout;
 
+    @Bind(R.id.rlist)
+    RecyclerView rlist;
+    private CommonAdapter<DetailInfo> tAdapter;
+    private List<DetailInfo> tdata = new ArrayList<>();
+
+
     private Map<String, List<DataInfo>> mMap;
     private CommonAdapter<DataInfo> mAdapter;
     private List<DataInfo> mdata = new ArrayList<>();
     LinearLayoutManager layoutManager;
     private boolean isconnect = true;
+
 
     @Override
     protected int getLayoutId() {
@@ -128,12 +136,12 @@ public class DetailActivity extends BaseActivity {
         ticket_num.setText(mdata.size() + "");
         ticket_door.setText(Utils.getXiangmu(DetailActivity.this));
         total_num.setText(mdata.size() + "");
-//        try {
-//            mMap = Utils.groupDataInfo(mdata);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        init();
+        try {
+            mMap = Utils.groupDataInfo(mdata);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        init();
     }
 
     @OnClick({R.id.top_left})
@@ -202,55 +210,24 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void init() {
-        for (int i = 0; i < 2; i++) {
-            RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            RelativeLayout lLayout = new RelativeLayout(this);
-            lLayout.setId(i + 10);
-//            lLayout.setOrientation(LinearLayout.HORIZONTAL);
-            RelativeLayout.LayoutParams lLayoutlayoutParams = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lLayout.setLayoutParams(lLayoutlayoutParams);
-
-
-
-            TextView tv = new TextView(this);
-            tv.setId(i);
-            tv.setText("这是第" + i + "个文本框");
-            tv.setTextSize(20);
-            tv.setTextColor(Color.parseColor("#7c7c7c"));
-
-            TextView tv_num = new TextView(this);
-            tv_num.setId(i + 20);
-            tv_num.setText(i + "台");
-            tv_num.setTextSize(20);
-            tv_num.setTextColor(Color.parseColor("#7c7c7c"));
-
-
-//            RelativeLayout.LayoutParams s = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-//            s.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, -1);
-////添加位置信息 -1表示相对于父控件的位置 ，如果要相对某个平级控件则参数是该控件的ID
-////            s.setMargins(10, 10, 10, 10);//设置左，上，右，下，的距离
-//            //上面的定义好了之后可以用了：
-
-            RelativeLayout.LayoutParams layoutParams_txt1 = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            tv_num.setLayoutParams(layoutParams_txt1);
-            tv.setLayoutParams(layoutParams_txt1);
-
-            // 添加到每行的linearlayout中
-            lLayout.addView(tv);
-            lLayout.addView(tv_num);
-
-            // 每个linearlayout都在前一个的下面，第一个在顶,不处理
-            if (i > 0) {
-                relativeParams.addRule(RelativeLayout.BELOW, i + 10 - 1);
-            }
-            // 把每个linearlayout加到relativelayout中
-            ticket_door_layout.addView(lLayout, relativeParams);
+        Log.i("tttt","mmmmmmmmm="+mMap.size());
+        Log.i("tttt","mdata="+mdata.size());
+        for (Map.Entry<String, List<DataInfo>> entry : mMap.entrySet()) {
+            tdata.add(new DetailInfo(entry.getKey(), mMap.get(entry.getKey()).size() + ""));
+            Log.i("tttt","DetailInfo="+entry.getKey());
         }
 
+        tAdapter = new CommonAdapter<DetailInfo>(DetailActivity.this, R.layout.detail_top, tdata) {
+            @Override
+            protected void convert(ViewHolder holder, DetailInfo info, int position) {
+                holder.setText(R.id.ticket_num,info.getNum());
+                holder.setText(R.id.ticket_door,info.getName());
+            }
+        };
+        layoutManager = new LinearLayoutManager(DetailActivity.this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rlist.setLayoutManager(layoutManager);
+        rlist.setAdapter(tAdapter);
 
     }
 
