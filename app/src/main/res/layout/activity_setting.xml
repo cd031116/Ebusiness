@@ -193,6 +193,23 @@
                 android:textSize="20sp" />
 
         </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="保存"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:background="@drawable/text_bg"
+            android:padding="10dp"/>
+
+
     </LinearLayout>
 
 </LinearLayout>

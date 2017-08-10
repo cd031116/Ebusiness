@@ -2,7 +2,7 @@
 <resources>
 
     <string name="icon_name">身份证验证Ver1.0</string>
-    <string name="app_name">读取身份证</string>
+    <string name="app_name">云核销</string>
     <string name="action_settings">设置</string>
     <string name="hello_world">请刷身份证!</string>
     <string name="scan_tips">将二维码图片对准扫描框即可自动扫描</string>

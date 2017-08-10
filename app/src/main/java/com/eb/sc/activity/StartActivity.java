@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -79,18 +80,13 @@ public class StartActivity extends BaseActivity {
         }else {
             bg.setStringValue(Constants.havenet, "-1");
         }
-        startService(new Intent(StartActivity.this, PushService.class));
+        PushManager.getInstance(getApplicationContext()).add();
     }
 
     private void redirectTo() {
             startActivity(new Intent(StartActivity.this,CheckActivity.class));
             this.finish();
 
-    }
-    public String getMiui(Context context){
-        TelephonyManager TelephonyMgr = (TelephonyManager)context.getSystemService(TELEPHONY_SERVICE);
-        String szImei = TelephonyMgr.getDeviceId();
-        return  szImei;
     }
 
 }

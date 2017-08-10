@@ -214,16 +214,22 @@ public class CaptureActivity extends BaseActivity implements Callback {
         this.scansts=result;
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
-
+        Log.i("tttt","result="+result);
         if (BusinessManager.isHave(result)) {//票已检
             showDialogMsg("已使用!");
         } else {
             if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this)||!isconnect) {//无网络
                 showresult(result);
             } else {//有网络
-                Log.i("tttt","sssssssssss="+Utils.getscan(this,result));
-               String updata =Utils.getscan(this,result);
-                PushManager.getInstance(this).sendMessage(updata);
+                Log.i("tttt","");
+                if(result.length()==6){
+                    PushManager.getInstance(this).sendMessage(Utils.getMjScan(this,result));
+                    Log.i("tttt","sssssssssssd="+Utils.getMjScan(this,result));
+                }else {
+                    Log.i("tttt","sssssssssss="+Utils.getscan(this,result));
+                    String updata =Utils.getscan(this,result);
+                    PushManager.getInstance(this).sendMessage(updata);
+                }
             }
         }
         // 连续扫描，不发送此消息扫描一次结束后就不能再次扫描
@@ -325,20 +331,30 @@ public class CaptureActivity extends BaseActivity implements Callback {
 
 //无线
     private void showDialog(String num, final  String code) {
-        new ScanDialog(this, R.style.dialog, num, "", new ScanDialog.OnCloseListener() {
+        new ScanDialog(this, R.style.dialog, num, "", "",new ScanDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
-                    String arr[]=AnalysisHelp.arrayScan(code);
                     DataInfo dataInfo=new DataInfo();
-                    dataInfo.setId(code);
-                    dataInfo.setNet(false);
-                    dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
-                    dataInfo.setType(2);
-                    dataInfo.setValidTime(arr[1]);
-                    dataInfo.setInsertTime(System.currentTimeMillis()+"");
-                    dataInfo.setUp(false);
+                    if(code.length()==6){
+                        dataInfo.setId(code);
+                        dataInfo.setNet(false);
+                        dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
+                        dataInfo.setType(2);
+                        dataInfo.setInsertTime(System.currentTimeMillis()+"");
+                        dataInfo.setUp(false);
+                    }else {
+                        String arr[]=AnalysisHelp.arrayScan(code);
+                        dataInfo.setId(code);
+                        dataInfo.setNet(false);
+                        dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
+                        dataInfo.setType(2);
+                        dataInfo.setValidTime(arr[1]);
+                        dataInfo.setInsertTime(System.currentTimeMillis()+"");
+                        dataInfo.setUp(false);
+                    }
                     OfflLineDataDb.insert(dataInfo);
+
                     handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
                 }
@@ -346,22 +362,31 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }).setTitle("提示").show();
     }
     //有线
-    private void showDialogd(String num, final  String code,String name) {
-        new ScanDialog(this, R.style.dialog, num, name, new ScanDialog.OnCloseListener() {
+    private void showDialogd(String num, final  String code,String name,String renshu) {
+        new ScanDialog(this, R.style.dialog, num, name, renshu,new ScanDialog.OnCloseListener() {
             @Override
-            public void onClick(Dialog dialog, boolean confirm) {
+            public void onClick(Dialog dialog, boolean confirm){
                 if (confirm) {
-                    String arr[]=AnalysisHelp.arrayScan(code);
                     DataInfo dataInfo=new DataInfo();
-                    dataInfo.setId(code);
-                    dataInfo.setNet(true);
-                    dataInfo.setType(2);
-                    dataInfo.setValidTime(arr[1]);
-                    dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
-                    dataInfo.setInsertTime(System.currentTimeMillis()+"");
-                    dataInfo.setUp(true);
+                    if(code.length()==6){
+                        dataInfo.setId(code);
+                        dataInfo.setNet(false);
+                        dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
+                        dataInfo.setType(2);
+                        dataInfo.setInsertTime(System.currentTimeMillis()+"");
+                        dataInfo.setUp(false);
+                    }else {
+                        String arr[]=AnalysisHelp.arrayScan(code);
+                        dataInfo.setId(code);
+                        dataInfo.setNet(true);
+                        dataInfo.setType(2);
+                        dataInfo.setValidTime(arr[1]);
+                        dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
+                        dataInfo.setInsertTime(System.currentTimeMillis()+"");
+                        dataInfo.setUp(true);
+                        handler.sendEmptyMessage(R.id.restart_preview);
+                    }
                     OfflLineDataDb.insert(dataInfo);
-                    handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
                 }
             }
@@ -372,13 +397,16 @@ public class CaptureActivity extends BaseActivity implements Callback {
     PutSubscriber putSubscriber=new PutSubscriber() {
         @Override
         public void onEvent(PutEvent putEvent) {
+            String srt=putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0,2);
+            String renshu= putEvent.getStrs().substring(srt.length()-2,srt.length());
+
             if ("01".equals(sgs)) {
                 showDialogMsg("无效票");
             }else if("02".equals(sgs)){
                 showDialogMsg("已使用");
             }else {
-                showDialogd(Utils.pullScan(putEvent.getStrs()),scansts,Utils.getXiangmu(CaptureActivity.this));
+                showDialogd(Utils.pullScan(putEvent.getStrs()),scansts,Utils.getXiangmu(CaptureActivity.this),String.valueOf(Integer.parseInt(renshu)));
             }
         }
     };
@@ -414,15 +442,17 @@ public class CaptureActivity extends BaseActivity implements Callback {
             showDialogMsg("票已过期!");
         } else if (a == 3) {
             showDialogMsg("票型不符合!");
+        }else if (a == 4) {
+            showDialog(Utils.getXiangmu(CaptureActivity.this), strs);//梅江
         } else {
             showDialogMsg("无效票!");
         }
     }
-    //分析二维码-无线
+    //分析二维码
     private void showresultd(String strs) {
         int a = AnalysisHelp.StringScan(CaptureActivity.this,strs);
         if (a == 1) {//1------可用
-            showDialogd("", strs,Utils.getXiangmu(CaptureActivity.this));
+            showDialogd("", strs,Utils.getXiangmu(CaptureActivity.this),"");
         } else if (a == 2) {
             showDialogMsg("票已过期!");
         } else if (a == 3) {

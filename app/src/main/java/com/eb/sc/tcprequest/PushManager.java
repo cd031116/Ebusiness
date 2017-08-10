@@ -7,12 +7,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.eb.sc.MainActivity;
+import com.eb.sc.activity.SettingActivity;
 import com.eb.sc.bean.Params;
 import com.eb.sc.utils.AESCipher;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.Utils;
 
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.future.ConnectFuture;
@@ -86,6 +88,13 @@ public class PushManager {
 
 
     public   void add(){
+        BaseConfig bg=new BaseConfig(mcontext);
+        String dd=bg.getStringValue(Constants.tcp_ip,"");
+        if(TextUtils.isEmpty(dd)){
+            manager=null;
+            return ;
+        }
+
         if(!NetWorkUtils.isNetworkConnected(mcontext)){
             manager=null;
             return ;
@@ -107,14 +116,14 @@ public class PushManager {
         }
         try {
             Log.e("dawns", "connect: ");
-            connectFuture = connector.connect(new InetSocketAddress(bg.getStringValue(Constants.tcp_ip,"192.168.18.10"),Integer.parseInt(bg.getStringValue(Constants.ip_port,"2020"))));
+            connectFuture = connector.connect(new InetSocketAddress(bg.getStringValue(Constants.tcp_ip,""),Integer.parseInt(bg.getStringValue(Constants.ip_port,""))));
             //等待是否连接成功，相当于是转异步执行为同步执行。
             connectFuture.awaitUninterruptibly();
             //连接成功后获取会话对象。如果没有上面的等待，由于connect()方法是异步的，session 可能会无法获取。
             ioSession = connectFuture.getSession();
 //            String encrypt = AESCipher.encrypt(Params.KEY,);
-
-          String by=  bg.getStringValue(Constants.px_list,"");
+            sendMessage(Params.SHENGJI);
+            String by=  bg.getStringValue(Constants.px_list,"");
             if(TextUtils.isEmpty(by)){
                 sendMessage(Params.SHEBEI);
             }
@@ -139,15 +148,15 @@ public class PushManager {
     }
 
 
-
     /**
      * 关闭
      */
-    public static  void close() {
-        if (ioSession != null && ioSession.isConnected()) {
-            ioSession.close(false);
+    public   void close() {
+        Log.e("dawn", "close: " );
+        if (ioSession != null && ioSession.isConnected()){
+            ioSession.close(true);
         }
-        if (connectFuture != null && connectFuture.isConnected()) {
+        if (connectFuture != null && connectFuture.isConnected()){
             connectFuture.cancel();
         }
         if (connector != null && !connector.isDisposed()) {

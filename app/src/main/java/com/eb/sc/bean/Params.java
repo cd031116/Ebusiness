@@ -16,8 +16,8 @@ public class Params {
 //    public static final String HOSTNAME="192.168.18.114";
     //端口号
     public static final int PORT = 2020;
-    //心跳包发送
-    public static final String SEND="4099000100017A";
+    //升级
+    public static final String SHENGJI="4080000100017A";
     public static final String SEND1="@15311Z";
     //心跳包接受
     public static final String RECEIVE="4099000100017A";

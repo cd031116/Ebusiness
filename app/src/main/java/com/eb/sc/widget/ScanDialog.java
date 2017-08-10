@@ -18,20 +18,22 @@ public class ScanDialog extends Dialog implements View.OnClickListener{
     private TextView submit;
     private LinearLayout xiangmu;
     private Context mContext;
-    private String mName;
+    private String renshu;
     private String mNum;
     private String mCode;
     private OnCloseListener listener;
     private String title;
-
+    private LinearLayout renshu_l;
+    private TextView   renshu_t;
     public ScanDialog(Context context) {
         super(context);
         this.mContext = context;
     }
 
-    public ScanDialog(Context context, int themeResId,String time,String code, OnCloseListener listener) {
+    public ScanDialog(Context context, int themeResId,String time,String code,String renshu, OnCloseListener listener) {
         super(context, themeResId);
         this.mContext = context;
+        this.renshu=renshu;
         this.mNum = time;
         this.mCode = code;
         this.listener = listener;
@@ -62,12 +64,22 @@ public class ScanDialog extends Dialog implements View.OnClickListener{
         submit = (TextView)findViewById(R.id.submit);
         tCode = (TextView)findViewById(R.id.tCode);//票型
         xiangmu=(LinearLayout) findViewById(R.id.xiangmu);
+        renshu_l=(LinearLayout) findViewById(R.id.renshu_l);
+        renshu_t=(TextView)findViewById(R.id.renshu);
+
+
         submit.setOnClickListener(this);
 
         if(!TextUtils.isEmpty(mNum)){
             tCode.setText(mNum);
         }
 
+        if(!TextUtils.isEmpty(renshu)){
+            renshu_l.setVisibility(View.VISIBLE);
+            renshu_t.setText(renshu);
+        }else {
+            renshu_l.setVisibility(View.GONE);
+        }
         if(!TextUtils.isEmpty(mCode)){
             xiangmu.setVisibility(View.VISIBLE);
             idcard.setText(mCode);

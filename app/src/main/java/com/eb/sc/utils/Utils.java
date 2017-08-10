@@ -7,9 +7,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.eb.sc.bean.DataInfo;
 import com.eb.sc.bean.ItemInfo;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lyj on 2017/7/29.
@@ -57,6 +61,24 @@ public class Utils {
         String DEVICE_ID = tm.getDeviceId();
         return DEVICE_ID;
     }
+
+    public static String getMjScan(Context context, String msg) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        Log.i("tttt","she="+she);
+        String nr_16 = HexStr.str2HexStr(msg);
+        String leng_16 = HexStr.shiTo16(nr_16.length());
+        if (leng_16.length() <= 1) {
+            leng_16 = "000" + leng_16;
+        } else if (leng_16.length() <= 2) {
+            leng_16 = "00" + leng_16;
+        } else if (leng_16.length() <= 3) {
+            leng_16 = "0" + leng_16;
+        }
+        String data = "4001" + she + leng_16 + nr_16;
+        return data.toUpperCase();
+    }
+
 
 
     public static String getscan(Context context, String msg) {
@@ -106,7 +128,7 @@ public class Utils {
         String data = "4013" + she + leng_16 + nr_16;
         return data.toUpperCase();
     }
-
+    //同步 二维码
     public static String getIdcard_t(Context context, String str) {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");
@@ -120,6 +142,22 @@ public class Utils {
             leng_16 = "0" + leng_16;
         }
         String data = "4012" + she + leng_16 + nr_16;
+        return data.toUpperCase();
+    }
+   // 票务通同步 二维码
+    public static String getscan_t_mj(Context context, String str) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");
+        String nr_16 = HexStr.str2HexStr(str);
+        String leng_16 = HexStr.shiTo16(nr_16.length());
+        if (leng_16.length() <= 1) {
+            leng_16 = "000" + leng_16;
+        } else if (leng_16.length() <= 2) {
+            leng_16 = "00" + leng_16;
+        } else if (leng_16.length() <= 3) {
+            leng_16 = "0" + leng_16;
+        }
+        String data = "4014" + she + leng_16 + nr_16;
         return data.toUpperCase();
     }
 
@@ -211,6 +249,23 @@ public class Utils {
     }
 
     //检测是同步(身份证)
+    public static boolean pullShengji(String sty) {
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        if (sty.length() < 12) {
+            return false;
+        }
+        String sgs = sty.substring(2, 4);
+        if ("80".equals(sgs)) {
+            return true;
+        }
+        return false;
+    }
+
+
+
+    //检测是同步(身份证)
     public static boolean pullSync(String sty) {
         if (TextUtils.isEmpty(sty)) {
             return false;
@@ -239,7 +294,17 @@ public class Utils {
         }
         return false;
     }
-
+    //检测是同步(二维码) 票务通
+    public static boolean pullscanMj(String sty) {
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        String sgs = sty.substring(2, 4);
+        if ("14".equals(sgs)) {
+            return true;
+        }
+        return false;
+    }
 
 
     //
@@ -258,9 +323,39 @@ public class Utils {
     public static String xintiao(Context context) {
         //心跳
         BaseConfig bg = new BaseConfig(context);
-        String she = bg.getStringValue(Constants.shebeihao, "0001");
+        String she = bg.getStringValue(Constants.shebeihao, "");
         return "4099" + she + "00017A";
     }
+    public static String shengji(Context context) {
+        //升级
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");
+        return "4080" + she + "00017A";
+    }
 
+    /**
+     * 按照异常批次号对已开单数据进行分组
+     * @param billingList
+     * @return
+     * @throws Exception
+     */
+    public static  Map<String, List<DataInfo>> groupDataInfo(List<DataInfo> billingList) throws Exception{
+        Map<String, List<DataInfo>> resultMap = new HashMap<String, List<DataInfo>>();
+        try{
+            for(DataInfo tmExcpNew : billingList){
+
+                if(resultMap.containsKey(tmExcpNew.getName())){//map中异常批次已存在，将该数据存放到同一个key（key存放的是异常批次）的map中
+                    resultMap.get(tmExcpNew.getName()).add(tmExcpNew);
+                }else{//map中不存在，新建key，用来存放数据
+                    List<DataInfo> tmpList = new ArrayList<DataInfo>();
+                    tmpList.add(tmExcpNew);
+                    resultMap.put(tmExcpNew.getName(), tmpList);
+                }
+            }
+        }catch(Exception e){
+            throw new Exception("按照异常批次号对已开单数据进行分组时出现异常", e);
+        }
+        return resultMap;
+    }
 
 }

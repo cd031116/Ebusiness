@@ -24,24 +24,27 @@ public class CommomDialog extends Dialog implements View.OnClickListener{
     private TextView tCode;//项目
     private TextView submit;
     private LinearLayout xiangmu;
+    private  LinearLayout renshu_l;
+    private  TextView renshu;
     private Context mContext;
     private String mName;//票型
     private String mNum;
     private String mCode;//项目
     private OnCloseListener listener;
     private String title;
-
+    private String ren_num;
     public CommomDialog(Context context) {
         super(context);
         this.mContext = context;
     }
 
-    public CommomDialog(Context context, int themeResId, String names,String num,String code, OnCloseListener listener) {
+    public CommomDialog(Context context, int themeResId, String names,String num,String code,String ren_num, OnCloseListener listener) {
         super(context, themeResId);
         this.mContext = context;
         this.mName = names;
         this.mNum = num;
         this.mCode = code;
+        this.ren_num=ren_num;
         this.listener = listener;
     }
 
@@ -71,6 +74,8 @@ public class CommomDialog extends Dialog implements View.OnClickListener{
         submit = (TextView)findViewById(R.id.submit);
         tCode = (TextView)findViewById(R.id.tCode);
         xiangmu= (LinearLayout) findViewById(R.id.xiangmu);
+        renshu_l=(LinearLayout) findViewById(R.id.renshu_l);
+        renshu = (TextView)findViewById(R.id.renshu);
         submit.setOnClickListener(this);
 
         if(!TextUtils.isEmpty(mName)){
@@ -79,6 +84,12 @@ public class CommomDialog extends Dialog implements View.OnClickListener{
         }else {
             xiangmu.setVisibility(View.GONE);
         }
+        if(!TextUtils.isEmpty(mName)){
+            renshu.setText(ren_num);
+            renshu_l.setVisibility(View.VISIBLE);
+        }else {
+            renshu_l.setVisibility(View.GONE);
+        }
 
         if(!TextUtils.isEmpty(mCode)){
             tCode.setText(mCode);
@@ -86,6 +97,7 @@ public class CommomDialog extends Dialog implements View.OnClickListener{
         if(!TextUtils.isEmpty(mNum)){
             idcard.setText(mNum);
         }
+
     }
 
     @Override

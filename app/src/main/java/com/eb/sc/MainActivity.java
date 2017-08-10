@@ -355,7 +355,7 @@ public class MainActivity extends BaseActivity {
                         String updata = Utils.getIdcard(this, idCardInfo.getId());
                         PushManager.getInstance(this).sendMessage(updata);
                     } else {
-                        showDialog(mLastName, idCardInfo.getId(), "");
+                        showDialog(mLastName, idCardInfo.getId(), "","");
                     }
                 }
                 feature = idCardInfo.getFpdata();
@@ -405,8 +405,8 @@ public class MainActivity extends BaseActivity {
     }
 
     //有效票-无线
-    private void showDialog(String names, final String num, String code) {
-        new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
+    private void showDialog(String names, final String num, String code,String renshu) {
+        new CommomDialog(this, R.style.dialog, names, num, code,renshu, new CommomDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
@@ -425,8 +425,8 @@ public class MainActivity extends BaseActivity {
     }
 
     //有效票-有线
-    private void showDialogd(String names, final String num, String code) {
-        new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
+    private void showDialogd(String names, final String num, String code,String renshu) {
+        new CommomDialog(this, R.style.dialog, names, num, code,renshu, new CommomDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
@@ -479,13 +479,18 @@ public class MainActivity extends BaseActivity {
     PutSubscriber putSubscriber = new PutSubscriber() {
         @Override
         public void onEvent(PutEvent putEvent) {
+            String srt=putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0, 2);
+            String renshu= putEvent.getStrs().substring(srt.length()-2,srt.length());
+
+
+
             if ("01".equals(sgs)) {
                 showDialogMsg("无效票");
             } else if ("02".equals(sgs)) {
                 showDialogMsg("已使用");
             } else {
-                showDialogd(Utils.pullScan(putEvent.getStrs()), idcard_id, Utils.getXiangmu(MainActivity.this));
+                showDialogd(Utils.pullScan(putEvent.getStrs()), idcard_id, Utils.getXiangmu(MainActivity.this),String.valueOf(Integer.parseInt(renshu)));
             }
         }
     };

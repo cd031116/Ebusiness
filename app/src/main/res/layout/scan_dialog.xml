@@ -24,7 +24,8 @@
             android:id="@+id/tCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:gravity="left"
+            android:layout_marginLeft="5dp"
             android:textColor="#333333"
             android:textSize="25sp" />
 
@@ -50,11 +51,39 @@
             android:id="@+id/idcard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:gravity="left"
+            android:layout_marginLeft="5dp"
             android:textColor="#333333"
             android:textSize="25sp" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/renshu_l"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="项目:"
+            android:textColor="#B6B6B6"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/renshu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_marginLeft="5dp"
+            android:textColor="#333333"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

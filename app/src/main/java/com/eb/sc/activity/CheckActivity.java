@@ -1,8 +1,13 @@
 package com.eb.sc.activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -13,9 +18,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.eb.sc.BuildConfig;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
+import com.eb.sc.bean.ItemInfo;
 import com.eb.sc.bean.Params;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
@@ -23,6 +31,10 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.sdk.eventbus.RefreshEvent;
+import com.eb.sc.sdk.eventbus.RefreshSubscriber;
+import com.eb.sc.sdk.eventbus.UpdateEvent;
+import com.eb.sc.sdk.eventbus.UpdateEventSubscriber;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.tcprequest.TcpResponse;
@@ -33,7 +45,10 @@ import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.DoubleClickExitHelper;
 import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.InputDialog;
+import com.eb.sc.widget.ShengjiDialog;
+import com.eb.sc.widget.ShowMsgDialog;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
@@ -46,6 +61,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -77,6 +93,8 @@ public class CheckActivity extends BaseActivity {
     ImageView setting;//设置
     private boolean isconnect = true;
     private DoubleClickExitHelper mDoubleClickExit;
+    private List<ItemInfo> mList = new ArrayList<>();
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_check;
@@ -85,13 +103,15 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-        mDoubleClickExit=new DoubleClickExitHelper(this);
+        mDoubleClickExit = new DoubleClickExitHelper(this);
         BaseConfig bg = new BaseConfig(this);
         bg.setStringValue(Constants.admin_word, "123456");
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(RefreshEvent.class, refreshEvent);
+        NotificationCenter.defaultCenter().subscriber(UpdateEvent.class, updateEvent);
         top_left.setVisibility(View.GONE);
-        top_title.setText("石燕湖大门核销点");
+
         String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
@@ -109,11 +129,13 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
+        TestData();
         cleardata();
+        Log.e("ClientSessionHandler", "shebei..." + Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
     }
 
     private void cleardata() {
-        List<DataInfo> mList = BusinessManager.querAll();
+        List<DataInfo> mList = OfflLineDataDb.queryAll();
         long times = ChangeData.getNowtime();
         for (int i = 0; i < mList.size(); i++) {
             if (Long.parseLong(mList.get(i).getInsertTime()) < times) {
@@ -150,7 +172,7 @@ public class CheckActivity extends BaseActivity {
                         if (confirm) {
                             String psd = bgd.getStringValue(Constants.admin_word, "-1");
                             if (psd.equals(text)) {
-                                startActivity(new Intent(CheckActivity.this, SettingActivity.class));
+                                startActivityForResult(new Intent(CheckActivity.this, SettingActivity.class), 1);
                             } else {
                                 Toast.makeText(CheckActivity.this, "密码不正确", Toast.LENGTH_SHORT).show();
                             }
@@ -182,11 +204,10 @@ public class CheckActivity extends BaseActivity {
                 isconnect = false;
                 changeview(false);
             }
-
         }
     };
     //网络
-    EventSubscriber netEventSubscriber = new EventSubscriber(){
+    EventSubscriber netEventSubscriber = new EventSubscriber() {
         @Override
         public void onEvent(NetEvent event) {
             if (event.isConnect()) {
@@ -201,15 +222,52 @@ public class CheckActivity extends BaseActivity {
         }
     };
 
+    UpdateEventSubscriber updateEvent = new UpdateEventSubscriber() {
+        @Override
+        public void onEvent(UpdateEvent event) {
+            int distance = String.valueOf(BuildConfig.VERSION_CODE).compareTo(event.getCode());
+            if (distance < 0) {
+                showDialogMsg();
+            }
+        }
+    };
+
+    private void showDialogMsg() {
+        new ShengjiDialog(this, R.style.dialog, "检测到新版本,是否升级?", new ShengjiDialog.OnCloseListener() {
+            @Override
+            public void onClick(Dialog dialog, boolean confirm, String text) {
+                if (confirm) {
+                    dialog.dismiss();
+                    Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.pgyer.com/5IzM"));
+                    it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+                    CheckActivity.this.startActivity(it);
+
+                } else {
+                    dialog.dismiss();
+                }
+            }
+        }).setTitle("新版本").show();
+
+    }
+
+
+    RefreshSubscriber refreshEvent = new RefreshSubscriber() {
+        @Override
+        public void onEvent(RefreshEvent refreshEvent) {
+            PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+            Log.e("ClientSessionHandler", "shebei..." + Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+
+        }
+    };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(RefreshEvent.class, refreshEvent);
+        NotificationCenter.defaultCenter().subscriber(UpdateEvent.class, updateEvent);
         stopService(new Intent(CheckActivity.this, PushService.class));
-//        BaseConfig bg = new BaseConfig(this);
-//        bg.setStringValue(Constants.havelink, "-1");
-//        bg.setStringValue(Constants.havenet, "-1");
     }
 
     private void changeview(boolean conect) {
@@ -223,11 +281,61 @@ public class CheckActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-        if (keyCode == KeyEvent.KEYCODE_BACK){
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             return mDoubleClickExit.onKeyDown(keyCode, event);
         }
+        Log.e("dawns", "onKeyDown: ");
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        BaseConfig bg = new BaseConfig(CheckActivity.this);
+        String result = "";
+        try {
+            result = data.getStringExtra("result");
+        } catch (Exception e) {
+
+        }
+        if (!TextUtils.isEmpty(result)) {
+            bg.setStringValue(Constants.tcp_ip, result);
+            PushManager.getInstance(CheckActivity.this).add();
+            Log.e("ClientSessionHandler", "result..." + result);
+        }
+        TestData();
+        PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+    }
+
+    /**
+     *
+     */
+    private void TestData() {
+        if (mList != null) {
+            mList.clear();
+        }
+        BaseConfig bg = new BaseConfig(CheckActivity.this);
+        String list_item = bg.getStringValue(Constants.px_list, "");
+        if (TextUtils.isEmpty(list_item)) {
+            return;
+        }
+        mList = JSON.parseArray(list_item, ItemInfo.class);
+        String s = bg.getStringValue(Constants.address, "-1");
+        if (!TextUtils.isEmpty(s)) {
+            for (int i = 0; i < mList.size(); i++) {
+                if (s.equals(mList.get(i).getCode())) {
+                    top_title.setText(mList.get(i).getName() + "核销点");
+                    Log.i("tttt", "top_title=" + mList.get(i).getCode());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        TestData();
     }
 }

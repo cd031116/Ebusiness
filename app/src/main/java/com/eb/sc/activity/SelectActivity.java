@@ -137,13 +137,16 @@ public class SelectActivity extends BaseActivity {
         @Override
         public void onEvent(PutEvent putEvent){
             if(!xiumian){
+                String srt=putEvent.getStrs();
                 String sgs = putEvent.getStrs().substring(0,2);
+                String renshu= putEvent.getStrs().substring(srt.length()-2,srt.length());
+
                 if ("01".equals(sgs)) {
                     showDialogMsg("无效票");
                 }else if("02".equals(sgs)){
                     showDialogMsg("已使用");
                 }else {
-                    showDialogd(Utils.pullScan(putEvent.getStrs()),id_n,Utils.getXiangmu(SelectActivity.this));
+                    showDialogd(Utils.pullScan(putEvent.getStrs()),id_n,Utils.getXiangmu(SelectActivity.this),renshu);
                 }
             }
 
@@ -205,8 +208,8 @@ public class SelectActivity extends BaseActivity {
         }
     }
     //有效票-有线   姓名    身份证    项目
-    private void showDialogd(String names, final String num, String code) {
-        new CommomDialog(this, R.style.dialog, names, num, code, new CommomDialog.OnCloseListener() {
+    private void showDialogd(String names, final String num, String code,String renshu) {
+        new CommomDialog(this, R.style.dialog, names, num, code,renshu, new CommomDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm){
                 if (confirm){
@@ -226,7 +229,7 @@ public class SelectActivity extends BaseActivity {
 
     //有效票
     private void showDialog(String names, final String nums, String code) {
-        new CommomDialog(this, R.style.dialog, names, nums, code, new CommomDialog.OnCloseListener() {
+        new CommomDialog(this, R.style.dialog, names, nums, code, "",new CommomDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {

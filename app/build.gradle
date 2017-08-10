@@ -57,7 +57,7 @@ dependencies {
     compile files('libs/zkandroidcore.jar')
     compile files('libs/zkandroididcardreader.jar')
     compile files('libs/zkandroidfpsensor.jar')
-    compile files('libs/slf4j-api-1.7.21.jar')
+//    compile files('libs/slf4j-api-1.7.21.jar')
     compile 'org.apache.mina:mina-core:2.0.7'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.jakewharton:butterknife:7.0.1'

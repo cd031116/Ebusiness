@@ -3,6 +3,7 @@ package com.eb.sc.activity;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -107,6 +108,10 @@ public class TongbBuActivity extends BaseActivity {
                 } else {
                     holder.setText(R.id.state, "已上传");
                     holder.setTextColor(R.id.state, Color.parseColor("#5CE064"));
+                    if(!TextUtils.isEmpty(info.getpName())){
+                        holder.setText(R.id.state, "无效票");
+                        holder.setTextColor(R.id.state, Color.parseColor("#FD1E1D"));
+                    }
                 }
             }
         };
@@ -124,9 +129,10 @@ public class TongbBuActivity extends BaseActivity {
         }
         List<DataInfo> mlist = BusinessManager.querAll();
         for (int i = 0; i < mlist.size(); i++) {
-            if (!mlist.get(i).isUp()) {
+            Log.i("tttt","mlistmlistmlist="+mlist.get(i).getpName());
+//            if (!mlist.get(i).isUp()) {
                 mdata.add(mlist.get(i));
-            }
+//            }
         }
         mAdapter.notifyDataSetChanged();
     }
@@ -152,16 +158,26 @@ public class TongbBuActivity extends BaseActivity {
         String sendMsg = "";
         DataInfo dataInfo=null;
         synchronized (this) {
-            for (int i = 0; i < mdata.size(); i++) {
+            for (int i = 0; i < mdata.size(); i++){
                  dataInfo = mdata.get(i);
                 if (!dataInfo.isUp()) {
                     //二维码，身份证信息
                     String id = dataInfo.getId();
                     if (dataInfo.getType() == 1)
                         sendMsg = Utils.getIdcard_t(this, id);
-                    else if (dataInfo.getType() == 2)
+                    else if (dataInfo.getType() == 2){
+//                                         if(dataInfo.getId().length()==6){
+//                                             sendMsg = Utils.getscan_t_mj(this, id);
+//                                         } else {
+//                                         }
                         sendMsg = Utils.getscan_t(this, id);
+                    }
                     Log.e("ClientSessionHandler", "sendMsg..." + sendMsg);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     PushManager.getInstance(TongbBuActivity.this).sendMessage(sendMsg);
                 }
             }
@@ -220,7 +236,16 @@ public class TongbBuActivity extends BaseActivity {
                     }
                 }else {
                     if("1".equals(event.getCode())){
-                        Toast.makeText(TongbBuActivity.this,"身份证号:"+event.getResponseStr()+" 没有购买票!",Toast.LENGTH_SHORT).show();
+                        for (int i=0;i<mdata.size();i++){
+                            if(mdata.get(i).getId().equals(event.getResponseStr())){
+                                dataInfo=mdata.get(i);
+                                dataInfo.setUp(true);
+                                dataInfo.setpName("无效票");
+                                mdata.get(i).setUp(true);
+                                BusinessManager.updataUp(dataInfo);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        }
                     }
                 }
         }

@@ -1,9 +1,14 @@
 package com.eb.sc.activity;
 
 import android.app.ActionBar;
+import android.app.AlarmManager;
+import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,21 +27,24 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.base.MyApplication;
 import com.eb.sc.bean.ItemInfo;
 import com.eb.sc.bean.Params;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.sdk.eventbus.RefreshEvent;
+import com.eb.sc.sdk.eventbus.RefreshSubscriber;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.Utils;
+import com.eb.sc.widget.RestartDialog;
+import com.eb.sc.widget.ShengjiDialog;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +73,8 @@ public class SettingActivity extends BaseActivity {
     EditText code;
     @Bind(R.id.tongbu)
     RelativeLayout tongbu;
+    @Bind(R.id.submit)
+    TextView submit;
 
     //----------------------------
     /**
@@ -85,7 +95,7 @@ public class SettingActivity extends BaseActivity {
     private ArrayAdapter<String> testDataAdapter;
     private boolean isconnect = true;
     private List<ItemInfo> mList = new ArrayList<>();
-
+    private  String address_ip="";
     @Override
     protected int getLayoutId() {
         return R.layout.activity_setting;
@@ -96,6 +106,7 @@ public class SettingActivity extends BaseActivity {
         super.initView();
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(RefreshEvent.class, refreshEvent);
         top_title.setText("设置");
         BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
@@ -109,11 +120,13 @@ public class SettingActivity extends BaseActivity {
         } else {
             changeview(false);
         }
+        address_ip=bg.getStringValue(Constants.tcp_ip,"");
     }
 
     @Override
     public void initData() {
         super.initData();
+
         TestData();
         code.setText(Utils.getImui(this) + "");
         BaseConfig bg = new BaseConfig(this);
@@ -131,13 +144,12 @@ public class SettingActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state,R.id.tongbu})
+    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state,R.id.tongbu,R.id.submit})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
-                SettingActivity.this.finish();
-                break;
-            case R.id.top_right_text:
+                Intent intent1= new Intent(SettingActivity.this,CheckActivity.class);
+                SettingActivity.this.setResult(1,intent1);
                 SettingActivity.this.finish();
                 break;
             case R.id.amend:
@@ -151,17 +163,55 @@ public class SettingActivity extends BaseActivity {
                 }
                 break;
             case R.id.tongbu:
+                BaseConfig bgs = new BaseConfig(this);
+                String http_urls = ip_tcp.getText().toString();
+                if(!address_ip.equals(http_urls)){
+                    Toast.makeText(SettingActivity.this,"您修改了ip地址,请先保存再同步",Toast.LENGTH_SHORT).show();
+                   return;
+                }
                 boolean a=  PushManager.getInstance(SettingActivity.this).sendMessage(Params.SHEBEI);
                 if(a){
                     Toast.makeText(SettingActivity.this,"同步成功",Toast.LENGTH_SHORT).show();
                 }else
                     Toast.makeText(SettingActivity.this,"同步失败",Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.submit:
+                BaseConfig bg = new BaseConfig(this);
+                String http_url = ip_tcp.getText().toString();
+                String http_code = ip_port.getText().toString();
+                if (!TextUtils.isEmpty(http_url)) {
+                    bg.setStringValue(Constants.tcp_ip, http_url);
+                }
+                if (!TextUtils.isEmpty(http_code)) {
+                    bg.setStringValue(Constants.ip_port, http_code);
+                }
+                Intent intent= new Intent(SettingActivity.this,CheckActivity.class);
+                if (!http_url.equals(address_ip)) {
+                    if(TextUtils.isEmpty(address_ip)){
+                        intent.putExtra("result",http_url);
+                    }else {
+                        showDialogMsg();
+                        break;
+                    }
+                }else{
+                    intent.putExtra("result","");
+                }
+                Toast.makeText(SettingActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+                SettingActivity.this.setResult(1,intent );
+                SettingActivity.this.finish();
+                break;
         }
     }
 
+    RefreshSubscriber refreshEvent = new RefreshSubscriber() {
+        @Override
+        public void onEvent(RefreshEvent refreshEvent) {
+            TestData();
+        }
+    };
+
     //长连接
-    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber(){
         @Override
         public void onEvent(ConnectEvent event) {
             BaseConfig bg = new BaseConfig(SettingActivity.this);
@@ -200,19 +250,10 @@ public class SettingActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        BaseConfig bg = new BaseConfig(this);
-        String http_url = ip_tcp.getText().toString();
-        String http_code = ip_port.getText().toString();
-        if (!TextUtils.isEmpty(http_url)) {
-            bg.setStringValue(Constants.tcp_ip, http_url);
-        }
-        if (!TextUtils.isEmpty(http_code)) {
-            bg.setStringValue(Constants.ip_port, http_code);
-        }
-
-        PushManager.getInstance(SettingActivity.this).sendMessage(Utils.getShebeipul(this,Utils.getImui(this)));
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(RefreshEvent.class, refreshEvent);
+        address_ip="";
     }
 
     private void changeview(boolean conect) {
@@ -266,8 +307,9 @@ public class SettingActivity extends BaseActivity {
                 for (int i = 0; i < mList.size(); i++) {
                     if (value.equals(mList.get(i).getName())) {
                         bg.setStringValue(Constants.address, mList.get(i).getCode());
-                    }
+                        Log.i("tttt","top_title="+mList.get(i).getCode());
 
+                    }
                 }
                 // 选择完后关闭popup窗口
                 typeSelectPopup.dismiss();
@@ -288,6 +330,44 @@ public class SettingActivity extends BaseActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent= new Intent(SettingActivity.this,CheckActivity.class);
+        SettingActivity.this.setResult(1,intent );
+        SettingActivity.this.finish();
+    }
+
+
+
+    private void showDialogMsg() {
+        new RestartDialog(this, R.style.dialog, "您修改了IP地址,需重启应用!", new RestartDialog.OnCloseListener() {
+            @Override
+            public void onClick(Dialog dialog, boolean confirm, String text) {
+                if (confirm) {
+                    PushManager.getInstance(SettingActivity.this).close();
+                    BaseConfig bg = new BaseConfig(SettingActivity.this);
+                    bg.setStringValue(Constants.tcp_ip, ip_tcp.getText().toString());
+                    bg.setStringValue(Constants.address,"");
+                    bg.setStringValue(Constants.px_list,"");
+                    dialog.dismiss();
+
+                    Intent i = getBaseContext().getPackageManager()
+                            .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+
+                    MyApplication.instance.getActivityManager().popAllActivityExceptOne(); // 自定义方法，关闭当前打开的所有avtivity
+
+                } else {
+                    dialog.dismiss();
+                }
+            }
+        }).setTitle("提示").show();
+
+    }
+
+
 
 
 }

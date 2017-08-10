@@ -26,7 +26,11 @@ public class PushService extends IntentService {
     protected void onHandleIntent(Intent intent){
         Log.e("dawns", "onHandleIntent: " );
         PushManager.getInstance(getApplicationContext()).add();
-
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("dawns", "onDestroy: " );
+    }
 }

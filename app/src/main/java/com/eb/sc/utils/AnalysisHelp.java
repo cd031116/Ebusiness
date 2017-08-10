@@ -14,14 +14,18 @@ public class AnalysisHelp {
     //1------可用
     //2--------过期
     //3-------------票型不符合
+    //4-----------梅江
     //判断是否可用
     public static int StringScan(Context context, String str) {
         int a = -1;
         if (TextUtils.isEmpty(str)) {
             return -1;//字符为空
         }
-        String[] strs = str.split("\\&");
 
+        if(str.length()==6){
+            return  4;
+        }
+        String[] strs = str.split("\\&");
         if (strs.length <= 3) {
             return 0;//未检测到票
         }
