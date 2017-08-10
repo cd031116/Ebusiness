@@ -237,6 +237,7 @@ public class SelectActivity extends BaseActivity {
                         DataInfo data = new DataInfo();
                         data.setId(nums);
                         data.setUp(false);
+                        data.setNet(false);
                         data.setName(Utils.getXiangmu(SelectActivity.this));
                         data.setType(1);
                         data.setInsertTime(System.currentTimeMillis() + "");

@@ -7,7 +7,6 @@
     android:fitsSystemWindows="true">
 
 
-
     <SurfaceView
         android:id="@+id/capture_preview"
         android:layout_width="match_parent"
@@ -16,15 +15,15 @@
     <ImageView
         android:id="@+id/top_mask"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/scan_mask"
         android:contentDescription="@string/app_name" />
 
     <RelativeLayout
         android:id="@+id/capture_crop_layout"
-        android:layout_width="380dp"
-        android:layout_height="380dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_below="@id/top_mask"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"

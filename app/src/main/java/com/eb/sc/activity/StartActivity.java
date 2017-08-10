@@ -70,7 +70,6 @@ public class StartActivity extends BaseActivity {
     }
 
 
-
     @Override
     public void initData(){
         super.initData();
@@ -86,7 +85,6 @@ public class StartActivity extends BaseActivity {
     private void redirectTo() {
             startActivity(new Intent(StartActivity.this,CheckActivity.class));
             this.finish();
-
     }
 
 }

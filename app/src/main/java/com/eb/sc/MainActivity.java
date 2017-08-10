@@ -412,7 +412,7 @@ public class MainActivity extends BaseActivity {
                 if (confirm) {
                     DataInfo data = new DataInfo();
                     data.setId(num);
-                    data.setUp(true);
+                    data.setUp(false);
                     data.setNet(false);
                     data.setType(1);
                     data.setName(Utils.getXiangmu(MainActivity.this));
@@ -432,7 +432,7 @@ public class MainActivity extends BaseActivity {
                 if (confirm) {
                     DataInfo data = new DataInfo();
                     data.setId(num);
-                    data.setUp(false);
+                    data.setUp(true);
                     data.setNet(true);
                     data.setType(1);
                     data.setName(Utils.getXiangmu(MainActivity.this));
@@ -482,8 +482,6 @@ public class MainActivity extends BaseActivity {
             String srt=putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0, 2);
             String renshu= putEvent.getStrs().substring(srt.length()-2,srt.length());
-
-
 
             if ("01".equals(sgs)) {
                 showDialogMsg("无效票");

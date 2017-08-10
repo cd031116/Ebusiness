@@ -128,11 +128,11 @@ public class DetailActivity extends BaseActivity {
         ticket_num.setText(mdata.size() + "");
         ticket_door.setText(Utils.getXiangmu(DetailActivity.this));
         total_num.setText(mdata.size() + "");
-        try {
-            mMap = Utils.groupDataInfo(mdata);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            mMap = Utils.groupDataInfo(mdata);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 //        init();
     }
 

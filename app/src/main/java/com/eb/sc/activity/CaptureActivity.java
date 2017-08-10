@@ -370,11 +370,11 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     DataInfo dataInfo=new DataInfo();
                     if(code.length()==6){
                         dataInfo.setId(code);
-                        dataInfo.setNet(false);
+                        dataInfo.setNet(true);
                         dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
                         dataInfo.setType(2);
                         dataInfo.setInsertTime(System.currentTimeMillis()+"");
-                        dataInfo.setUp(false);
+                        dataInfo.setUp(true);
                     }else {
                         String arr[]=AnalysisHelp.arrayScan(code);
                         dataInfo.setId(code);

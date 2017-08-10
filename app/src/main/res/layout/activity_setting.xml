@@ -12,6 +12,12 @@
 
     <include layout="@layout/view_top" />
 
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -208,8 +214,6 @@
             android:gravity="center_horizontal"
             android:background="@drawable/text_bg"
             android:padding="10dp"/>
-
-
     </LinearLayout>
-
+    </ScrollView>
 </LinearLayout>
