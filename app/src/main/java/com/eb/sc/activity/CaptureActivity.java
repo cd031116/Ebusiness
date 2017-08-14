@@ -336,7 +336,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
                     DataInfo dataInfo=new DataInfo();
-                    if(code.length()==6){
+                    if(!code.contains("&")){
                         dataInfo.setId(code);
                         dataInfo.setNet(false);
                         dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
@@ -354,7 +354,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
                         dataInfo.setUp(false);
                     }
                     OfflLineDataDb.insert(dataInfo);
-
                     handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
                 }
@@ -368,7 +367,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             public void onClick(Dialog dialog, boolean confirm){
                 if (confirm) {
                     DataInfo dataInfo=new DataInfo();
-                    if(code.length()==6){
+                    if(!code.contains("&")){
                         dataInfo.setId(code);
                         dataInfo.setNet(true);
                         dataInfo.setpNum(renshu);
@@ -386,8 +385,8 @@ public class CaptureActivity extends BaseActivity implements Callback {
                         dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
                         dataInfo.setInsertTime(System.currentTimeMillis()+"");
                         dataInfo.setUp(true);
-                        handler.sendEmptyMessage(R.id.restart_preview);
                     }
+                    handler.sendEmptyMessage(R.id.restart_preview);
                     OfflLineDataDb.insert(dataInfo);
                     dialog.dismiss();
                 }
@@ -419,8 +418,8 @@ public class CaptureActivity extends BaseActivity implements Callback {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
-                    dialog.dismiss();
                     handler.sendEmptyMessage(R.id.restart_preview);
+                    dialog.dismiss();
                 }
             }
         }).setTitle("提示").show();

@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.utils.BaseConfig;
@@ -48,7 +49,6 @@ public class StartActivity extends BaseActivity {
 
     @Override
     public void initView(){
-
         AlphaAnimation aa = new AlphaAnimation(0.5f, 1.0f);
         aa.setDuration(500);
         contentView.startAnimation(aa);

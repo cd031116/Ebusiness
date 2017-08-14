@@ -44,5 +44,9 @@ public class OfflLineDataDb {
     public static List<DataInfo> queryAll() {
         return getDB().select(null, DataInfo.class);
     }
+    //shanc 所有
+    public static void deleteueryAll() {
+         getDB().deleteAll(null, DataInfo.class);
+    }
 
 }
