@@ -10,6 +10,7 @@ public class ItemInfo implements Serializable{
     private String Id;
     private String Name;
     private String Code;
+    private String Num;
     public String getId() {
         return Id;
     }
@@ -32,5 +33,13 @@ public class ItemInfo implements Serializable{
 
     public void setCode(String code) {
         Code = code;
+    }
+
+    public String getNum() {
+        return Num;
+    }
+
+    public void setNum(String num) {
+        Num = num;
     }
 }

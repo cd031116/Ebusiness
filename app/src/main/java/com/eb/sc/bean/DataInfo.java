@@ -32,6 +32,17 @@ public class DataInfo implements Serializable {
 
     private String  pNum;//人数
 
+
+    private int  canuse;
+
+    public int getCanuse() {
+        return canuse;
+    }
+
+    public void setCanuse(int canuse) {
+        this.canuse = canuse;
+    }
+
     public String getpNum() {
         return pNum;
     }

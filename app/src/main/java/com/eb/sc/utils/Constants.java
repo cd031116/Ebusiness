@@ -27,4 +27,6 @@ public class Constants {
 
     public  static final String px_list="px_list";
 
+    public  static final String X_NUM="px_num";
+
 }

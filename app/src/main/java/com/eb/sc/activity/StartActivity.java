@@ -26,6 +26,7 @@ import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
 
 import org.aisen.android.network.task.TaskException;
@@ -43,27 +44,28 @@ public class StartActivity extends BaseActivity {
     ImageView start_bg;
 
     @Override
-    protected int getLayoutId(){
+    protected int getLayoutId() {
         return R.layout.activity_start;
     }
 
     @Override
-    public void initView(){
+    public void initView() {
         AlphaAnimation aa = new AlphaAnimation(0.5f, 1.0f);
         aa.setDuration(500);
         contentView.startAnimation(aa);
-        aa.setAnimationListener(new Animation.AnimationListener(){
+        aa.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationEnd(Animation arg0){
+            public void onAnimationEnd(Animation arg0) {
                 redirectTo();
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation){
+            public void onAnimationRepeat(Animation animation) {
 
             }
+
             @Override
-            public void onAnimationStart(Animation animation){
+            public void onAnimationStart(Animation animation) {
 
             }
         });
@@ -71,20 +73,22 @@ public class StartActivity extends BaseActivity {
 
 
     @Override
-    public void initData(){
+    public void initData() {
         super.initData();
         BaseConfig bg = new BaseConfig(this);
         if (NetWorkUtils.isNetworkConnected(this)) {
             bg.setStringValue(Constants.havenet, "1");
-        }else {
+        } else {
             bg.setStringValue(Constants.havenet, "-1");
         }
         PushManager.getInstance(getApplicationContext()).add();
     }
 
     private void redirectTo() {
-            startActivity(new Intent(StartActivity.this,CheckActivity.class));
-            this.finish();
+        startActivity(new Intent(StartActivity.this, CheckActivity.class));
+        this.finish();
     }
+
+
 
 }

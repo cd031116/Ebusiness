@@ -119,8 +119,11 @@ public class CaptureActivity extends BaseActivity implements Callback {
     public void setCropHeight(int cropHeight) {
         this.cropHeight = cropHeight;
     }
+
     private boolean isconnect = true;
-    private String scansts="";
+    private String scansts = "";
+    private int cannum = 1;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_qr_scan;
@@ -130,6 +133,12 @@ public class CaptureActivity extends BaseActivity implements Callback {
     public void initView() {
         super.initView();
         // 初始化 CameraManager
+        BaseConfig bg = BaseConfig.getInstance(this);
+        try {
+            cannum = Integer.parseInt(bg.getStringValue(Constants.X_NUM, "1"));
+        } catch (Exception e) {
+
+        }
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
@@ -210,27 +219,29 @@ public class CaptureActivity extends BaseActivity implements Callback {
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
     }
+
     public void handleDecode(String result) {
-        this.scansts=result;
+        this.scansts = result;
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
-        Log.i("tttt","result="+result);
-        if (BusinessManager.isHave(result)) {//票已检
-            showDialogMsg("已使用!");
-        } else {
-            if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this)||!isconnect) {//无网络
+        Log.i("mmmm", "handleDecode=" + cannum);
+        if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this) || !isconnect) {//无网络
+            if (BusinessManager.isHaveScan(result, cannum)) {//票已检
+                showDialogMsg("已使用!");
+            } else {
                 showresult(result);
-            } else {//有网络
-                Log.i("tttt","");
-                if(result.length()==6){
-                    PushManager.getInstance(this).sendMessage(Utils.getMjScan(this,result));
-                    Log.i("tttt","sssssssssssd="+Utils.getMjScan(this,result));
-                }else {
-                    Log.i("tttt","sssssssssss="+Utils.getscan(this,result));
-                    String updata =Utils.getscan(this,result);
-                    PushManager.getInstance(this).sendMessage(updata);
-                }
             }
+        } else {//有网络
+            Log.i("tttt", "");
+            if (result.length() == 6) {
+                PushManager.getInstance(this).sendMessage(Utils.getMjScan(this, result));
+                Log.i("tttt", "sssssssssssd=" + Utils.getMjScan(this, result));
+            } else {
+                Log.i("tttt", "sssssssssss=" + Utils.getscan(this, result));
+                String updata = Utils.getscan(this, result);
+                PushManager.getInstance(this).sendMessage(updata);
+            }
+
         }
         // 连续扫描，不发送此消息扫描一次结束后就不能再次扫描
 //		handler.sendEmptyMessage(R.id.restart_preview);
@@ -329,65 +340,85 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }
     };
 
-//无线
-    private void showDialog(String num, final  String code) {
-        new ScanDialog(this, R.style.dialog, num, "", "",new ScanDialog.OnCloseListener() {
+    //无线
+    private void showDialog(String num, final String code) {
+        new ScanDialog(this, R.style.dialog, num, "", "", new ScanDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
-                    DataInfo dataInfo=new DataInfo();
-                    if(!code.contains("&")){
-                        dataInfo.setId(code);
-                        dataInfo.setNet(false);
-                        dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
-                        dataInfo.setType(2);
-                        dataInfo.setInsertTime(System.currentTimeMillis()+"");
-                        dataInfo.setUp(false);
-                    }else {
-                        String arr[]=AnalysisHelp.arrayScan(code);
-                        dataInfo.setId(code);
-                        dataInfo.setNet(false);
-                        dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
-                        dataInfo.setType(2);
-                        dataInfo.setValidTime(arr[1]);
-                        dataInfo.setInsertTime(System.currentTimeMillis()+"");
-                        dataInfo.setUp(false);
+                    DataInfo dataInfo = new DataInfo();
+                    if (BusinessManager.isHaveuse(scansts, cannum) == 0) {
+                        dataInfo.setCanuse(1);
+                        Log.i("mmmm", "setCanuse=");
+                        if (!code.contains("&")) {
+                            dataInfo.setId(code);
+                            dataInfo.setNet(false);
+                            dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
+                            dataInfo.setType(2);
+                            dataInfo.setInsertTime(System.currentTimeMillis() + "");
+                            dataInfo.setUp(false);
+                        } else {
+                            String arr[] = AnalysisHelp.arrayScan(code);
+                            dataInfo.setId(code);
+                            dataInfo.setNet(false);
+                            dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
+                            dataInfo.setType(2);
+                            dataInfo.setValidTime(arr[1]);
+                            dataInfo.setInsertTime(System.currentTimeMillis() + "");
+                            dataInfo.setUp(false);
+                        }
+                        OfflLineDataDb.insert(dataInfo);
+                    } else if (BusinessManager.isHaveuse(scansts, cannum) > 0) {
+                        int isuse = BusinessManager.isHaveuse(scansts, cannum);
+                        DataInfo a = OfflLineDataDb.getDB().selectById(null, DataInfo.class, scansts);
+                        a.setCanuse(isuse + 1);
+                        OfflLineDataDb.updata(a);
+                        Log.i("mmmm", "BusinessManager=" + String.valueOf(isuse + 1));
                     }
-                    OfflLineDataDb.insert(dataInfo);
+
                     handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
                 }
             }
         }).setTitle("提示").show();
     }
+
     //有线
-    private void showDialogd(String num, final  String code,String name,final  String renshu) {
-        new ScanDialog(this, R.style.dialog, num, name, renshu,new ScanDialog.OnCloseListener() {
+    private void showDialogd(String num, final String code, String name, final String renshu) {
+        new ScanDialog(this, R.style.dialog, num, name, renshu, new ScanDialog.OnCloseListener() {
             @Override
-            public void onClick(Dialog dialog, boolean confirm){
+            public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
-                    DataInfo dataInfo=new DataInfo();
-                    if(!code.contains("&")){
-                        dataInfo.setId(code);
-                        dataInfo.setNet(true);
-                        dataInfo.setpNum(renshu);
-                        dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
-                        dataInfo.setType(2);
-                        dataInfo.setInsertTime(System.currentTimeMillis()+"");
-                        dataInfo.setUp(true);
-                    }else {
-                        String arr[]=AnalysisHelp.arrayScan(code);
-                        dataInfo.setId(code);
-                        dataInfo.setpNum(renshu);
-                        dataInfo.setNet(true);
-                        dataInfo.setType(2);
-                        dataInfo.setValidTime(arr[1]);
-                        dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
-                        dataInfo.setInsertTime(System.currentTimeMillis()+"");
-                        dataInfo.setUp(true);
+                    DataInfo dataInfo = new DataInfo();
+                    if (BusinessManager.isHaveuse(scansts, cannum) == 0) {
+                        dataInfo.setCanuse(1);
+                        if (!code.contains("&")) {
+                            dataInfo.setId(code);
+                            dataInfo.setNet(true);
+                            dataInfo.setpNum(renshu);
+                            dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
+                            dataInfo.setType(2);
+                            dataInfo.setInsertTime(System.currentTimeMillis() + "");
+                            dataInfo.setUp(true);
+                        } else {
+                            String arr[] = AnalysisHelp.arrayScan(code);
+                            dataInfo.setId(code);
+                            dataInfo.setpNum(renshu);
+                            dataInfo.setNet(true);
+                            dataInfo.setType(2);
+                            dataInfo.setValidTime(arr[1]);
+                            dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
+                            dataInfo.setInsertTime(System.currentTimeMillis() + "");
+                            dataInfo.setUp(true);
+                        }
+                        OfflLineDataDb.insert(dataInfo);
+                    } else {
+                        int isuse = BusinessManager.isHaveuse(scansts, cannum);
+                        DataInfo a = OfflLineDataDb.getDB().selectById(null, DataInfo.class, scansts);
+                        a.setCanuse(isuse + 1);
+                        OfflLineDataDb.updata(a);
                     }
                     handler.sendEmptyMessage(R.id.restart_preview);
-                    OfflLineDataDb.insert(dataInfo);
                     dialog.dismiss();
                 }
             }
@@ -395,19 +426,19 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     //在线成功
-    PutSubscriber putSubscriber=new PutSubscriber() {
+    PutSubscriber putSubscriber = new PutSubscriber() {
         @Override
         public void onEvent(PutEvent putEvent) {
-            String srt=putEvent.getStrs();
-            String sgs = putEvent.getStrs().substring(0,2);
-            String renshu= putEvent.getStrs().substring(srt.length()-2,srt.length());
+            String srt = putEvent.getStrs();
+            String sgs = putEvent.getStrs().substring(0, 2);
+            String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
 
             if ("01".equals(sgs)) {
                 showDialogMsg("无效票");
-            }else if("02".equals(sgs)){
+            } else if ("02".equals(sgs)) {
                 showDialogMsg("已使用");
-            }else {
-                showDialogd(Utils.pullScan(putEvent.getStrs()),scansts,Utils.getXiangmu(CaptureActivity.this),String.valueOf(Integer.parseInt(renshu)));
+            } else {
+                showDialogd(Utils.pullScan(putEvent.getStrs()), scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
             }
         }
     };
@@ -433,27 +464,29 @@ public class CaptureActivity extends BaseActivity implements Callback {
                 break;
         }
     }
-//分析二维码-无线
+
+    //分析二维码-无线
     private void showresult(String strs) {
-        Log.i("tttt","strs="+strs);
-        int a = AnalysisHelp.StringScan(CaptureActivity.this,strs);
+        Log.i("tttt", "strs=" + strs);
+        int a = AnalysisHelp.StringScan(CaptureActivity.this, strs);
         if (a == 1) {//1------可用
             showDialog(Utils.getXiangmu(CaptureActivity.this), strs);
         } else if (a == 2) {
             showDialogMsg("票已过期!");
         } else if (a == 3) {
             showDialogMsg("票型不符合!");
-        }else if (a == 4) {
+        } else if (a == 4) {
             showDialog(Utils.getXiangmu(CaptureActivity.this), strs);//梅江
         } else {
             showDialogMsg("无效票!");
         }
     }
+
     //分析二维码
     private void showresultd(String strs) {
-        int a = AnalysisHelp.StringScan(CaptureActivity.this,strs);
+        int a = AnalysisHelp.StringScan(CaptureActivity.this, strs);
         if (a == 1) {//1------可用
-            showDialogd("", strs,Utils.getXiangmu(CaptureActivity.this),"");
+            showDialogd("", strs, Utils.getXiangmu(CaptureActivity.this), "");
         } else if (a == 2) {
             showDialogMsg("票已过期!");
         } else if (a == 3) {

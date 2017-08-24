@@ -329,4 +329,38 @@ public class HexStr {
             return (c - 'A' + 10) & 0x0f;
         return (c - '0') & 0x0f;
     }
+
+    //16进制转二进制
+    public static String hexString2binaryString(String hexString)
+    {
+        if (hexString == null || hexString.length() % 2 != 0)
+            return null;
+        String bString = "", tmp;
+        for (int i = 0; i < hexString.length(); i++)
+        {
+            tmp = "0000"
+                    + Integer.toBinaryString(Integer.parseInt(hexString
+                    .substring(i, i + 1), 16));
+            bString += tmp.substring(tmp.length() - 4);
+        }
+        return bString;
+    }
+
+    public static char  StrToBinstr(String str) {
+        int[] temp=BinstrToIntArray(str);
+        int sum=0;
+        for(int i=0; i<temp.length;i++){
+            sum +=temp[temp.length-1-i]<<i;
+        }
+        return (char)sum;
+    }
+    //将二进制字符串转换成int数组
+    private static int[] BinstrToIntArray(String binStr) {
+        char[] temp=binStr.toCharArray();
+        int[] result=new int[temp.length];
+        for(int i=0;i<temp.length;i++) {
+            result[i]=temp[i]-48;
+        }
+        return result;
+    }
 }

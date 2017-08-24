@@ -124,15 +124,13 @@ public class SettingActivity extends BaseActivity {
     }
 
     @Override
-    public void initData() {
+    public void initData(){
         super.initData();
-
         TestData();
         code.setText(Utils.getImui(this) + "");
         BaseConfig bg = new BaseConfig(this);
         ip_tcp.setText(bg.getStringValue(Constants.tcp_ip, ""));
         ip_port.setText(bg.getStringValue(Constants.ip_port, ""));
-
         String s = bg.getStringValue(Constants.address, "-1");
         if (!TextUtils.isEmpty(s)) {
             for (int i = 0; i < mList.size(); i++) {
@@ -307,7 +305,7 @@ public class SettingActivity extends BaseActivity {
                 for (int i = 0; i < mList.size(); i++) {
                     if (value.equals(mList.get(i).getName())) {
                         bg.setStringValue(Constants.address, mList.get(i).getCode());
-                        Log.i("tttt","top_title="+mList.get(i).getCode());
+                        bg.setStringValue(Constants.X_NUM,mList.get(i).getNum());
 
                     }
                 }
