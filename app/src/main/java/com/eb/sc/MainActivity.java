@@ -347,16 +347,15 @@ public class MainActivity extends BaseActivity {
 //                        mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
 //                        + " " + mLastName + "刷卡成功！\r\n");
                 idcard_id = idCardInfo.getId();
-                if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
-                    showDialogMsg("票已使用!");
-                } else {
-                    if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
+                if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
 //                        byte[] updatas = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
-                        String updata = Utils.getIdcard(this, idCardInfo.getId());
-                        PushManager.getInstance(this).sendMessage(updata);
-                    } else {
-                        showDialog(mLastName, idCardInfo.getId(), "","");
+                    String updata = Utils.getIdcard(this, idCardInfo.getId());
+                    PushManager.getInstance(this).sendMessage(updata);
+                } else {
+                    if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
+                        showDialogMsg("票已使用!");
                     }
+                    showDialog(mLastName, idCardInfo.getId(), "", "");
                 }
                 feature = idCardInfo.getFpdata();
 //                if (idCardInfo.getPhoto() != null) {
@@ -405,8 +404,8 @@ public class MainActivity extends BaseActivity {
     }
 
     //有效票-无线
-    private void showDialog(String names, final String num, String code,String renshu) {
-        new CommomDialog(this, R.style.dialog, names, num, code,renshu, new CommomDialog.OnCloseListener() {
+    private void showDialog(String names, final String num, String code, String renshu) {
+        new CommomDialog(this, R.style.dialog, names, num, code, renshu, new CommomDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
@@ -425,8 +424,8 @@ public class MainActivity extends BaseActivity {
     }
 
     //有效票-有线
-    private void showDialogd(String names, final String num, String code,final  String renshu) {
-        new CommomDialog(this, R.style.dialog, names, num, code,renshu, new CommomDialog.OnCloseListener() {
+    private void showDialogd(String names, final String num, String code, final String renshu) {
+        new CommomDialog(this, R.style.dialog, names, num, code, renshu, new CommomDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
@@ -480,16 +479,16 @@ public class MainActivity extends BaseActivity {
     PutSubscriber putSubscriber = new PutSubscriber() {
         @Override
         public void onEvent(PutEvent putEvent) {
-            String srt=putEvent.getStrs();
+            String srt = putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0, 2);
-            String renshu= putEvent.getStrs().substring(srt.length()-2,srt.length());
+            String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
 
             if ("01".equals(sgs)) {
                 showDialogMsg("无效票");
             } else if ("02".equals(sgs)) {
                 showDialogMsg("已使用");
             } else {
-                showDialogd(Utils.pullScan(putEvent.getStrs()), idcard_id, Utils.getXiangmu(MainActivity.this),String.valueOf(Integer.parseInt(renshu)));
+                showDialogd(Utils.pullScan(putEvent.getStrs()), idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
             }
         }
     };

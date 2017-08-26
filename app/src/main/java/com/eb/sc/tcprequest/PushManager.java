@@ -174,6 +174,7 @@ public class PushManager {
         if (ioSession == null || !ioSession.isConnected()) {
             return false;
         }
+        Log.e("dawn", "writeFuture: " );
         WriteFuture writeFuture = ioSession.write(message);
         if (writeFuture == null) {
               Log.e("dawn", "writeFuture:" );

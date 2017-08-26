@@ -432,7 +432,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
             String srt = putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0, 2);
             String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
-
             if ("01".equals(sgs)) {
                 showDialogMsg("无效票");
             } else if ("02".equals(sgs)) {
