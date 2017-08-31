@@ -220,19 +220,18 @@ public class CaptureActivity extends BaseActivity implements Callback {
         NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
     }
 
-    public void handleDecode(String result) {
+    public void handleDecode(String result){
         this.scansts = result;
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
         Log.i("mmmm", "handleDecode=" + cannum);
-        if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this) || !isconnect) {//无网络
-            if (BusinessManager.isHaveScan(result, cannum)) {//票已检
+        if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this) || !isconnect){//无网络
+            if (BusinessManager.isHaveScan(result, cannum)){//票已检
                 showDialogMsg("已使用!");
             } else {
                 showresult(result);
             }
         } else {//有网络
-            Log.i("tttt", "");
             if (result.length() == 6) {
                 PushManager.getInstance(this).sendMessage(Utils.getMjScan(this, result));
                 Log.i("tttt", "sssssssssssd=" + Utils.getMjScan(this, result));
@@ -241,7 +240,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
                 String updata = Utils.getscan(this, result);
                 PushManager.getInstance(this).sendMessage(updata);
             }
-
         }
         // 连续扫描，不发送此消息扫描一次结束后就不能再次扫描
 //		handler.sendEmptyMessage(R.id.restart_preview);
@@ -309,7 +307,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setOnCompletionListener(beepListener);
 
-            AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
+            AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.scan);
             try {
                 mediaPlayer.setDataSource(file.getFileDescriptor(),
                         file.getStartOffset(), file.getLength());

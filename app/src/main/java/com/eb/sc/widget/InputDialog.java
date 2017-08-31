@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eb.sc.R;
+import com.eb.sc.utils.SupportMultipleScreensUtil;
 
 /**
  * Created by lyj on 2017/7/29.
@@ -74,6 +75,9 @@ public class InputDialog extends Dialog implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_input);
+        View rootView=findViewById(android.R.id.content);
+        SupportMultipleScreensUtil.init(mContext);
+        SupportMultipleScreensUtil.scale(rootView);
         setCanceledOnTouchOutside(false);
 //        setCancelable(false);
         initView();

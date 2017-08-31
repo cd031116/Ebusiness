@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="true"
@@ -10,119 +9,124 @@
 
     <include layout="@layout/view_top" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EAEAEA"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:scrollbars="none">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/check_edt_bg"
-            android:layout_marginTop="30dp">
+            android:layout_height="match_parent"
+            android:background="#EAEAEA"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <EditText
-                android:id="@+id/password"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:hint="身份证号码"
-                android:digits="0123456789x"
-                android:padding="10dp"
-                android:textColor="#939999"
-                android:maxLength="18"
-                android:textColorHint="#939999"
-                android:textSize="25sp" />
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:layout_marginTop="30px"
+                android:background="@drawable/check_edt_bg">
 
-            <TextView
-                android:id="@+id/cheeck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/select_bg_o"
-                android:padding="10dp"
-                android:text="检票"
-                android:textColor="#ffffff"
-                android:textSize="30sp" />
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/idcard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/select_bg"
-            android:padding="10dp">
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <ImageView
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@mipmap/ganying" />
+                    android:background="@null"
+                    android:digits="0123456789x"
+                    android:hint="身份证号码"
+                    android:maxLength="18"
+                    android:padding="30px"
+                    android:textColor="#939999"
+                    android:textColorHint="#939999"
+                    android:textSize="60px" />
 
                 <TextView
+                    android:id="@+id/cheeck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="身份证感应"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/select_bg_o"
+                    android:padding="30px"
+                    android:text="检票"
                     android:textColor="#ffffff"
-                    android:textSize="40sp" />
+                    android:textSize="60px" />
+            </RelativeLayout>
 
 
-            </LinearLayout>
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@id/scan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/select_bg"
-            android:padding="10dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/idcard"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical"
-                android:padding="10dp">
+                android:layout_marginTop="40px"
+                android:background="@drawable/select_bg"
+                android:padding="30px">
 
-                <ImageView
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@mipmap/saomiao" />
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:padding="10px">
 
-                <TextView
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/ganying" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10px"
+                        android:text="身份证感应"
+                        android:textColor="#ffffff"
+                        android:textSize="100px" />
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@id/scan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60px"
+                android:background="@drawable/select_bg"
+                android:padding="30px">
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="扫描二维码"
-                    android:textColor="#ffffff"
-                    android:textSize="40sp" />
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:padding="10px">
 
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/saomiao" />
 
-        </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10px"
+                        android:text="扫描二维码"
+                        android:textColor="#ffffff"
+                        android:textSize="100px" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
 
-    </LinearLayout>
-
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -96,7 +97,7 @@ public class CheckActivity extends BaseActivity {
     private List<ItemInfo> mList = new ArrayList<>();
 
     @Override
-    protected int getLayoutId() {
+    protected int getLayoutId(){
         return R.layout.activity_check;
     }
 
@@ -268,15 +269,22 @@ public class CheckActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(RefreshEvent.class, refreshEvent);
         NotificationCenter.defaultCenter().subscriber(UpdateEvent.class, updateEvent);
         stopService(new Intent(CheckActivity.this, PushService.class));
+        try {
+            mIzkcService.setModuleFlag(9);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        unbindService();
     }
 
     private void changeview(boolean conect) {
         if (conect) {
-            mRight_bg.setImageResource(R.mipmap.lianjie);
+            mRight_bg.setImageResource(R.drawable.lianjie);
             top_right_text.setText("链接");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));
         } else {
-            mRight_bg.setImageResource(R.mipmap.lixian);
+            mRight_bg.setImageResource(R.drawable.lixian);
             top_right_text.setText("离线");
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
@@ -332,6 +340,7 @@ public class CheckActivity extends BaseActivity {
             }
         }
     }
+
 
     @Override
     public void onResume() {

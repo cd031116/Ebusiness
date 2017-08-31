@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.eb.sc.R;
+import com.eb.sc.utils.SupportMultipleScreensUtil;
 
 /**
  * Created by Administrator on 2017/8/10.
@@ -74,6 +75,9 @@ public class RestartDialog extends Dialog implements View.OnClickListener  {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_restart);
+        View rootView=findViewById(android.R.id.content);
+        SupportMultipleScreensUtil.init(mContext);
+        SupportMultipleScreensUtil.scale(rootView);
         setCanceledOnTouchOutside(false);
         setCancelable(false);
         initView();

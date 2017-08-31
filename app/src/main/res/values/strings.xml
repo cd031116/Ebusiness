@@ -11,4 +11,6 @@
     <string name="ticket_type">票型</string>
     <string name="people_num">人数</string>
     <string name="ticket_time">核销时间</string>
+    <string name="service_bind_fail">服务绑定失败</string>
+    <string name="service_bind_success">服务绑定成功</string>
 </resources>

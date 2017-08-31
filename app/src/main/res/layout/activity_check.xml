@@ -7,7 +7,7 @@
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:padding="20px"
     tools:context="com.eb.sc.activity.CheckActivity">
 
     <include layout="@layout/view_top" />
@@ -27,20 +27,20 @@
                 android:id="@+id/scan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10px"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:layout_marginTop="50px"
                 android:background="@drawable/check_bg"
                 android:gravity="center"
-                android:padding="30dp">
+                android:padding="70px">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/saoma" />
+                    android:src="@drawable/saoma" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -49,21 +49,21 @@
                     android:layout_centerVertical="true"
                     android:gravity="right"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="10px">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="检票"
                         android:textColor="#ffffff"
-                        android:textSize="40sp" />
+                        android:textSize="90px" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="CHECK-IN"
                         android:textColor="#ffffff"
-                        android:textSize="20sp" />
+                        android:textSize="60px" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -72,16 +72,17 @@
                 android:id="@+id/idcard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:layout_marginTop="40px"
                 android:background="@drawable/detail_bg"
                 android:gravity="center"
-                android:padding="30dp">
+                android:padding="70px">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/mingxi"
+                    android:src="@drawable/mingxi"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />
@@ -93,21 +94,21 @@
                     android:layout_centerVertical="true"
                     android:gravity="right"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="10px">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="明细"
                         android:textColor="#ffffff"
-                        android:textSize="40sp" />
+                        android:textSize="90px" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PARTICULARS"
                         android:textColor="#ffffff"
-                        android:textSize="20sp" />
+                        android:textSize="60px" />
                 </LinearLayout>
 
             </RelativeLayout>
@@ -116,18 +117,19 @@
                 android:id="@+id/sync"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:layout_marginTop="40px"
                 android:background="@drawable/sync_bg"
                 android:gravity="center"
-                android:padding="30dp">
+                android:padding="70px">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/tongbu" />
+                    android:src="@drawable/tongbu" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -136,21 +138,21 @@
                     android:layout_centerVertical="true"
                     android:gravity="right"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="10px">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="同步"
                         android:textColor="#ffffff"
-                        android:textSize="40sp" />
+                        android:textSize="90px" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="SYNCHRONIZE"
                         android:textColor="#ffffff"
-                        android:textSize="20sp" />
+                        android:textSize="60px" />
                 </LinearLayout>
 
             </RelativeLayout>
@@ -168,8 +170,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginTop="50dp"
-                    android:src="@mipmap/setting" />
+                    android:layout_marginTop="80px"
+                    android:src="@drawable/setting" />
 
             </RelativeLayout>
 

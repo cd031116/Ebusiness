@@ -3,8 +3,6 @@ package com.eb.sc.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -15,12 +13,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eb.sc.MainActivity;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.scanner.ScanSetActivity;
+import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -36,7 +35,6 @@ import com.eb.sc.utils.Utils;
 import com.eb.sc.utils.isIdNum;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
-
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
@@ -99,7 +97,7 @@ public class SelectActivity extends BaseActivity {
     void onclick(View v){
         switch (v.getId()){
             case R.id.idcard:
-                startActivity(new Intent(SelectActivity.this,MainActivity.class));
+                startActivity(new Intent(SelectActivity.this,ScannerActivity.class));
                 break;
             case R.id.scan:
                 startActivity(new Intent(SelectActivity.this,CaptureActivity.class));
@@ -198,18 +196,18 @@ public class SelectActivity extends BaseActivity {
 
     private void changeview(boolean conect) {
         if (conect) {
-            mRight_bg.setImageResource(R.mipmap.lianjie);
+            mRight_bg.setImageResource(R.drawable.lianjie);
             top_right_text.setText("链接");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));
         } else {
-            mRight_bg.setImageResource(R.mipmap.lixian);
+            mRight_bg.setImageResource(R.drawable.lixian);
             top_right_text.setText("离线");
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
     //有效票-有线   姓名    身份证    项目
     private void showDialogd(String names, final String num, String code,String renshu) {
-        new CommomDialog(this, R.style.dialog, names, num, code,renshu, new CommomDialog.OnCloseListener() {
+        new CommomDialog(this, R.style.dialog, names, num, code,renshu, new CommomDialog.OnCloseListener(){
             @Override
             public void onClick(Dialog dialog, boolean confirm){
                 if (confirm){

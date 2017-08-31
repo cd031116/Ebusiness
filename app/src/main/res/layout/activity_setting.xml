@@ -7,7 +7,7 @@
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:padding="20px"
     tools:context="com.eb.sc.activity.SettingActivity">
 
     <include layout="@layout/view_top" />
@@ -21,8 +21,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
+        android:paddingBottom="20px"
+        android:paddingTop="20px"
         android:background="#F2F2F2"
         android:orientation="vertical">
 
@@ -30,34 +30,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="60px"
             android:background="#ffffff"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="20px">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="服务器IP"
                 android:textColor="#333333"
-                android:padding="10dp"
-                android:textSize="18sp" />
+                android:padding="20px"
+                android:textSize="50px" />
 
             <EditText
                 android:id="@+id/ip_tcp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="20px"
                 android:background="@null"
                 android:textColor="#545454"
-                android:padding="10dp"/>
+                android:textSize="60px"
+                android:padding="20px"/>
 
         </LinearLayout>
 
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="1px"
             android:background="#F2F2F2" />
 
         <LinearLayout
@@ -65,22 +66,23 @@
             android:layout_height="wrap_content"
             android:background="#ffffff"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="20px">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="端口"
                 android:textColor="#333333"
-                android:padding="10dp"
-                android:textSize="20sp" />
+                android:padding="20px"
+                android:textSize="50px" />
 
             <EditText
                 android:id="@+id/ip_port"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:padding="10dp"
+                android:layout_marginLeft="20px"
+                android:textSize="60px"
+                android:padding="20px"
                 android:textColor="#545454"
                 android:background="@null" />
 
@@ -88,8 +90,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="1px"
+            android:layout_marginTop="60px"
             android:background="#F2F2F2" />
 
         <LinearLayout
@@ -97,55 +99,57 @@
             android:layout_height="wrap_content"
             android:background="#ffffff"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="20px">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="对应项目"
                 android:textColor="#333333"
-                android:padding="10dp"
-                android:textSize="20sp" />
+                android:padding="20px"
+                android:textSize="50px" />
 
             <EditText
                 android:id="@+id/state"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:padding="10dp"
+                android:layout_marginLeft="20px"
+                android:padding="20px"
+                android:textSize="60px"
                 android:focusable="false"
                 android:textColor="#545454"
-                android:drawableRight="@mipmap/the_btn"
+                android:drawableRight="@drawable/the_btn"
                 android:background="@null" />
 
         </LinearLayout>
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="1px"
             android:background="#F2F2F2" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="20px">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="设备码"
                 android:textColor="#333333"
-                android:padding="10dp"
-                android:textSize="20sp" />
+                android:padding="20px"
+                android:textSize="50px" />
 
             <EditText
                 android:id="@+id/code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="20px"
                 android:focusable="false"
+                android:textSize="60px"
                 android:textColor="#545454"
-                android:padding="10dp"
+                android:padding="20px"
                 android:background="@null" />
 
         </LinearLayout>
@@ -155,29 +159,29 @@
             android:id="@+id/amend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="120px"
             android:background="#ffffff"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="20px">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="修改密码"
-                android:padding="10dp"
+                android:padding="20px"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:textColor="#333333"
-                android:textSize="20sp" />
+                android:textSize="50px" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/jinru" />
+                android:padding="20px"
+                android:layout_marginRight="20px"
+                android:src="@drawable/jinru" />
 
         </RelativeLayout>
         <RelativeLayout
@@ -186,17 +190,17 @@
             android:layout_height="wrap_content"
             android:background="#ffffff"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="20px">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="同步项目"
-                android:padding="10dp"
+                android:padding="20px"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:textColor="#333333"
-                android:textSize="20sp" />
+                android:textSize="50px" />
 
         </RelativeLayout>
 
@@ -205,15 +209,15 @@
             android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="50px"
             android:text="保存"
             android:textColor="#ffffff"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginLeft="60px"
+            android:layout_marginRight="60px"
+            android:layout_marginTop="60px"
             android:gravity="center_horizontal"
             android:background="@drawable/text_bg"
-            android:padding="10dp"/>
+            android:padding="20px"/>
     </LinearLayout>
     </ScrollView>
 </LinearLayout>

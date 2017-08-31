@@ -262,11 +262,11 @@ public class TongbBuActivity extends BaseActivity {
 
     private void changeview(boolean conect) {
         if (conect) {
-            mRight_bg.setImageResource(R.mipmap.lianjie);
+            mRight_bg.setImageResource(R.drawable.lianjie);
             top_right_text.setText("链接");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));
         } else {
-            mRight_bg.setImageResource(R.mipmap.lixian);
+            mRight_bg.setImageResource(R.drawable.lixian);
             top_right_text.setText("离线");
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }

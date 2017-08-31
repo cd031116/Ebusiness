@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.eb.sc.R;
+import com.eb.sc.utils.SupportMultipleScreensUtil;
 
 /*
 *
@@ -63,6 +64,9 @@ public class CommomDialog extends Dialog implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_commom);
+        View rootView=findViewById(android.R.id.content);
+        SupportMultipleScreensUtil.init(mContext);
+        SupportMultipleScreensUtil.scale(rootView);
         setCanceledOnTouchOutside(false);
         setCancelable(false);
         initView();

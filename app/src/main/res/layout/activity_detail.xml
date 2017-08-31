@@ -22,17 +22,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rlist"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="20px"
         android:visibility="gone"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginRight="20px"
+        android:layout_marginTop="20px">
 
         <TextView
             android:id="@+id/ticket_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#7c7c7c"
-            android:textSize="20sp"
+            android:textSize="55px"
             android:layout_alignParentRight="true" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:textColor="#7c7c7c"
-            android:textSize="20sp"
+            android:textSize="55px"
             android:singleLine="true" />
     </RelativeLayout>
 
@@ -50,10 +50,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ticket_door_layout"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20px"
+        android:layout_marginRight="20px"
         android:visibility="gone"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="20px">
 
         <TextView
             android:id="@+id/ticket_team_num"
@@ -74,10 +74,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ticket_team_layout"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="20px"
         android:visibility="gone"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginRight="20px"
+        android:layout_marginTop="20px">
 
         <TextView
             android:id="@+id/ticket_child_num"
@@ -98,10 +98,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ticket_child_layout"
-        android:padding="10dp"
+        android:padding="20px"
         android:text="@string/check_ticket_total"
         android:textColor="@color/red"
-        android:textSize="22sp" />
+        android:textSize="60px" />
 
     <TextView
         android:id="@+id/total_num"
@@ -109,9 +109,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/ticket_child_layout"
-        android:padding="10dp"
+        android:padding="20px"
         android:textColor="@color/red"
-        android:textSize="22sp" />
+        android:textSize="60px" />
 
     <RelativeLayout
         android:id="@+id/list_head"
@@ -119,14 +119,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/total"
         android:background="#EAEAEA"
-        android:padding="10dp">
+        android:padding="20px">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ticket_type"
             android:textColor="@color/steelblue"
-            android:textSize="20sp" />
+            android:textSize="55px" />
 
         <TextView
             android:id="@+id/ticket_time"
@@ -135,17 +135,17 @@
             android:layout_alignParentRight="true"
             android:text="@string/ticket_time"
             android:textColor="@color/steelblue"
-            android:textSize="20sp" />
+            android:textSize="55px" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="50dp"
+            android:layout_marginRight="100px"
             android:layout_toLeftOf="@id/ticket_time"
             android:visibility="gone"
             android:text="@string/people_num"
             android:textColor="@color/steelblue"
-            android:textSize="20sp" />
+            android:textSize="55px" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
