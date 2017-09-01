@@ -269,13 +269,6 @@ public class CheckActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(RefreshEvent.class, refreshEvent);
         NotificationCenter.defaultCenter().subscriber(UpdateEvent.class, updateEvent);
         stopService(new Intent(CheckActivity.this, PushService.class));
-        try {
-            mIzkcService.setModuleFlag(9);
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        unbindService();
     }
 
     private void changeview(boolean conect) {

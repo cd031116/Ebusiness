@@ -65,6 +65,6 @@
             android:name=".activity.CheckActivity"
             android:launchMode="singleTask" />
         <activity android:name=".scanner.ScannerActivity"/>
-        <activity android:name=".scanner.ScanSetActivity"/>
+        <activity android:name=".priter.PrinterActivity"/>
     </application>
 </manifest>

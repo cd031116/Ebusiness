@@ -3,34 +3,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:orientation="vertical"
     android:clipToPadding="true"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true">
     <include layout="@layout/view_top"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="90px"
-        android:textColor="#04f444"
-        android:padding="20px"
-        android:layout_centerInParent="true"
-        android:text="按下设备上的SCAN键即可扫描"/>
+            <TextView
+                android:id="@+id/et_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="按设备上的SCAN键即可扫描"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:textSize="60px"
+                android:textColor="#0ae15c"
+                android:padding="20px"
+                android:layout_gravity="center"
+              >
+            </TextView>
 
-
-    <Button
-        android:id="@+id/btn_set"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="功能设置"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/text_bg"
-        android:layout_margin="30px"
-        android:textSize="50px"
-        android:textColor="#ffffff"
-        android:layout_marginBottom="100px"
-        android:visibility="gone"
-        android:layout_marginTop="8dp"/>
 </RelativeLayout>

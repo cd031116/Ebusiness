@@ -13,12 +13,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eb.sc.MainActivity;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
-import com.eb.sc.scanner.ScanSetActivity;
 import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;

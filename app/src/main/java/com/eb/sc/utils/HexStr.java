@@ -331,7 +331,7 @@ public class HexStr {
     }
 
     //16进制转二进制
-    public static String hexString2binaryString(String hexString)
+    public static String t16tot2(String hexString)
     {
         if (hexString == null || hexString.length() % 2 != 0)
             return null;
