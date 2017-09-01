@@ -354,8 +354,9 @@ public class MainActivity extends BaseActivity {
                 } else {
                     if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
                         showDialogMsg("票已使用!");
+                    }else {
+                        showDialog(mLastName, idCardInfo.getId(), "", "");
                     }
-                    showDialog(mLastName, idCardInfo.getId(), "", "");
                 }
                 feature = idCardInfo.getFpdata();
 //                if (idCardInfo.getPhoto() != null) {

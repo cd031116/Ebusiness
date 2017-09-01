@@ -19,6 +19,7 @@ import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.priter.PrinterActivity;
 import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
@@ -58,6 +59,7 @@ public class SelectActivity extends BaseActivity {
     TextView cheeck;
     @Bind(R.id.password)
     EditText id_num;
+
     String id_n="";
     private boolean xiumian=true;
     private boolean isconnect = true;
@@ -93,7 +95,7 @@ public class SelectActivity extends BaseActivity {
         super.initData();
     }
 
-    @OnClick({R.id.idcard,R.id.scan,R.id.top_left,R.id.cheeck})
+    @OnClick({R.id.idcard,R.id.scan,R.id.top_left,R.id.cheeck,R.id.test})
     void onclick(View v){
         switch (v.getId()){
             case R.id.idcard:
@@ -126,6 +128,9 @@ public class SelectActivity extends BaseActivity {
                         Log.i("tttt","ssss=isNetworkConnected");
                     }
                 }
+                break;
+            case R.id.test:
+                startActivity(new Intent(SelectActivity.this, PrinterActivity.class));
                 break;
         }
     }

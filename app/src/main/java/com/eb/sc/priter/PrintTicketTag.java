@@ -1,4 +1,4 @@
-package com.eb.sc.scanner;
+package com.eb.sc.priter;
 
 public class PrintTicketTag
 {
