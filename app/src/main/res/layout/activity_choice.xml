@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    tools:context="com.eb.sc.activity.ChoiceActivity">
+
+    <include layout="@layout/view_top" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top_layout"
+        android:layout_marginTop="50px"
+        android:background="#f0f0f0"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/one"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:orientation="horizontal"
+            android:padding="20px"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/text_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="10px"
+                android:textSize="60px"
+                android:textColor="#333333"
+                android:gravity="center_vertical"
+                android:text="机型:按键扫描+售票(3504)" />
+
+
+            <ImageView
+                android:id="@+id/image_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20px"
+                android:src="@drawable/order_pay_red_gou" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/two"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2px"
+            android:background="#ffffff"
+            android:orientation="horizontal"
+            android:padding="20px"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/text_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="10px"
+                android:textSize="60px"
+                android:textColor="#333333"
+                android:gravity="center_vertical"
+                android:text="机型:身份证感应无售票" />
+
+
+            <ImageView
+                android:id="@+id/image_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20px"
+                android:src="@drawable/order_pay_gray_gou" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="50px"
+        android:text="保存"
+        android:textColor="#ffffff"
+        android:layout_marginLeft="60px"
+        android:layout_marginRight="60px"
+        android:layout_marginTop="60px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60px"
+        android:gravity="center_horizontal"
+        android:background="@drawable/text_bg"
+        android:padding="20px"/>
+
+
+</RelativeLayout>

@@ -256,8 +256,6 @@ public class CheckActivity extends BaseActivity {
         @Override
         public void onEvent(RefreshEvent refreshEvent) {
             PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
-            Log.e("ClientSessionHandler", "shebei..." + Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
-
         }
     };
 

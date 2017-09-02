@@ -37,6 +37,27 @@ public class Utils {
         return "";
     }
 
+    //根据code得到项目
+    public static String getPrice(Context context) {
+        BaseConfig bg = new BaseConfig(context);
+        String s = bg.getStringValue(Constants.address, "-1");
+        String list_item = bg.getStringValue(Constants.px_list, "");
+        if (TextUtils.isEmpty(list_item)) {
+            return "";
+        }
+        List<ItemInfo> mList = JSON.parseArray(list_item, ItemInfo.class);
+        for (int i = 0; i < mList.size(); i++) {
+            if (s.equals(mList.get(i).getCode())) {
+                return mList.get(i).getName();
+            }
+        }
+        return "";
+    }
+
+
+
+
+
     //根据code得到id
     public static String getItemId(Context context) {
         BaseConfig bg = new BaseConfig(context);
@@ -67,15 +88,8 @@ public class Utils {
         String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
         Log.i("tttt","she="+she);
         String nr_16 = HexStr.str2HexStr(msg);
-        String leng_16 = HexStr.shiTo16(nr_16.length());
-        if (leng_16.length() <= 1) {
-            leng_16 = "000" + leng_16;
-        } else if (leng_16.length() <= 2) {
-            leng_16 = "00" + leng_16;
-        } else if (leng_16.length() <= 3) {
-            leng_16 = "0" + leng_16;
-        }
-        String data = "4001" + she + leng_16 + nr_16;
+
+        String data = "4001" + she  + nr_16;
         return data.toUpperCase();
     }
 
@@ -85,15 +99,8 @@ public class Utils {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
         String nr_16 = HexStr.str2HexStr(msg);
-        String leng_16 = HexStr.shiTo16(nr_16.length());
-        if (leng_16.length() <= 1) {
-            leng_16 = "000" + leng_16;
-        } else if (leng_16.length() <= 2) {
-            leng_16 = "00" + leng_16;
-        } else if (leng_16.length() <= 3) {
-            leng_16 = "0" + leng_16;
-        }
-        String data = "4001" + she + leng_16 + nr_16;
+
+        String data = "4001" + she  + nr_16;
         return data.toUpperCase();
     }
 
@@ -101,15 +108,7 @@ public class Utils {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");
         String nr_16 = HexStr.str2HexStr(str);
-        String leng_16 = HexStr.shiTo16(nr_16.length());
-        if (leng_16.length() <= 1) {
-            leng_16 = "000" + leng_16;
-        } else if (leng_16.length() <= 2) {
-            leng_16 = "00" + leng_16;
-        } else if (leng_16.length() <= 3) {
-            leng_16 = "0" + leng_16;
-        }
-        String data = "4002" + she + leng_16 + nr_16;
+        String data = "4002" + she  + nr_16;
         return data.toUpperCase();
     }
 
@@ -117,15 +116,7 @@ public class Utils {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");
         String nr_16 = HexStr.str2HexStr(str);
-        String leng_16 = HexStr.shiTo16(nr_16.length());
-        if (leng_16.length() <= 1) {
-            leng_16 = "000" + leng_16;
-        } else if (leng_16.length() <= 2) {
-            leng_16 = "00" + leng_16;
-        } else if (leng_16.length() <= 3) {
-            leng_16 = "0" + leng_16;
-        }
-        String data = "4013" + she + leng_16 + nr_16;
+        String data = "4013" + she  + nr_16;
         return data.toUpperCase();
     }
     //同步 二维码
@@ -133,17 +124,11 @@ public class Utils {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");
         String nr_16 = HexStr.str2HexStr(str);
-        String leng_16 = HexStr.shiTo16(nr_16.length());
-        if (leng_16.length() <= 1) {
-            leng_16 = "000" + leng_16;
-        } else if (leng_16.length() <= 2) {
-            leng_16 = "00" + leng_16;
-        } else if (leng_16.length() <= 3) {
-            leng_16 = "0" + leng_16;
-        }
-        String data = "4012" + she + leng_16 + nr_16;
+
+        String data = "4012" + she  + nr_16;
         return data.toUpperCase();
     }
+
    // 票务通同步 二维码
     public static String getscan_t_mj(Context context, String str) {
         BaseConfig bg = new BaseConfig(context);
@@ -166,19 +151,39 @@ public class Utils {
         String she = bg.getStringValue(Constants.address, "");
         String str = msg + "&" + she;
         String nr_16 = HexStr.str2Hex16(str);
-        String leng_16 = HexStr.shiTo16(nr_16.length());
-        if (leng_16.length() <= 1) {
-            leng_16 = "000" + leng_16;
-        } else if (leng_16.length() <= 2) {
-            leng_16 = "00" + leng_16;
-        } else if (leng_16.length() <= 3) {
-            leng_16 = "0" + leng_16;
-        }
-        Log.i("tttt", "getShebeipul=" + nr_16.length());
-        Log.i("tttt", "leng_16=" + leng_16);
-        String data = "40100001" + leng_16 + nr_16;
+        String data = "40100001"  + nr_16;
         Log.i("tttt", "data=" + data);
         return data;
+    }
+
+    //发送购买参数
+    public static String getBuy(Context context, String msg) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        String nr_16 = HexStr.str2HexStr(msg);
+        String data = "4020" + she  + nr_16;
+        return data.toUpperCase();
+    }
+    //发送收款二维码
+    public static String sentBuy(Context context, String msg) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        String nr_16 = HexStr.str2HexStr(msg);
+        String data = "4021" + she  + nr_16;
+        return data.toUpperCase();
+    }
+
+    //检测获取订单
+    public static boolean getOrderid(String sty){
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        String sgs = sty.substring(2, 4);
+        Log.i("tttt", "sgs=" + sgs);
+        if ("20".equals(sgs)) {
+            return true;
+        }
+        return false;
     }
 
     //检测到的是设备号
@@ -227,7 +232,6 @@ public class Utils {
         if (TextUtils.isEmpty(sty)) {
             return "";
         }
-
         String sgs = sty.substring(0,2);
         if ("01".equals(sgs)) {
             return "无效票";
@@ -324,13 +328,13 @@ public class Utils {
         //心跳
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");
-        return "4099" + she + "00017A";
+        return "4099" + she + "7A";
     }
     public static String shengji(Context context) {
         //升级
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");
-        return "4080" + she + "00017A";
+        return "4080" + she + "7A";
     }
 
     /**

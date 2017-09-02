@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.eb.sc.bean.Params;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
+import com.eb.sc.sdk.eventbus.GetOrderEvent;
 import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.sdk.eventbus.RefreshEvent;
 import com.eb.sc.sdk.eventbus.TongbuEvent;
@@ -80,7 +81,7 @@ public class ClientSessionHandler extends IoHandlerAdapter {
 
         if (Utils.pullShebei(message.toString())) {
             BaseConfig bg = new BaseConfig(mcontext);
-            String sb = HexStr.hexStr2Str((message.toString()).substring(12, message.toString().length()));
+            String sb = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
             String shebei = Integer.toHexString(Integer.parseInt(sb));
             if (shebei.length() <= 1) {
                 shebei = "000" + shebei;
@@ -90,31 +91,37 @@ public class ClientSessionHandler extends IoHandlerAdapter {
                 shebei = "0" + shebei;
             }
             bg.setStringValue(Constants.shebeihao, shebei);
-            Log.e("ClientSessionHandler", "shebei..." + shebei);
-            Log.e("ClientSessionHandler", "sbsbsbsb..." + sb);
+            Log.e("ClientSessionHandler", "shebei..." + sb);
         }
-        //是
-        if (Utils.pullItem(message.toString())) {
+        //获取订单
+        if (Utils.getOrderid(message.toString())) {
             BaseConfig bg = new BaseConfig(mcontext);
-            bg.setStringValue(Constants.px_list, HexStr.hexStr2Str((message.toString()).substring(12, message.toString().length())));
+            String orderId=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+            NotificationCenter.defaultCenter().publish(new GetOrderEvent(orderId));
+        }
+
+        //是项目item
+        if (Utils.pullItem(message.toString())){
+            BaseConfig bg = new BaseConfig(mcontext);
+            bg.setStringValue(Constants.px_list, HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length())));
             NotificationCenter.defaultCenter().publish(new RefreshEvent());
         }
 
         //升级
         if (Utils.pullShengji(message.toString())) {
 //            NotificationCenter.defaultCenter().publish(new TongbuEvent(2, message.toString()));
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(24, message.toString().length()));
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
             NotificationCenter.defaultCenter().publish(new UpdateEvent(jieguo.substring(jieguo.length()-1,jieguo.length())));
         }
 //        是同步  身份证1
         if (Utils.pullSync(message.toString())) {
 //            NotificationCenter.defaultCenter().publish(new TongbuEvent(2, message.toString()));
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(24, message.toString().length()));
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
             NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo),"1"));
         }
         //  二维码2
         if (Utils.pullscan(message.toString())) {
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(24, message.toString().length()));
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
             Log.e("ClientSessionHandler", "pullSync..." + jieguo);
             Log.e("ClientSessionHandler", "pullSync1..." + AnalysisHelp.getScanjieguo(jieguo));
             Log.e("ClientSessionHandler", "pullSync2..." + AnalysisHelp.getScanresylt(jieguo));
@@ -122,18 +129,18 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         }
         //  二维码 票务通
         if (Utils.pullscanMj(message.toString())) {
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(24, message.toString().length()));
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
             Log.e("ClientSessionHandler", "pullSync..." + jieguo);
             Log.e("ClientSessionHandler", "pullSync1..." + AnalysisHelp.getScanjieguo(jieguo));
             Log.e("ClientSessionHandler", "pullSync2..." + AnalysisHelp.getScanresylt(jieguo));
             NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getScanjieguo(jieguo),AnalysisHelp.getScanresylt(jieguo),"1"));
         }
 
-        if (message.toString().length() <12) {
+        if (message.toString().length() <7) {
             NotificationCenter.defaultCenter().publish(new PutEvent(2, message.toString()));
         }
 //        tcpResponse.receivedMessage(message.toString().trim());
-        Log.e("ClientSessionHandler", "客户端接受消息成功..." + HexStr.hexStr2Str((message.toString()).substring(12, message.toString().length())));
+        Log.e("ClientSessionHandler", "客户端接受消息成功..." + HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length())));
     }
 
     @Override

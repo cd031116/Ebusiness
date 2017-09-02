@@ -28,16 +28,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".activity.StartActivity">
+        <activity android:name=".activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".activity.CaptureActivity"/>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".activity.CaptureActivity" />
 
         <receiver android:name=".sdk.NetworkReceiver">
             <intent-filter>
@@ -49,7 +48,7 @@
 
         <activity
             android:name=".activity.SettingActivity"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".activity.SelectActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
@@ -64,7 +63,9 @@
         <activity
             android:name=".activity.CheckActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".scanner.ScannerActivity"/>
-        <activity android:name=".priter.PrinterActivity"/>
+        <activity android:name=".scanner.ScannerActivity" />
+        <activity android:name=".priter.PrinterActivity" />
+        <activity android:name=".activity.ChoiceActivity"></activity>
     </application>
+
 </manifest>

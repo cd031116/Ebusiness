@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
 import com.eb.sc.R;
+import com.eb.sc.activity.CaptureActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
@@ -54,7 +55,7 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
     private boolean beginToReceiverData = true;
     private boolean isconnect = true;
     private LinearLayout top_left;
-
+    private ShowMsgDialog smdiilag=null;
 
     ICallBack.Stub mCallback = new ICallBack.Stub() {
         @Override
@@ -218,7 +219,6 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -314,18 +314,26 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
 
     //-------------------------
     //在线成功
-    PutSubscriber putSubscriber = new PutSubscriber() {
+    PutSubscriber putSubscriber = new PutSubscriber(){
         @Override
         public void onEvent(PutEvent putEvent) {
             String srt = putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0, 2);
             String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
-            if ("01".equals(sgs)) {
-                showDialogMsg("无效票");
+            if ("06".equals(sgs)) {
+                showDialogd("团队票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("02".equals(sgs)) {
+                showDialogd("儿童票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if("01".equals(sgs)){
+                showDialogd("成人票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            }else if("05".equals(sgs)){
+                showDialogd("老年票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            }else if("03".equals(sgs)){
+                showDialogd("优惠票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if("07".equals(sgs)){
                 showDialogMsg("已使用");
-            } else {
-                showDialogd(Utils.pullScan(putEvent.getStrs()), text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            }else {
+                showDialogMsg("无效票");
             }
         }
     };

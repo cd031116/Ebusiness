@@ -11,6 +11,7 @@ public class ItemInfo implements Serializable{
     private String Name;
     private String Code;
     private String Num;
+    private String Price;
     public String getId() {
         return Id;
     }
@@ -41,5 +42,13 @@ public class ItemInfo implements Serializable{
 
     public void setNum(String num) {
         Num = num;
+    }
+
+    public String getPrice() {
+        return Price;
+    }
+
+    public void setPrice(String price) {
+        Price = price;
     }
 }

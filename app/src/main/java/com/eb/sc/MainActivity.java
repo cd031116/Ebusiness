@@ -426,7 +426,7 @@ public class MainActivity extends BaseActivity {
 
     //有效票-有线
     private void showDialogd(String names, final String num, String code, final String renshu) {
-        new CommomDialog(this, R.style.dialog, names, num, code, renshu, new CommomDialog.OnCloseListener() {
+        new CommomDialog(this, R.style.dialog, names, num, code, renshu, new CommomDialog.OnCloseListener(){
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {

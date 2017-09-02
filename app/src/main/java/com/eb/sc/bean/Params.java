@@ -17,7 +17,7 @@ public class Params {
     //端口号
     public static final int PORT = 2020;
     //升级
-    public static final String SHENGJI="4080000100017A";
+    public static final String SHENGJI="408000017A";
     public static final String SEND1="@15311Z";
     //心跳包接受
     public static final String RECEIVE="4099000100017A";
@@ -25,5 +25,5 @@ public class Params {
 
 
 
-    public static final String SHEBEI="4011000100017A";
+    public static final String SHEBEI="401100017A";
 }

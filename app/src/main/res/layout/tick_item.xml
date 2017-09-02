@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    android:layout_marginBottom="1px"
+    android:padding="20px">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20px"
+        android:singleLine="true"
+        android:text="旅游景点"
+        android:textColor="#333333"
+        android:textSize="55px" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="20px">
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="￥200"
+            android:textSize="55px"
+            android:textColor="#ed3232" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/jian"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingLeft="50px"
+                android:paddingRight="50px"
+                android:text="--"
+                android:textColor="#333333"
+                android:textSize="70px" />
+
+            <EditText
+                android:id="@+id/num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:gravity="center_horizontal"
+                android:textSize="70px"
+                android:background="@null" />
+
+            <TextView
+                android:id="@+id/jia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="+"
+                android:paddingLeft="50px"
+                android:paddingRight="50px"
+                android:textColor="#333333"
+                android:textSize="70px" />
+
+
+            <TextView
+                android:id="@+id/go_buy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50px"
+                android:padding="20px"
+                android:textColor="#ffffff"
+                android:textSize="60px"
+                android:background="#ed3232"
+                android:text="售票"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

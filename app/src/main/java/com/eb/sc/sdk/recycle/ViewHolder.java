@@ -21,8 +21,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-
+import com.eb.sc.utils.SupportMultipleScreensUtil;
 
 
 public class ViewHolder extends RecyclerView.ViewHolder
@@ -50,6 +49,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
     {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,
                 false);
+        SupportMultipleScreensUtil.scale(itemView);
         ViewHolder holder = new ViewHolder(context, itemView);
         return holder;
     }

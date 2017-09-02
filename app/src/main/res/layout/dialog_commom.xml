@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="800px"
     android:layout_height="match_parent"
     android:background="@drawable/bg_round_white"
     android:orientation="vertical">
@@ -12,14 +12,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="visible"
-        android:padding="10dp">
+        android:padding="20px">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="项目:"
             android:textColor="#B6B6B6"
-            android:textSize="25sp" />
+            android:textSize="60px" />
 
         <TextView
             android:id="@+id/name"
@@ -28,7 +28,7 @@
             android:gravity="left"
             android:layout_marginLeft="5dp"
             android:textColor="#333333"
-            android:textSize="25sp" />
+            android:textSize="60px" />
 
 
     </LinearLayout>
@@ -37,14 +37,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="20px">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="身份证:"
             android:textColor="#B6B6B6"
-            android:textSize="25sp" />
+            android:textSize="60px" />
 
         <TextView
             android:id="@+id/idcard"
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:textColor="#333333"
-            android:textSize="25sp" />
+            android:textSize="60px" />
 
     </LinearLayout>
 
@@ -60,23 +60,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="20px">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="票型:"
             android:textColor="#B6B6B6"
-            android:textSize="25sp" />
+            android:textSize="60px" />
 
         <TextView
             android:id="@+id/tCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="10px"
             android:textColor="#333333"
-            android:textSize="25sp" />
+            android:textSize="60px" />
 
 
     </LinearLayout>
@@ -86,23 +86,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="20px">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="人数:"
             android:textColor="#B6B6B6"
-            android:textSize="25sp" />
+            android:textSize="60px" />
 
         <TextView
             android:id="@+id/renshu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="10px"
             android:textColor="#333333"
-            android:textSize="25sp" />
+            android:textSize="60px" />
 
 
     </LinearLayout>
@@ -110,12 +110,12 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="1px"
+        android:layout_marginTop="40px"
         android:background="#636262"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="120px"
         android:orientation="horizontal">
 
 
@@ -128,7 +128,7 @@
             android:gravity="center"
             android:text="确定检票"
             android:textColor="#42369a"
-            android:textSize="29sp" />
+            android:textSize="65px" />
 
     </LinearLayout>
 

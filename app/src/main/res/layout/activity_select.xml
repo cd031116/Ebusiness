@@ -76,15 +76,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:padding="7px"
                         android:src="@drawable/ganying" />
 
                     <TextView
+                        android:id="@+id/t_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="10px"
                         android:text="身份证感应"
                         android:textColor="#ffffff"
-                        android:textSize="100px" />
+                        android:textSize="70px" />
 
 
                 </LinearLayout>
@@ -93,7 +95,7 @@
 
 
             <RelativeLayout
-                android:id="@id/scan"
+                android:id="@+id/scan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="60px"
@@ -119,21 +121,47 @@
                         android:padding="10px"
                         android:text="扫描二维码"
                         android:textColor="#ffffff"
-                        android:textSize="100px" />
+                        android:textSize="70px" />
 
                 </LinearLayout>
 
             </RelativeLayout>
-            
-            <TextView
-                android:id="@+id/test"
+
+
+
+            <RelativeLayout
+                android:id="@+id/buy_p"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_margin="30px"
-                android:textSize="60px"
-                android:text="打印测试"/>
-            
+                android:layout_marginTop="60px"
+                android:background="@drawable/select_bg"
+                android:visibility="visible"
+                android:padding="30px">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:padding="10px">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/saomiao" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10px"
+                        android:text="售票"
+                        android:textColor="#ffffff"
+                        android:textSize="70px" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>

@@ -85,7 +85,13 @@ public class StartActivity extends BaseActivity {
     }
 
     private void redirectTo() {
-        startActivity(new Intent(StartActivity.this, CheckActivity.class));
+        BaseConfig bg=BaseConfig.getInstance(this);
+        int jix=bg.getIntValue(Constants.JI_XING,-1);
+        if(jix<=0){
+            startActivity(new Intent(StartActivity.this, ChoiceActivity.class));
+        }else {
+            startActivity(new Intent(StartActivity.this, CheckActivity.class));
+        }
         this.finish();
     }
 

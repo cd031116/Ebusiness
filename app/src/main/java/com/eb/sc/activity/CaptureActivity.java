@@ -31,9 +31,11 @@ import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.priter.PrinterActivity;
 import com.eb.sc.scan.CaptureActivityHandler;
 import com.eb.sc.scan.InactivityTimer;
 import com.eb.sc.scan.camera.CameraManager;
+import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -123,6 +125,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private boolean isconnect = true;
     private String scansts = "";
     private int cannum = 1;
+    private String select = "";
 
     @Override
     protected int getLayoutId() {
@@ -132,6 +135,11 @@ public class CaptureActivity extends BaseActivity implements Callback {
     @Override
     public void initView() {
         super.initView();
+        Bundle bd=getIntent().getExtras();
+        if(bd!=null){
+            select=bd.getString("select");
+        }
+
         // 初始化 CameraManager
         BaseConfig bg = BaseConfig.getInstance(this);
         try {
@@ -161,7 +169,12 @@ public class CaptureActivity extends BaseActivity implements Callback {
     @Override
     public void initData() {
         super.initData();
-        top_title.setText("扫描");
+        if("1".equals(select)){
+            top_title.setText("扫描收款码");
+        }else {
+            top_title.setText("扫描");
+        }
+
     }
 
 
@@ -220,13 +233,18 @@ public class CaptureActivity extends BaseActivity implements Callback {
         NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
     }
 
-    public void handleDecode(String result){
+    public void handleDecode(String result) {
         this.scansts = result;
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
-        Log.i("mmmm", "handleDecode=" + cannum);
-        if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this) || !isconnect){//无网络
-            if (BusinessManager.isHaveScan(result, cannum)){//票已检
+        if("1".equals(select)){
+            Intent intent = new Intent(CaptureActivity.this,PrinterActivity.class);
+            intent.putExtra("scansts", scansts);
+            setResult(RESULT_OK, intent);
+            CaptureActivity.this.finish();
+        }else
+        if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this) || !isconnect) {//无网络
+            if (BusinessManager.isHaveScan(result, cannum)) {//票已检
                 showDialogMsg("已使用!");
             } else {
                 showresult(result);
@@ -430,12 +448,20 @@ public class CaptureActivity extends BaseActivity implements Callback {
             String srt = putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0, 2);
             String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
-            if ("01".equals(sgs)) {
-                showDialogMsg("无效票");
+            if ("06".equals(sgs)) {
+                showDialogd("团队票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("02".equals(sgs)) {
+                showDialogd("儿童票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if ("01".equals(sgs)) {
+                showDialogd("成人票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if ("05".equals(sgs)) {
+                showDialogd("老年票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if ("03".equals(sgs)) {
+                showDialogd("优惠票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if ("07".equals(sgs)) {
                 showDialogMsg("已使用");
             } else {
-                showDialogd(Utils.pullScan(putEvent.getStrs()), scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                showDialogMsg("无效票");
             }
         }
     };
@@ -465,7 +491,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     //分析二维码-无线
     private void showresult(String strs) {
         Log.i("tttt", "strs=" + strs);
-        int a = AnalysisHelp.StringScan(CaptureActivity.this, strs);
+        int a = AnalysisHelp.useScan(CaptureActivity.this, strs);
         if (a == 1) {//1------可用
             showDialog(Utils.getXiangmu(CaptureActivity.this), strs);
         } else if (a == 2) {

@@ -59,7 +59,10 @@ public class SelectActivity extends BaseActivity {
     TextView cheeck;
     @Bind(R.id.password)
     EditText id_num;
-
+    @Bind(R.id.t_text)
+    TextView t_text;
+    @Bind(R.id.buy_p)
+    RelativeLayout buy_p;
     String id_n="";
     private boolean xiumian=true;
     private boolean isconnect = true;
@@ -75,7 +78,21 @@ public class SelectActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
         top_title.setText("扫描检票");
-        BaseConfig bg=new BaseConfig(this);
+        BaseConfig bg=BaseConfig.getInstance(this);
+        int select=bg.getIntValue(Constants.JI_XING,-1);
+        if(select==1) {
+            buy_p.setVisibility(View.GONE);
+        }else {
+            buy_p.setVisibility(View.VISIBLE);
+        }
+
+        if(select==1){
+            t_text.setText("按键扫描");
+            buy_p.setVisibility(View.VISIBLE);
+        }else {
+            t_text.setText("身份证感应");
+            buy_p.setVisibility(View.GONE);
+        }
         String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
@@ -95,14 +112,22 @@ public class SelectActivity extends BaseActivity {
         super.initData();
     }
 
-    @OnClick({R.id.idcard,R.id.scan,R.id.top_left,R.id.cheeck,R.id.test})
+    @OnClick({R.id.idcard,R.id.scan,R.id.top_left,R.id.cheeck,R.id.buy_p})
     void onclick(View v){
+        BaseConfig bg=BaseConfig.getInstance(this);
         switch (v.getId()){
             case R.id.idcard:
-                startActivity(new Intent(SelectActivity.this,ScannerActivity.class));
+                int select=bg.getIntValue(Constants.JI_XING,-1);
+                if (select==1){
+                    startActivity(new Intent(SelectActivity.this,ScannerActivity.class));
+                }else {
+                    startActivity(new Intent(SelectActivity.this,MainActivity.class));
+                }
                 break;
             case R.id.scan:
-                startActivity(new Intent(SelectActivity.this,CaptureActivity.class));
+                Intent intent=new Intent(SelectActivity.this, CaptureActivity.class);
+                intent.putExtra("select","2");
+                startActivity(intent);
                 break;
             case R.id.top_left:
                 SelectActivity.this.finish();
@@ -129,7 +154,7 @@ public class SelectActivity extends BaseActivity {
                     }
                 }
                 break;
-            case R.id.test:
+            case R.id.buy_p:
                 startActivity(new Intent(SelectActivity.this, PrinterActivity.class));
                 break;
         }
@@ -143,7 +168,6 @@ public class SelectActivity extends BaseActivity {
                 String srt=putEvent.getStrs();
                 String sgs = putEvent.getStrs().substring(0,2);
                 String renshu= putEvent.getStrs().substring(srt.length()-2,srt.length());
-
                 if ("01".equals(sgs)) {
                     showDialogMsg("无效票");
                 }else if("02".equals(sgs)){
@@ -152,7 +176,6 @@ public class SelectActivity extends BaseActivity {
                     showDialogd(Utils.pullScan(putEvent.getStrs()),id_n,Utils.getXiangmu(SelectActivity.this),renshu);
                 }
             }
-
         }
     };
 

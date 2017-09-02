@@ -29,4 +29,7 @@ public class Constants {
 
     public  static final String X_NUM="px_num";
 
+    public  static final String JI_XING="ji_xing";
+
+    public  static final String ORDER_ID="order_id";
 }
