@@ -122,17 +122,11 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         //  二维码2
         if (Utils.pullscan(message.toString())) {
             String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
-            Log.e("ClientSessionHandler", "pullSync..." + jieguo);
-            Log.e("ClientSessionHandler", "pullSync1..." + AnalysisHelp.getScanjieguo(jieguo));
-            Log.e("ClientSessionHandler", "pullSync2..." + AnalysisHelp.getScanresylt(jieguo));
             NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getScanjieguo(jieguo),AnalysisHelp.getScanresylt(jieguo),"1"));
         }
         //  二维码 票务通
         if (Utils.pullscanMj(message.toString())) {
             String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
-            Log.e("ClientSessionHandler", "pullSync..." + jieguo);
-            Log.e("ClientSessionHandler", "pullSync1..." + AnalysisHelp.getScanjieguo(jieguo));
-            Log.e("ClientSessionHandler", "pullSync2..." + AnalysisHelp.getScanresylt(jieguo));
             NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getScanjieguo(jieguo),AnalysisHelp.getScanresylt(jieguo),"1"));
         }
 

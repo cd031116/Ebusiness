@@ -252,9 +252,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         } else {//有网络
             if (result.length() == 6) {
                 PushManager.getInstance(this).sendMessage(Utils.getMjScan(this, result));
-                Log.i("tttt", "sssssssssssd=" + Utils.getMjScan(this, result));
             } else {
-                Log.i("tttt", "sssssssssss=" + Utils.getscan(this, result));
                 String updata = Utils.getscan(this, result);
                 PushManager.getInstance(this).sendMessage(updata);
             }
@@ -384,7 +382,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                             dataInfo.setUp(false);
                         }
                         OfflLineDataDb.insert(dataInfo);
-                    } else if (BusinessManager.isHaveuse(scansts, cannum) > 0) {
+                    } else if (BusinessManager.isHaveuse(scansts, cannum) > 0){
                         int isuse = BusinessManager.isHaveuse(scansts, cannum);
                         DataInfo a = OfflLineDataDb.getDB().selectById(null, DataInfo.class, scansts);
                         a.setCanuse(isuse + 1);

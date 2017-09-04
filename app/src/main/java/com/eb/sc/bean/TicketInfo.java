@@ -11,51 +11,30 @@ import java.util.ArrayList;
 
 public class TicketInfo implements Serializable{
 
-    public  String address;
-    public String ticketCode;
-    public  String ticketNum;
-    public   String orderNum;
-    public   String orderName;
-    public   String orderPrice;
-    public  String orderPeople;
-    public   String orderTime;
-    public String ticketOrderNum;
-    public String printTime;
-    public Bitmap start_bitmap;
-    public Bitmap end_bitmap;
+    private String orderId;//单号
 
-    public ArrayList<String> orderType;
+    private  String orderName;//名称
 
-    public String getAddress() {
-        return address;
+    private String price;//价格
+
+    private String pNum;//人数
+
+    private  String orderTime;// 日期
+
+    private String pTime;//打印时间
+
+    private String  item;//项目
+
+    private Bitmap start_bitmap;
+
+    private Bitmap end_bitmap;//二维码内容
+
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getTicketCode() {
-        return ticketCode;
-    }
-
-    public void setTicketCode(String ticketCode) {
-        this.ticketCode = ticketCode;
-    }
-
-    public String getTicketNum() {
-        return ticketNum;
-    }
-
-    public void setTicketNum(String ticketNum) {
-        this.ticketNum = ticketNum;
-    }
-
-    public String getOrderNum() {
-        return orderNum;
-    }
-
-    public void setOrderNum(String orderNum) {
-        this.orderNum = orderNum;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public String getOrderName() {
@@ -66,20 +45,20 @@ public class TicketInfo implements Serializable{
         this.orderName = orderName;
     }
 
-    public String getOrderPrice() {
-        return orderPrice;
+    public String getPrice() {
+        return price;
     }
 
-    public void setOrderPrice(String orderPrice) {
-        this.orderPrice = orderPrice;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
-    public String getOrderPeople() {
-        return orderPeople;
+    public String getpNum() {
+        return pNum;
     }
 
-    public void setOrderPeople(String orderPeople) {
-        this.orderPeople = orderPeople;
+    public void setpNum(String pNum) {
+        this.pNum = pNum;
     }
 
     public String getOrderTime() {
@@ -90,20 +69,20 @@ public class TicketInfo implements Serializable{
         this.orderTime = orderTime;
     }
 
-    public String getTicketOrderNum() {
-        return ticketOrderNum;
+    public String getpTime() {
+        return pTime;
     }
 
-    public void setTicketOrderNum(String ticketOrderNum) {
-        this.ticketOrderNum = ticketOrderNum;
+    public void setpTime(String pTime) {
+        this.pTime = pTime;
     }
 
-    public String getPrintTime() {
-        return printTime;
+    public String getItem() {
+        return item;
     }
 
-    public void setPrintTime(String printTime) {
-        this.printTime = printTime;
+    public void setItem(String item) {
+        this.item = item;
     }
 
     public Bitmap getStart_bitmap() {
@@ -120,13 +99,5 @@ public class TicketInfo implements Serializable{
 
     public void setEnd_bitmap(Bitmap end_bitmap) {
         this.end_bitmap = end_bitmap;
-    }
-
-    public ArrayList<String> getOrderType() {
-        return orderType;
-    }
-
-    public void setOrderType(ArrayList<String> orderType) {
-        this.orderType = orderType;
     }
 }

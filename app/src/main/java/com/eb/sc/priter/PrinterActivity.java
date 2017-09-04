@@ -14,24 +14,18 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eb.sc.MainActivity;
 import com.eb.sc.R;
 import com.eb.sc.activity.CaptureActivity;
 import com.eb.sc.bean.TickBean;
 import com.eb.sc.bean.TicketInfo;
 import com.eb.sc.scanner.BaseActivity;
 import com.eb.sc.scanner.ExecutorFactory;
-import com.eb.sc.sdk.eventbus.ConnectEvent;
-import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
 import com.eb.sc.sdk.eventbus.GetOrderSubscriber;
-import com.eb.sc.sdk.eventbus.NetEvent;
-import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.sdk.recycle.CommonAdapter;
 import com.eb.sc.sdk.recycle.ViewHolder;
 import com.eb.sc.tcprequest.PushManager;
@@ -40,12 +34,12 @@ import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.ProgressDialog;
-import com.zkteco.android.biometric.module.fingerprint.FingerprintFactory;
-import com.zkteco.android.biometric.module.idcard.IDCardReaderFactory;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -62,7 +56,8 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
     private TextView top_title;
     private LinearLayout top_left;
     private ProgressDialog progressDialog;
-
+    private TextView text;
+    private  TickBean ticketInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +69,9 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         recycleview = (RecyclerView) findViewById(R.id.recycleview);
         top_title = (TextView) findViewById(R.id.top_title);
         top_left = (LinearLayout) findViewById(R.id.top_left);
+        text= (TextView) findViewById(R.id.text);
         top_left.setOnClickListener(this);
+        text.setOnClickListener(this);
         top_title.setText("售票");
         ExecutorFactory.executeThread(new Runnable() {
             @Override
@@ -153,12 +150,11 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
                     @Override
                     public void onClick(View v) {
                         String datas = Utils.getItemId(PrinterActivity.this) + "&" + (Double.parseDouble(tickBean.getPrice()) * tickBean.getpNum() + "") + "&" + "3" + "&" + (tickBean.getpNum() + "");
-                        Log.i("bbbb", "datas=" + datas);
                         String updata = Utils.getBuy(PrinterActivity.this, datas);
-                        Log.i("bbbb", "updata=" + updata);
                         boolean abg = PushManager.getInstance(PrinterActivity.this).sendMessage(updata);
                         if (abg) {
                             showAlert("正在提交..", true);
+                            ticketInfo=tickBean;
                         } else {
                             dismissAlert();
                             Toast.makeText(PrinterActivity.this, "提交失败", Toast.LENGTH_SHORT).show();
@@ -173,9 +169,9 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         recycleview.setAdapter(mAdapter);
     }
 
-    Handler mHandler = new Handler(new Handler.Callback() {
+    Handler mHandler = new Handler(new Handler.Callback(){
         @Override
-        public boolean handleMessage(Message msg) {
+        public boolean handleMessage(Message msg){
             switch (msg.what) {
                 case 0:
                     String status;
@@ -209,11 +205,39 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         super.onStop();
     }
 
-    int imageType = 0;
 
-    private void printPurcase(boolean hasStartPic, boolean hasEndPic) {
-        TicketInfo ticketInfo = PrinterHelper.getInstance(this).getTicket(mIzkcService, hasStartPic, hasEndPic);
-        PrinterHelper.getInstance(this).printPurchaseBillModelTwo(mIzkcService, ticketInfo, imageType);
+
+    private void printPurcase() {
+        BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
+        TicketInfo tInfo=new TicketInfo();
+        tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID,""));
+        tInfo.setPrice(ticketInfo.getPrice());
+        tInfo.setpNum(ticketInfo.getpNum()+"");
+        tInfo.setOrderName(Utils.getXiangmu(this));
+        tInfo.setItem(Utils.getXiangmu(this));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = formatter.format(curDate);
+        tInfo.setpTime(str);
+
+        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+        Date curDate1 = new Date(System.currentTimeMillis());//获取当前时间
+        String str1 = formatter1.format(curDate1);
+        tInfo.setOrderTime(str1+"至"+str1);
+
+        Bitmap mBitmap = null;
+        mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
+        tInfo.setStart_bitmap(mBitmap);
+        Bitmap btMap;
+        try {
+            btMap = mIzkcService.createQRCode("", 240, 240);
+            tInfo.setEnd_bitmap(btMap);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        PrinterHelper.getInstance(this).printPurchaseBillModelTwo(mIzkcService, tInfo);
     }
 
 
@@ -222,6 +246,9 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         switch (v.getId()) {
             case R.id.top_left:
                 PrinterActivity.this.finish();
+                break;
+            case R.id.text:
+                printPurcase();
                 break;
         }
     }
