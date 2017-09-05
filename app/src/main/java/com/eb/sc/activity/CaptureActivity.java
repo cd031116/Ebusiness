@@ -1,6 +1,5 @@
 package com.eb.sc.activity;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -10,7 +9,10 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.os.RemoteException;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -23,18 +25,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.eb.sc.MainActivity;
 import com.eb.sc.R;
-import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
+import com.eb.sc.bean.TicketInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.priter.PrinterActivity;
+import com.eb.sc.priter.PrinterHelper;
 import com.eb.sc.scan.CaptureActivityHandler;
 import com.eb.sc.scan.InactivityTimer;
 import com.eb.sc.scan.camera.CameraManager;
+import com.eb.sc.scanner.BaseActivity;
+import com.eb.sc.scanner.ExecutorFactory;
 import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
@@ -43,15 +46,11 @@ import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.sdk.eventbus.PutSubscriber;
 import com.eb.sc.tcprequest.PushManager;
-import com.eb.sc.tcprequest.PushService;
-import com.eb.sc.tcprequest.TcpResponse;
 import com.eb.sc.utils.AnalysisHelp;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
-import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.Utils;
-import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ScanDialog;
 import com.eb.sc.widget.ShowMsgDialog;
 
@@ -60,6 +59,7 @@ import org.aisen.android.component.eventbus.NotificationCenter;
 import java.io.IOException;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
@@ -89,7 +89,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private int cropHeight = 0;
     private RelativeLayout mContainer = null;
     private RelativeLayout mCropLayout = null;
-
+    private boolean runFlag = true;
     public int getX() {
         return x;
     }
@@ -127,14 +127,43 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private int cannum = 1;
     private String select = "";
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_qr_scan;
-    }
+
 
     @Override
-    public void initView() {
-        super.initView();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_qr_scan);
+        ButterKnife.bind(this);
+        ExecutorFactory.executeThread(new Runnable() {
+            @Override
+            public void run() {
+                while (runFlag) {
+                    if (bindSuccessFlag) {
+                        //检测打印是否正常
+                        try {
+                            String printerSoftVersion = mIzkcService.getFirmwareVersion1();
+                            if (TextUtils.isEmpty(printerSoftVersion)) {
+                                printerSoftVersion = mIzkcService.getFirmwareVersion2();
+                            }
+                            if (TextUtils.isEmpty(printerSoftVersion)) {
+                                mIzkcService.setModuleFlag(module_flag);
+                                mHandler.obtainMessage(1).sendToTarget();
+                            } else {
+                                mHandler.obtainMessage(0, printerSoftVersion).sendToTarget();
+                                runFlag = false;
+                            }
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+
+        initView();
+    }
+
+   private void initView() {
         Bundle bd=getIntent().getExtras();
         if(bd!=null){
             select=bd.getString("select");
@@ -164,17 +193,51 @@ public class CaptureActivity extends BaseActivity implements Callback {
         animation.setInterpolator(new LinearInterpolator());
         animation.setDuration(1200);
         mQrLineView.startAnimation(animation);
-    }
+       initData();
+   }
 
-    @Override
-    public void initData() {
-        super.initData();
+    private void initData() {
         if("1".equals(select)){
             top_title.setText("扫描收款码");
         }else {
             top_title.setText("扫描");
         }
 
+    }
+
+    Handler mHandler = new Handler(new Handler.Callback(){
+        @Override
+        public boolean handleMessage(Message msg){
+            switch (msg.what) {
+                case 0:
+                    try {
+                        mIzkcService.setModuleFlag(0);
+                    } catch (RemoteException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1:
+//                    Toast.makeText(PrinterActivity.this, "正在连接打印机，请稍后...", Toast.LENGTH_SHORT).show();
+                    break;
+                case 8:
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+    });
+
+
+
+    private void toprinter() {
+        BaseConfig bg = BaseConfig.getInstance(CaptureActivity.this);
+        TicketInfo tInfo = new TicketInfo();
+        tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
+        tInfo.setPrice("20");
+        tInfo.setpNum("2");
+        PrinterHelper.getInstance(CaptureActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
     }
 
 
@@ -392,6 +455,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
 
                     handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
+                    toprinter();
                 }
             }
         }).setTitle("提示").show();
@@ -434,6 +498,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     }
                     handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
+                    toprinter();
                 }
             }
         }).setTitle("提示").show();

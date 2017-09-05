@@ -7,6 +7,7 @@ import android.util.Log;
 import com.eb.sc.bean.Params;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
+import com.eb.sc.sdk.eventbus.PayResultEvent;
 import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.sdk.eventbus.RefreshEvent;
 import com.eb.sc.sdk.eventbus.TongbuEvent;
@@ -91,13 +92,18 @@ public class ClientSessionHandler extends IoHandlerAdapter {
                 shebei = "0" + shebei;
             }
             bg.setStringValue(Constants.shebeihao, shebei);
-            Log.e("ClientSessionHandler", "shebei..." + sb);
         }
         //获取订单
         if (Utils.getOrderid(message.toString())) {
             BaseConfig bg = new BaseConfig(mcontext);
             String orderId=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
             NotificationCenter.defaultCenter().publish(new GetOrderEvent(orderId));
+        }
+        //获取支付结果
+        if (Utils.getPay(message.toString())) {
+            BaseConfig bg = new BaseConfig(mcontext);
+            String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+            NotificationCenter.defaultCenter().publish(new PayResultEvent(sfts));
         }
 
         //是项目item

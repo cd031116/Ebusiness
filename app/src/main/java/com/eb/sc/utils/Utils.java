@@ -48,7 +48,7 @@ public class Utils {
         List<ItemInfo> mList = JSON.parseArray(list_item, ItemInfo.class);
         for (int i = 0; i < mList.size(); i++) {
             if (s.equals(mList.get(i).getCode())) {
-                return mList.get(i).getName();
+                return mList.get(i).getPrice();
             }
         }
         return "";
@@ -181,6 +181,19 @@ public class Utils {
         String sgs = sty.substring(2, 4);
         Log.i("tttt", "sgs=" + sgs);
         if ("20".equals(sgs)) {
+            return true;
+        }
+        return false;
+    }
+
+    //支付成功
+    public static boolean getPay(String sty){
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        String sgs = sty.substring(2, 4);
+        Log.i("tttt", "sgs=" + sgs);
+        if ("21".equals(sgs)) {
             return true;
         }
         return false;

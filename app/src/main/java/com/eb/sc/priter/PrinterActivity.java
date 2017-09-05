@@ -26,6 +26,8 @@ import com.eb.sc.scanner.BaseActivity;
 import com.eb.sc.scanner.ExecutorFactory;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
 import com.eb.sc.sdk.eventbus.GetOrderSubscriber;
+import com.eb.sc.sdk.eventbus.PayResultEvent;
+import com.eb.sc.sdk.eventbus.PayResultSubscriber;
 import com.eb.sc.sdk.recycle.CommonAdapter;
 import com.eb.sc.sdk.recycle.ViewHolder;
 import com.eb.sc.tcprequest.PushManager;
@@ -57,11 +59,13 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
     private LinearLayout top_left;
     private ProgressDialog progressDialog;
     private TextView text;
-    private  TickBean ticketInfo;
+    private TickBean ticketInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NotificationCenter.defaultCenter().subscriber(GetOrderEvent.class, getOrderscriber);
+        NotificationCenter.defaultCenter().subscriber(PayResultEvent.class, payscriber);
         setContentView(R.layout.activity_printer);
         View rootView = findViewById(android.R.id.content);
         SupportMultipleScreensUtil.init(getApplication());
@@ -69,7 +73,7 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         recycleview = (RecyclerView) findViewById(R.id.recycleview);
         top_title = (TextView) findViewById(R.id.top_title);
         top_left = (LinearLayout) findViewById(R.id.top_left);
-        text= (TextView) findViewById(R.id.text);
+        text = (TextView) findViewById(R.id.text);
         top_left.setOnClickListener(this);
         text.setOnClickListener(this);
         top_title.setText("售票");
@@ -110,7 +114,7 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         ifo.setNmae(Utils.getXiangmu(this));
         ifo.setpNum(1);
         ifo.setId_tick(s);
-        ifo.setPrice("129");
+        ifo.setPrice(Utils.getPrice(this));
         mList.add(ifo);
         mAdapter = new CommonAdapter<TickBean>(PrinterActivity.this, R.layout.tick_item, mList) {
             @Override
@@ -154,7 +158,7 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
                         boolean abg = PushManager.getInstance(PrinterActivity.this).sendMessage(updata);
                         if (abg) {
                             showAlert("正在提交..", true);
-                            ticketInfo=tickBean;
+                            ticketInfo = tickBean;
                         } else {
                             dismissAlert();
                             Toast.makeText(PrinterActivity.this, "提交失败", Toast.LENGTH_SHORT).show();
@@ -169,20 +173,13 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         recycleview.setAdapter(mAdapter);
     }
 
-    Handler mHandler = new Handler(new Handler.Callback(){
+    Handler mHandler = new Handler(new Handler.Callback() {
         @Override
-        public boolean handleMessage(Message msg){
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-                    String status;
-                    String aidlServiceVersion;
                     try {
                         mIzkcService.setModuleFlag(0);
-//					mIzkcService.sendRAWData("printer", new byte[] {0x1b, 0x40});
-                        status = mIzkcService.getPrinterStatus();
-//					tv_printStatus.setText(status);
-                        aidlServiceVersion = mIzkcService.getServiceVersion();
-//					tv_printer_soft_version.setText(msg.obj + "AIDL Service Version:" + aidlServiceVersion);
                     } catch (RemoteException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -206,13 +203,12 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-
-    private void printPurcase() {
+    private void printPurcase(String sttrs) {
         BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
-        TicketInfo tInfo=new TicketInfo();
-        tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID,""));
+        TicketInfo tInfo = new TicketInfo();
+        tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
         tInfo.setPrice(ticketInfo.getPrice());
-        tInfo.setpNum(ticketInfo.getpNum()+"");
+        tInfo.setpNum(ticketInfo.getpNum() + "");
         tInfo.setOrderName(Utils.getXiangmu(this));
         tInfo.setItem(Utils.getXiangmu(this));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -223,14 +219,14 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
         Date curDate1 = new Date(System.currentTimeMillis());//获取当前时间
         String str1 = formatter1.format(curDate1);
-        tInfo.setOrderTime(str1+"至"+str1);
+        tInfo.setOrderTime(str1 + "至" + str1);
 
         Bitmap mBitmap = null;
         mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
         tInfo.setStart_bitmap(mBitmap);
         Bitmap btMap;
         try {
-            btMap = mIzkcService.createQRCode("", 240, 240);
+            btMap = mIzkcService.createQRCode(sttrs, 240, 240);
             tInfo.setEnd_bitmap(btMap);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
@@ -247,16 +243,13 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
             case R.id.top_left:
                 PrinterActivity.this.finish();
                 break;
-            case R.id.text:
-                printPurcase();
-                break;
         }
     }
 
     //收到反回的数据
-    GetOrderSubscriber getOrderscriber = new GetOrderSubscriber() {
+    GetOrderSubscriber getOrderscriber = new GetOrderSubscriber(){
         @Override
-        public void onEvent(GetOrderEvent event) {
+        public void onEvent(GetOrderEvent event){
             dismissAlert();
             String order_id = event.getOrder_id();
             BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
@@ -267,10 +260,21 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         }
     };
 
+    //收到反回的数据
+    PayResultSubscriber payscriber = new PayResultSubscriber(){
+        @Override
+        public void onEvent(PayResultEvent event){
+            dismissAlert();
+            printPurcase(event.getStrs());
+        }
+    };
+
+
     @Override
-    public void onDestroy() {
+    public void onDestroy(){
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(GetOrderEvent.class, getOrderscriber);
+        NotificationCenter.defaultCenter().unsubscribe(PayResultEvent.class, payscriber);
     }
 
 
@@ -313,16 +317,15 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) { //resultCode为回传的标记，我在B中回传的是RESULT_OK
             case RESULT_OK:
                 Bundle b = data.getExtras(); //data为B中回传的Intent
                 String str = b.getString("scansts");//str即为回传的值
                 if (!TextUtils.isEmpty(str)) {
                     BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
-                      String order=bg.getStringValue(Constants.ORDER_ID, "");
-                    String updata = Utils.sentBuy(PrinterActivity.this, str+"&"+order);
-                    Log.i("bbbb", "updata=" + updata);
+                    String order = bg.getStringValue(Constants.ORDER_ID, "");
+                    String updata = Utils.sentBuy(PrinterActivity.this, order + "&" + "0.01" + "&" + "3" + "&" + Utils.getXiangmu(this) + "&" + str);
                     boolean abg = PushManager.getInstance(PrinterActivity.this).sendMessage(updata);
                     if (abg) {
                         showAlert("正在支付..", true);

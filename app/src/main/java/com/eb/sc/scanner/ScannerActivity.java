@@ -21,8 +21,11 @@ import android.widget.LinearLayout;
 import com.eb.sc.R;
 import com.eb.sc.activity.CaptureActivity;
 import com.eb.sc.bean.DataInfo;
+import com.eb.sc.bean.TicketInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.priter.PrinterActivity;
+import com.eb.sc.priter.PrinterHelper;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -55,7 +58,7 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
     private boolean beginToReceiverData = true;
     private boolean isconnect = true;
     private LinearLayout top_left;
-    private ShowMsgDialog smdiilag=null;
+    private ShowMsgDialog smdiilag = null;
 
     ICallBack.Stub mCallback = new ICallBack.Stub() {
         @Override
@@ -147,6 +150,33 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
 
             }
         });
+        ExecutorFactory.executeThread(new Runnable() {
+            @Override
+            public void run() {
+                while (runFlag) {
+                    if (bindSuccessFlag) {
+                        //检测打印是否正常
+                        try {
+                            String printerSoftVersion = mIzkcService.getFirmwareVersion1();
+                            if (TextUtils.isEmpty(printerSoftVersion)) {
+                                printerSoftVersion = mIzkcService.getFirmwareVersion2();
+                            }
+                            if (TextUtils.isEmpty(printerSoftVersion)) {
+                                mIzkcService.setModuleFlag(module_flag);
+                                mHandler.obtainMessage(1).sendToTarget();
+                            } else {
+                                mHandler.obtainMessage(0, printerSoftVersion).sendToTarget();
+                                runFlag = false;
+                            }
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+        });
+
     }
 
     Handler mHandler = new Handler(new Handler.Callback() {
@@ -159,6 +189,16 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
                     break;
                 case 1:
 //                    playBeepSoundAndVibrate();
+                    Log.i("clientd", "text=" + text);
+
+                    if (TextUtils.isEmpty(text)) {
+                        break;
+                    }
+                    if (text.contains("system")) {
+                        break;
+                    }
+
+
                     if (!NetWorkUtils.isNetworkConnected(ScannerActivity.this) || !isconnect) {//无网络
                         if (BusinessManager.isHaveScan(text, cannum)) {//票已检
                             showDialogMsg("已使用!");
@@ -208,6 +248,7 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
         }
     }
 
+    //扫码
     void initScanSet() {
         if (mIzkcService != null) {
             try {
@@ -239,6 +280,7 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
     //屏幕打开需要打开扫描模块，唤醒扫描功能；
     //屏幕关闭须要关闭扫描模块，开启省电模式；
     int count = 1;
+
     public class RemoteControlReceiver extends BroadcastReceiver {
         private static final String TAG = "RemoteControlReceiver";
 
@@ -314,7 +356,7 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
 
     //-------------------------
     //在线成功
-    PutSubscriber putSubscriber = new PutSubscriber(){
+    PutSubscriber putSubscriber = new PutSubscriber() {
         @Override
         public void onEvent(PutEvent putEvent) {
             String srt = putEvent.getStrs();
@@ -324,15 +366,15 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
                 showDialogd("团队票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("02".equals(sgs)) {
                 showDialogd("儿童票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
-            } else if("01".equals(sgs)){
+            } else if ("01".equals(sgs)) {
                 showDialogd("成人票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
-            }else if("05".equals(sgs)){
+            } else if ("05".equals(sgs)) {
                 showDialogd("老年票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
-            }else if("03".equals(sgs)){
+            } else if ("03".equals(sgs)) {
                 showDialogd("优惠票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
-            } else if("07".equals(sgs)){
+            } else if ("07".equals(sgs)) {
                 showDialogMsg("已使用");
-            }else {
+            } else {
                 showDialogMsg("无效票");
             }
         }
@@ -346,10 +388,33 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
                 if (confirm) {
                     text = "";
                     dialog.dismiss();
+                    toprinter();
                 }
             }
         }).setTitle("提示").show();
     }
+
+    private void toprinter(){
+        try {
+            mIzkcService.setModuleFlag(0);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        BaseConfig bg = BaseConfig.getInstance(ScannerActivity.this);
+        TicketInfo tInfo = new TicketInfo();
+        tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
+        tInfo.setPrice("20");
+        tInfo.setpNum("2");
+        PrinterHelper.getInstance(ScannerActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
+        try {
+            mIzkcService.setModuleFlag(4);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 
     @OnClick({R.id.top_left})
     void onclick(View v) {
@@ -465,7 +530,7 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
                     DataInfo dataInfo = new DataInfo();
                     if (BusinessManager.isHaveuse(text, cannum) == 0) {
                         dataInfo.setCanuse(1);
-                        if (!code.contains("&")){
+                        if (!code.contains("&")) {
                             dataInfo.setId(code);
                             dataInfo.setNet(true);
                             dataInfo.setpNum(renshu);
