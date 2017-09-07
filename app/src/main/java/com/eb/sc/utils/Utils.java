@@ -156,6 +156,23 @@ public class Utils {
         return data;
     }
 
+    //取消订单
+    public static String cancelOrder(Context context, String msg) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        String nr_16 = HexStr.str2HexStr(msg);
+        String data = "4023" + she  + nr_16;
+        return data.toUpperCase();
+    }
+
+    //发送购买参数
+    public static String lunxun(Context context, String msg) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        String nr_16 = HexStr.str2HexStr(msg);
+        String data = "4022" + she  + nr_16;
+        return data.toUpperCase();
+    }
     //发送购买参数
     public static String getBuy(Context context, String msg) {
         BaseConfig bg = new BaseConfig(context);
@@ -181,6 +198,19 @@ public class Utils {
         String sgs = sty.substring(2, 4);
         Log.i("tttt", "sgs=" + sgs);
         if ("20".equals(sgs)) {
+            return true;
+        }
+        return false;
+    }
+
+    //轮询
+    public static boolean getResult(String sty){
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        String sgs = sty.substring(2, 4);
+        Log.i("tttt", "sgs=" + sgs);
+        if ("22".equals(sgs)) {
             return true;
         }
         return false;

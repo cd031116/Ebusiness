@@ -41,6 +41,8 @@ public class BusinessManager {
     }
 
 
+
+
     //1.检查是否存在这张票
     public static int isHaveuse(String id,int num){
         DataInfo a= OfflLineDataDb.getDB().selectById(null,DataInfo.class,id);

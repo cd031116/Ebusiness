@@ -15,12 +15,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +79,8 @@ public class SettingActivity extends BaseActivity {
     RelativeLayout tongbu;
     @Bind(R.id.submit)
     TextView submit;
+    @Bind(R.id.radio)
+    ImageButton mradio;
 
     //----------------------------
     /**
@@ -95,7 +101,8 @@ public class SettingActivity extends BaseActivity {
     private ArrayAdapter<String> testDataAdapter;
     private boolean isconnect = true;
     private List<ItemInfo> mList = new ArrayList<>();
-    private  String address_ip="";
+    private String address_ip = "";
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_setting;
@@ -108,8 +115,9 @@ public class SettingActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(RefreshEvent.class, refreshEvent);
         top_title.setText("设置");
-        BaseConfig bg = new BaseConfig(this);
+        final BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
+        String select = bg.getStringValue(Constants.SHIFOU_PRINT, "0");
         if ("1".equals(b)) {
             isconnect = true;
         } else {
@@ -120,11 +128,17 @@ public class SettingActivity extends BaseActivity {
         } else {
             changeview(false);
         }
-        address_ip=bg.getStringValue(Constants.tcp_ip,"");
+        address_ip = bg.getStringValue(Constants.tcp_ip, "");
+        if ("1".equals(select)) {
+            mradio.setSelected(true);
+        } else {
+            mradio.setSelected(false);
+        }
+
     }
 
     @Override
-    public void initData(){
+    public void initData() {
         super.initData();
         TestData();
         code.setText(Utils.getImui(this) + "");
@@ -142,12 +156,13 @@ public class SettingActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state,R.id.tongbu,R.id.submit})
+    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state, R.id.tongbu, R.id.submit, R.id.radio, R.id.close_bg})
     void onClick(View v) {
+        BaseConfig bg = new BaseConfig(this);
         switch (v.getId()) {
             case R.id.top_left:
-                Intent intent1= new Intent(SettingActivity.this,CheckActivity.class);
-                SettingActivity.this.setResult(1,intent1);
+                Intent intent1 = new Intent(SettingActivity.this, CheckActivity.class);
+                SettingActivity.this.setResult(1, intent1);
                 SettingActivity.this.finish();
                 break;
             case R.id.amend:
@@ -163,18 +178,18 @@ public class SettingActivity extends BaseActivity {
             case R.id.tongbu:
                 BaseConfig bgs = new BaseConfig(this);
                 String http_urls = ip_tcp.getText().toString();
-                if(!address_ip.equals(http_urls)){
-                    Toast.makeText(SettingActivity.this,"您修改了ip地址,请先保存再同步",Toast.LENGTH_SHORT).show();
-                   return;
+                if (!address_ip.equals(http_urls)) {
+                    Toast.makeText(SettingActivity.this, "您修改了ip地址,请先保存再同步", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                boolean a=  PushManager.getInstance(SettingActivity.this).sendMessage(Params.SHEBEI);
-                if(a){
-                    Toast.makeText(SettingActivity.this,"同步成功",Toast.LENGTH_SHORT).show();
-                }else
-                    Toast.makeText(SettingActivity.this,"同步失败",Toast.LENGTH_SHORT).show();
+                boolean a = PushManager.getInstance(SettingActivity.this).sendMessage(Params.SHEBEI);
+                if (a) {
+                    Toast.makeText(SettingActivity.this, "同步成功", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(SettingActivity.this, "同步失败", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.submit:
-                BaseConfig bg = new BaseConfig(this);
+
                 String http_url = ip_tcp.getText().toString();
                 String http_code = ip_port.getText().toString();
                 if (!TextUtils.isEmpty(http_url)) {
@@ -183,20 +198,32 @@ public class SettingActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(http_code)) {
                     bg.setStringValue(Constants.ip_port, http_code);
                 }
-                Intent intent= new Intent(SettingActivity.this,CheckActivity.class);
+                Intent intent = new Intent(SettingActivity.this, CheckActivity.class);
                 if (!http_url.equals(address_ip)) {
-                    if(TextUtils.isEmpty(address_ip)){
-                        intent.putExtra("result",http_url);
-                    }else {
+                    if (TextUtils.isEmpty(address_ip)) {
+                        intent.putExtra("result", http_url);
+                    } else {
                         showDialogMsg();
                         break;
                     }
-                }else{
-                    intent.putExtra("result","");
+                } else {
+                    intent.putExtra("result", "");
                 }
-                Toast.makeText(SettingActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
-                SettingActivity.this.setResult(1,intent );
+                Toast.makeText(SettingActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                SettingActivity.this.setResult(1, intent);
                 SettingActivity.this.finish();
+                break;
+            case R.id.radio:
+                if (mradio.isSelected()) {
+                    mradio.setSelected(false);
+                    bg.setStringValue(Constants.SHIFOU_PRINT, "0");
+                } else {
+                    mradio.setSelected(true);
+                    bg.setStringValue(Constants.SHIFOU_PRINT, "1");
+                }
+                break;
+            case R.id.close_bg:
+                ExitDialog();
                 break;
         }
     }
@@ -209,7 +236,7 @@ public class SettingActivity extends BaseActivity {
     };
 
     //长连接
-    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber(){
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
         @Override
         public void onEvent(ConnectEvent event) {
             BaseConfig bg = new BaseConfig(SettingActivity.this);
@@ -251,13 +278,13 @@ public class SettingActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(RefreshEvent.class, refreshEvent);
-        address_ip="";
+        address_ip = "";
     }
 
     private void changeview(boolean conect) {
         if (conect) {
             mRight_bg.setImageResource(R.drawable.lianjie);
-            top_right_text.setText("链接");
+            top_right_text.setText("在线");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));
         } else {
             mRight_bg.setImageResource(R.drawable.lixian);
@@ -276,13 +303,13 @@ public class SettingActivity extends BaseActivity {
         testData = new ArrayList<>();
         BaseConfig bg = new BaseConfig(SettingActivity.this);
         String list_item = bg.getStringValue(Constants.px_list, "");
-        if(TextUtils.isEmpty(list_item)){
-           return;
+        if (TextUtils.isEmpty(list_item)) {
+            return;
         }
-            mList = JSON.parseArray(list_item, ItemInfo.class);
-            for (int i = 0; i < mList.size(); i++) {
-                testData.add(mList.get(i).getName());
-            }
+        mList = JSON.parseArray(list_item, ItemInfo.class);
+        for (int i = 0; i < mList.size(); i++) {
+            testData.add(mList.get(i).getName());
+        }
     }
 
     /**
@@ -305,7 +332,7 @@ public class SettingActivity extends BaseActivity {
                 for (int i = 0; i < mList.size(); i++) {
                     if (value.equals(mList.get(i).getName())) {
                         bg.setStringValue(Constants.address, mList.get(i).getCode());
-                        bg.setStringValue(Constants.X_NUM,mList.get(i).getNum());
+                        bg.setStringValue(Constants.X_NUM, mList.get(i).getNum());
 
                     }
                 }
@@ -331,11 +358,10 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent= new Intent(SettingActivity.this,CheckActivity.class);
-        SettingActivity.this.setResult(1,intent );
+        Intent intent = new Intent(SettingActivity.this, CheckActivity.class);
+        SettingActivity.this.setResult(1, intent);
         SettingActivity.this.finish();
     }
-
 
 
     private void showDialogMsg() {
@@ -346,8 +372,8 @@ public class SettingActivity extends BaseActivity {
                     PushManager.getInstance(SettingActivity.this).close();
                     BaseConfig bg = new BaseConfig(SettingActivity.this);
                     bg.setStringValue(Constants.tcp_ip, ip_tcp.getText().toString());
-                    bg.setStringValue(Constants.address,"");
-                    bg.setStringValue(Constants.px_list,"");
+                    bg.setStringValue(Constants.address, "");
+                    bg.setStringValue(Constants.px_list, "");
                     dialog.dismiss();
 
                     Intent i = getBaseContext().getPackageManager()
@@ -364,8 +390,6 @@ public class SettingActivity extends BaseActivity {
         }).setTitle("提示").show();
 
     }
-
-
 
 
 }

@@ -144,11 +144,14 @@ public class DetailActivity extends BaseActivity {
         init();
     }
 
-    @OnClick({R.id.top_left})
+    @OnClick({R.id.top_left, R.id.close_bg})
     void onBuy(View v) {
         switch (v.getId()) {
             case R.id.top_left:
                 DetailActivity.this.finish();
+                break;
+            case R.id.close_bg:
+                ExitDialog();
                 break;
         }
     }
@@ -200,7 +203,7 @@ public class DetailActivity extends BaseActivity {
     private void changeview(boolean conect) {
         if (conect) {
             mRight_bg.setImageResource(R.drawable.lianjie);
-            top_right_text.setText("链接");
+            top_right_text.setText("在线");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));
         } else {
             mRight_bg.setImageResource(R.drawable.lixian);

@@ -35,6 +35,10 @@ public class ChoiceActivity extends BaseActivity {
     ImageView image_one;
     @Bind(R.id.image_two)
     ImageView image_two;
+
+    @Bind(R.id.image_three)
+    ImageView image_three;
+
     private int select = 1;
     @Override
     protected int getLayoutId(){
@@ -64,7 +68,7 @@ public class ChoiceActivity extends BaseActivity {
                 this.finish();
                 break;
             case R.id.one:
-                if (select == 1) {
+                if (select == 1){
                     return;
                 }
                 select = 1;
@@ -77,15 +81,25 @@ public class ChoiceActivity extends BaseActivity {
                 select = 2;
                 setview(select);
                 break;
+            case R.id.three:
+                if (select == 3) {
+                    return;
+                }
+                select = 3;
+                setview(select);
+                break;
         }
     }
     private void setview(int index) {
         image_one.setImageResource(R.drawable.order_pay_gray_gou);
         image_two.setImageResource(R.drawable.order_pay_gray_gou);
+        image_three.setImageResource(R.drawable.order_pay_gray_gou);
         if (index == 1) {
             image_one.setImageResource(R.drawable.order_pay_red_gou);
-        } else {
+        } else if(index==2){
             image_two.setImageResource(R.drawable.order_pay_red_gou);
+        }else {
+            image_three.setImageResource(R.drawable.order_pay_red_gou);
         }
     }
 

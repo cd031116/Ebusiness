@@ -19,7 +19,6 @@ import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
-import com.eb.sc.priter.PrinterActivity;
 import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
@@ -61,8 +60,6 @@ public class SelectActivity extends BaseActivity {
     EditText id_num;
     @Bind(R.id.t_text)
     TextView t_text;
-    @Bind(R.id.buy_p)
-    RelativeLayout buy_p;
     String id_n="";
     private boolean xiumian=true;
     private boolean isconnect = true;
@@ -79,20 +76,6 @@ public class SelectActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
         top_title.setText("扫描检票");
         BaseConfig bg=BaseConfig.getInstance(this);
-        int select=bg.getIntValue(Constants.JI_XING,-1);
-        if(select==1) {
-            buy_p.setVisibility(View.GONE);
-        }else {
-            buy_p.setVisibility(View.VISIBLE);
-        }
-
-        if(select==1){
-            t_text.setText("按键扫描");
-            buy_p.setVisibility(View.VISIBLE);
-        }else {
-            t_text.setText("身份证感应");
-            buy_p.setVisibility(View.GONE);
-        }
         String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
@@ -110,9 +93,23 @@ public class SelectActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
+        settitle();
+    }
+    private void settitle(){
+        BaseConfig bg=BaseConfig.getInstance(this);
+        int select=bg.getIntValue(Constants.JI_XING,-1);
+        if(select==1){
+            t_text.setText("按键扫码");
+        }else if(select==2){
+            t_text.setText("身份证感应");
+        }else {
+            t_text.setText("身份证感应");
+        }
     }
 
-    @OnClick({R.id.idcard,R.id.scan,R.id.top_left,R.id.cheeck,R.id.buy_p})
+
+
+    @OnClick({R.id.idcard,R.id.scan,R.id.top_left,R.id.cheeck,R.id.close_bg})
     void onclick(View v){
         BaseConfig bg=BaseConfig.getInstance(this);
         switch (v.getId()){
@@ -154,9 +151,10 @@ public class SelectActivity extends BaseActivity {
                     }
                 }
                 break;
-            case R.id.buy_p:
-                startActivity(new Intent(SelectActivity.this, PrinterActivity.class));
+            case R.id.close_bg:
+                ExitDialog();
                 break;
+
         }
     }
 
@@ -225,7 +223,7 @@ public class SelectActivity extends BaseActivity {
     private void changeview(boolean conect) {
         if (conect) {
             mRight_bg.setImageResource(R.drawable.lianjie);
-            top_right_text.setText("链接");
+            top_right_text.setText("在线");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));
         } else {
             mRight_bg.setImageResource(R.drawable.lixian);
@@ -291,13 +289,14 @@ public class SelectActivity extends BaseActivity {
     }
 
     @Override
-    public void onResume() {
+    public void onResume(){
         super.onResume();
         xiumian=false;
+        settitle();
     }
 
     @Override
-    public void onPause() {
+    public void onPause(){
         super.onPause();
         xiumian=true;
     }

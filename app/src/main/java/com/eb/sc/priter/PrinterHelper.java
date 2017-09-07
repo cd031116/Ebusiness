@@ -54,8 +54,7 @@ public class PrinterHelper {
                 SystemClock.sleep(50);
 //				mIzkcService.printGBKText("\n");
                 mIzkcService.printGBKText("中惠旅"+ "\n\n");
-                mIzkcService.printGBKText(mIzkcService_CUT_OFF_RULE + "\n\n");
-
+                mIzkcService.printGBKText(mIzkcService_CUT_OFF_RULE + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.SERIAL_NUMBER_TAG + "\t" + ticketInfo.getOrderId() + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getOrderName() + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_UNIT_PRICE_TAG + "\t" + ticketInfo.getPrice() + "\n");
@@ -63,7 +62,6 @@ public class PrinterHelper {
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_CONTAINS_TYPE + "\t" + ticketInfo.getItem() + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.USE_TIME + "\t" + ticketInfo.getOrderTime() + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.PRINTER_TIME + "\t" + ticketInfo.getpTime() + "\n");
-                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_CONTAINS_TYPE + "\t\n");
                 mIzkcService.printGBKText("\n");
                 mIzkcService.printGBKText(mIzkcService_CUT_OFF_RULE);
                 // if(mIzkcService.getBufferState(100)){

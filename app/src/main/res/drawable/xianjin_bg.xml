@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:state_window_focused="false">
+    <shape android:shape="rectangle">
+        <corners
+            android:radius="10dp"/>
+        <solid
+            android:color="#4076B2"/><!-- 填充的颜色 -->
+    </shape>
+</item>
+<!--单击时是一个带圆角,白色背景,绿色边框的矩形-->
+<item android:state_pressed="true">
+    <shape android:shape="rectangle">
+        <corners
+            android:radius="10dp"/>
+        <solid
+            android:color="#5ba3f4"/><!-- 填充的颜色 -->
+    </shape>
+</item>
+</selector>

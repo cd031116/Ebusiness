@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    tools:context="com.eb.sc.activity.QureActivity">
+    <include layout="@layout/view_top" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EAEAEA"
+        android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50px"
+        android:layout_marginRight="50px"
+        android:layout_marginTop="30px"
+        android:background="@drawable/check_edt_bg">
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:hint="查询订单"
+            android:maxLength="18"
+            android:padding="30px"
+            android:textColor="#939999"
+            android:textColorHint="#939999"
+            android:textSize="60px" />
+
+        <TextView
+            android:id="@+id/cheeck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/select_bg_o"
+            android:padding="30px"
+            android:text="查询"
+            android:textColor="#ffffff"
+            android:textSize="60px" />
+    </RelativeLayout>
+
+        <ExpandableListView
+            android:id="@+id/expand"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:groupIndicator="@null"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.eb.sc.base;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 
 import com.eb.sc.R;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
+import com.eb.sc.widget.ProgressDialog;
 
 import butterknife.ButterKnife;
 
@@ -40,6 +42,7 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
     protected View contentView;
     private TextView msg;
     InputMethodManager manager;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +50,16 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
         MyApplication.instance.getActivityManager().pushActivity(this);
         manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        if (getLayoutId()!= 0){
+        if (getLayoutId() != 0) {
             // setContentView(getLayoutId());
             contentView = View.inflate(this, getLayoutId(), null);
             setContentView(contentView);
-            View rootView=findViewById(android.R.id.content);
+            View rootView = findViewById(android.R.id.content);
             SupportMultipleScreensUtil.init(getApplication());
             SupportMultipleScreensUtil.scale(rootView);
         }
         ButterKnife.bind(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
@@ -65,7 +68,7 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
         MyApplication.instance.getActivityManager().popActivity(this);
 //        if (EventBus.getDefault().isRegistered(this)){
@@ -73,10 +76,9 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
 //        }
     }
 
-    protected int getLayoutId(){
+    protected int getLayoutId() {
         return 0;
     }
-
 
 
     @Override
@@ -88,16 +90,19 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
     public void initData() {
 
     }
+
     @Override
     public void finish() {
         super.finish();
 //		this.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
     }
+
     @Override
-    public void startActivity(Intent intent){
+    public void startActivity(Intent intent) {
         super.startActivity(intent);
 //		this.overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
     }
+
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         super.startActivityForResult(intent, requestCode);
@@ -144,10 +149,10 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
         // TODO Auto-generated method stub
-        if(event.getAction() == MotionEvent.ACTION_DOWN){
-            if(getCurrentFocus()!=null && getCurrentFocus().getWindowToken()!=null){
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (getCurrentFocus() != null && getCurrentFocus().getWindowToken() != null) {
                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
         }
@@ -175,7 +180,7 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
         super.onPause();
     }
 
-    public String getClassName(){
+    public String getClassName() {
         return this.getClass().getSimpleName();
     }
 
@@ -186,19 +191,80 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
         super.onStop();
     }
 
-    private boolean isForeground (Context context)
-    {
-        ActivityManager am = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+    private boolean isForeground(Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
         String currentPackageName = cn.getPackageName();
-        if(!TextUtils.isEmpty(currentPackageName) && currentPackageName.equals(getPackageName()))
-        {
-            return true ;
+        if (!TextUtils.isEmpty(currentPackageName) && currentPackageName.equals(getPackageName())) {
+            return true;
         }
 
-        return false ;
+        return false;
     }
 
+    /**
+     * 显示加载图标
+     *
+     * @param txt
+     */
+    public void showAlert(String txt, final boolean isCancel) {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        if (txt != null) {
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(this, isCancel);
+            }
+            progressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        if (isCancel) {
+                            progressDialog.dismiss();
+                        }
+                    }
+                    return false;
+                }
+            });
+            progressDialog.show();
+            progressDialog.showText(txt);
+        }
+    }
 
+    /**
+     * 关闭加载图标
+     */
+    public void dismissAlert() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
 
+    public void ExitDialog() {
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(this);
+        normalDialog.setTitle("提示");
+        normalDialog.setMessage("确定退出整个应用?");
+        normalDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                });
+        normalDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        // 显示
+        normalDialog.show();
+    }
 }

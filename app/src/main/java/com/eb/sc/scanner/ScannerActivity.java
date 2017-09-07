@@ -45,7 +45,6 @@ import com.smartdevice.aidl.ICallBack;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
-import butterknife.OnClick;
 
 public class ScannerActivity extends BaseActivity implements OnClickListener {
     private int cannum = 1;
@@ -57,7 +56,7 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
     private String firstCodeStr = "";
     private boolean beginToReceiverData = true;
     private boolean isconnect = true;
-    private LinearLayout top_left;
+    private LinearLayout top_left,close_bg;
     private ShowMsgDialog smdiilag = null;
 
     ICallBack.Stub mCallback = new ICallBack.Stub() {
@@ -233,15 +232,19 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
 
     private void initView() {
         top_left = (LinearLayout) findViewById(R.id.top_left);
+        close_bg= (LinearLayout) findViewById(R.id.close_bg);
+        close_bg.setOnClickListener(this);
         top_left.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        Intent intent = null;
         switch (v.getId()) {
             case R.id.top_left:
                 ScannerActivity.this.finish();
+                break;
+            case R.id.close_bg:
+                ExitDialog();
                 break;
             default:
                 break;
@@ -395,35 +398,31 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
     }
 
     private void toprinter(){
-        try {
-            mIzkcService.setModuleFlag(0);
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        BaseConfig bg = BaseConfig.getInstance(ScannerActivity.this);
-        TicketInfo tInfo = new TicketInfo();
-        tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
-        tInfo.setPrice("20");
-        tInfo.setpNum("2");
-        PrinterHelper.getInstance(ScannerActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
-        try {
-            mIzkcService.setModuleFlag(4);
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+            BaseConfig bg = BaseConfig.getInstance(ScannerActivity.this);
+            String state= bg.getStringValue(Constants.SHIFOU_PRINT, "0");
+            if("0".equals(state)){
+                return;
+            }else {
+                try {
+                    mIzkcService.setModuleFlag(0);
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                TicketInfo tInfo = new TicketInfo();
+                tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
+                tInfo.setPrice("20");
+                tInfo.setpNum("2");
+                PrinterHelper.getInstance(ScannerActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
+                try {
+                    mIzkcService.setModuleFlag(4);
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
     }
 
-
-    @OnClick({R.id.top_left})
-    void onclick(View v) {
-        switch (v.getId()) {
-            case R.id.top_left:
-                ScannerActivity.this.finish();
-                break;
-        }
-    }
 
     //分析二维码-无线
     private void showresult(String strs) {

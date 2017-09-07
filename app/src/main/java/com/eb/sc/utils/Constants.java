@@ -32,4 +32,8 @@ public class Constants {
     public  static final String JI_XING="ji_xing";
 
     public  static final String ORDER_ID="order_id";
+
+    public  static final String SHIFOU_PRINT="shifou_print";
+
+    public  static final String IS_PAY="is_pay";
 }

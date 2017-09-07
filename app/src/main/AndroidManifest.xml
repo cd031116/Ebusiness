@@ -32,11 +32,14 @@
         <activity android:name=".activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".activity.CaptureActivity" />
+        <activity
+            android:name=".activity.CaptureActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <receiver android:name=".sdk.NetworkReceiver">
             <intent-filter>
@@ -51,6 +54,7 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".activity.SelectActivity"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".activity.AmendActivity"
@@ -70,9 +74,17 @@
         <receiver android:name=".business.BootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".activity.SaleTickActivity" />
+        <activity android:name=".activity.ToPayActivity" />
+        <activity
+            android:name=".activity.QureActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        <activity android:name=".activity.SaleTotalActivity"></activity>
     </application>
 
 </manifest>

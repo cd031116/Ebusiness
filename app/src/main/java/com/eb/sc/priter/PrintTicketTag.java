@@ -13,8 +13,8 @@ public class PrintTicketTag
 		 static public final String GOODS_UNIT_PRICE_TAG = "价格:";
 		 static public final String GOODS_AMOUNT_TAG = "人数";
 		 static public final String GOODS_CONTAINS_TYPE = "包含项目:";
-		 static public final String USE_TIME = "日期:";
-		 static public final String PRINTER_TIME = "日期:";
+		 static public final String USE_TIME = "有效日期:";
+		 static public final String PRINTER_TIME = "打印日期:";
 
 		 static public final String FAVOURABLE_CASH_TAG = "日期:";
 		 static public final String RECEIPT_CASH_TAG = "票号:";

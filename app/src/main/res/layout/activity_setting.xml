@@ -7,7 +7,6 @@
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:padding="20px"
     tools:context="com.eb.sc.activity.SettingActivity">
 
     <include layout="@layout/view_top" />
@@ -153,6 +152,39 @@
                 android:background="@null" />
 
         </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120px"
+            android:background="#ffffff"
+            android:orientation="horizontal"
+            android:padding="20px">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="打印票据"
+                android:padding="20px"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:textColor="#333333"
+                android:textSize="50px" />
+
+            <ImageButton
+                android:id="@+id/radio"
+                android:layout_width="155px"
+                android:layout_height="80px"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/radio_bg"
+                android:padding="20px"
+                android:layout_marginRight="20px"/>
+
+        </RelativeLayout>
+
+
 
 
         <RelativeLayout

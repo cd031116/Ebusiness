@@ -50,7 +50,7 @@ public class AmendActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.top_left, R.id.submit})
+    @OnClick({R.id.top_left, R.id.submit,R.id.close_bg})
     void onclick(View v) {
         BaseConfig bg = new BaseConfig(this);
         switch (v.getId()) {
@@ -86,6 +86,10 @@ public class AmendActivity extends BaseActivity {
                 bg.setStringValue(Constants.admin_word, tnpsd);
                 Toast.makeText(AmendActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                 AmendActivity.this.finish();
+                break;
+
+            case R.id.close_bg:
+                ExitDialog();
                 break;
         }
     }

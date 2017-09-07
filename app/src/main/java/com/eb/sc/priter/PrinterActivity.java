@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,18 +15,28 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eb.sc.R;
 import com.eb.sc.activity.CaptureActivity;
+import com.eb.sc.activity.QureActivity;
+import com.eb.sc.activity.SelectActivity;
+import com.eb.sc.activity.ToPayActivity;
+import com.eb.sc.bean.SaleBean;
 import com.eb.sc.bean.TickBean;
 import com.eb.sc.bean.TicketInfo;
+import com.eb.sc.offline.SaleDataDb;
 import com.eb.sc.scanner.BaseActivity;
 import com.eb.sc.scanner.ExecutorFactory;
+import com.eb.sc.sdk.eventbus.ConnectEvent;
+import com.eb.sc.sdk.eventbus.ConnentSubscriber;
+import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
 import com.eb.sc.sdk.eventbus.GetOrderSubscriber;
+import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.eventbus.PayResultEvent;
 import com.eb.sc.sdk.eventbus.PayResultSubscriber;
 import com.eb.sc.sdk.recycle.CommonAdapter;
@@ -44,39 +55,50 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 /**
  * Created by Administrator on 2017/9/1.
  */
 
-public class PrinterActivity extends BaseActivity implements View.OnClickListener {
-    private RecyclerView recycleview;
+public class PrinterActivity extends BaseActivity {
     private Bitmap mBitmap = null;
     private boolean runFlag = true;
     private CommonAdapter<TickBean> mAdapter;
     private List<TickBean> mList = new ArrayList<>();
-    private TextView top_title;
-    private LinearLayout top_left;
     private ProgressDialog progressDialog;
-    private TextView text;
-    private TickBean ticketInfo;
+    private TickBean mInfo;
+    @Bind(R.id.top_title)
+    TextView top_title;
+    @Bind(R.id.top_right_text)
+    TextView top_right_text;
+    @Bind(R.id.right_bg)
+    ImageView mRight_bg;
+    @Bind(R.id.state)
+    TextView state;
+    private int select = 0;
+    private String s_neirong, order = "";
+    private boolean isconnect = true;
+    private boolean isbuy = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NotificationCenter.defaultCenter().subscriber(GetOrderEvent.class, getOrderscriber);
         NotificationCenter.defaultCenter().subscriber(PayResultEvent.class, payscriber);
+        NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
+        mInfo = (TickBean) getIntent().getSerializableExtra("tick");
+        order = getIntent().getExtras().getString("order");
+        select = getIntent().getExtras().getInt("select");
         setContentView(R.layout.activity_printer);
+        ButterKnife.bind(this);
         View rootView = findViewById(android.R.id.content);
         SupportMultipleScreensUtil.init(getApplication());
         SupportMultipleScreensUtil.scale(rootView);
-        recycleview = (RecyclerView) findViewById(R.id.recycleview);
-        top_title = (TextView) findViewById(R.id.top_title);
-        top_left = (LinearLayout) findViewById(R.id.top_left);
-        text = (TextView) findViewById(R.id.text);
-        top_left.setOnClickListener(this);
-        text.setOnClickListener(this);
-        top_title.setText("售票");
+        top_title.setText("正在支付");
         ExecutorFactory.executeThread(new Runnable() {
             @Override
             public void run() {
@@ -98,80 +120,14 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }
             }
         });
-
-        initData();
+        showAlert("..正在支付..", false);
+        handler.postDelayed(runnable, 2000);
     }
 
-    private void initData() {
-        BaseConfig bg = BaseConfig.getInstance(this);
-        final String s = bg.getStringValue(Constants.address, "-1");
-        TickBean ifo = new TickBean();
-        ifo.setNmae(Utils.getXiangmu(this));
-        ifo.setpNum(1);
-        ifo.setId_tick(s);
-        ifo.setPrice(Utils.getPrice(this));
-        mList.add(ifo);
-        mAdapter = new CommonAdapter<TickBean>(PrinterActivity.this, R.layout.tick_item, mList) {
-            @Override
-            protected void convert(ViewHolder holder, final TickBean tickBean, int position) {
-                holder.setText(R.id.name, "项目点:" + tickBean.getNmae());
-                holder.setText(R.id.price, "￥" + tickBean.getPrice());
-                holder.setText(R.id.num, tickBean.getpNum() + "");
-                holder.setOnClickListener(R.id.jian, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int num = tickBean.getpNum();
-                        if (num < 2) {
-                            Toast.makeText(PrinterActivity.this, "售票数量不能小于1", Toast.LENGTH_SHORT).show();
-                            return;
-                        } else {
-                            num = num - 1;
-                            tickBean.setpNum(num);
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });
-
-                holder.setOnClickListener(R.id.jia, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int num = tickBean.getpNum();
-                        if (num >= 100) {
-                            return;
-                        } else {
-                            num = num + 1;
-                            tickBean.setpNum(num);
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });
-                holder.setOnClickListener(R.id.go_buy, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String datas = Utils.getItemId(PrinterActivity.this) + "&" + (Double.parseDouble(tickBean.getPrice()) * tickBean.getpNum() + "") + "&" + "3" + "&" + (tickBean.getpNum() + "");
-                        String updata = Utils.getBuy(PrinterActivity.this, datas);
-                        boolean abg = PushManager.getInstance(PrinterActivity.this).sendMessage(updata);
-                        if (abg) {
-                            showAlert("正在提交..", true);
-                            ticketInfo = tickBean;
-                        } else {
-                            dismissAlert();
-                            Toast.makeText(PrinterActivity.this, "提交失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-
-            }
-        };
-        recycleview.setLayoutManager(new LinearLayoutManager(PrinterActivity.this));
-        recycleview.setAdapter(mAdapter);
-    }
 
     Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -206,11 +162,12 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
     private void printPurcase(String sttrs) {
         BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
         TicketInfo tInfo = new TicketInfo();
-        tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
-        tInfo.setPrice(ticketInfo.getPrice());
-        tInfo.setpNum(ticketInfo.getpNum() + "");
+        String order_id = bg.getStringValue(Constants.ORDER_ID, "");
+        tInfo.setOrderId(order_id);
+        tInfo.setPrice(mInfo.getPrice());
+        tInfo.setpNum(mInfo.getpNum() + "");
         tInfo.setOrderName(Utils.getXiangmu(this));
-        tInfo.setItem(Utils.getXiangmu(this));
+        tInfo.setItem(Utils.getXiangmu(PrinterActivity.this));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
         String str = formatter.format(curDate);
@@ -234,109 +191,168 @@ public class PrinterActivity extends BaseActivity implements View.OnClickListene
         }
 
         PrinterHelper.getInstance(this).printPurchaseBillModelTwo(mIzkcService, tInfo);
+
     }
 
 
-    @Override
-    public void onClick(View v) {
+    @OnClick({R.id.top_left, R.id.printer_tick, R.id.check_tick})
+    void onclick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
                 PrinterActivity.this.finish();
                 break;
+            case R.id.printer_tick:
+                if (isbuy) {
+                    printPurcase(s_neirong);
+                }
+                break;
+            case R.id.check_tick:
+                startActivity(new Intent(PrinterActivity.this, SelectActivity.class));
+                this.finish();
+                break;
         }
     }
 
-    //收到反回的数据
-    GetOrderSubscriber getOrderscriber = new GetOrderSubscriber(){
-        @Override
-        public void onEvent(GetOrderEvent event){
-            dismissAlert();
-            String order_id = event.getOrder_id();
-            BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
-            bg.setStringValue(Constants.ORDER_ID, order_id);
-            Intent intent = new Intent(PrinterActivity.this, CaptureActivity.class);
-            intent.putExtra("select", "1");
-            startActivityForResult(intent, 0);
-        }
-    };
 
     //收到反回的数据
-    PayResultSubscriber payscriber = new PayResultSubscriber(){
+    PayResultSubscriber payscriber = new PayResultSubscriber() {
         @Override
-        public void onEvent(PayResultEvent event){
-            dismissAlert();
-            printPurcase(event.getStrs());
-        }
-    };
-
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        NotificationCenter.defaultCenter().unsubscribe(GetOrderEvent.class, getOrderscriber);
-        NotificationCenter.defaultCenter().unsubscribe(PayResultEvent.class, payscriber);
-    }
-
-
-    /**
-     * 显示加载图标
-     *
-     * @param txt
-     */
-    public void showAlert(String txt, final boolean isCancel) {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        if (txt != null) {
-            if (progressDialog == null) {
-                progressDialog = new ProgressDialog(this, isCancel);
+        public void onEvent(PayResultEvent event) {
+            Log.i("vvvv", "event=" + event.getStrs());
+            if (event.getStrs().contains("cancel")) {
+                dismissAlert();
+                Toast.makeText(PrinterActivity.this,"用户取消支付",Toast.LENGTH_SHORT).show();
+                handler.removeCallbacks(runnable);
+                PrinterActivity.this.finish();
+            } else if (!event.getStrs().contains("nopay")) {
+                Log.i("vvvv", "events=");
+                handler.removeCallbacks(runnable);
+                isbuy = true;
+                top_title.setText("支付成功");
+                state.setText("已成功收款");
+                dismissAlert();
+                BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
+                bg.setIntValue(Constants.IS_PAY, 1);
+                SaleBean sbean = new SaleBean();
+                sbean.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
+                sbean.setpNum(mInfo.getpNum());
+                sbean.setPrice(mInfo.getPrice());
+                sbean.setItem(Utils.getXiangmu(PrinterActivity.this));
+                sbean.setState(select);
+                if (!TextUtils.isEmpty(bg.getStringValue(Constants.ORDER_ID, "")) && !SaleDataDb.isHave(bg.getStringValue(Constants.ORDER_ID, ""))) {
+                    SaleDataDb.insert(sbean);
+                }
             }
-            progressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                @Override
-                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        if (isCancel) {
-                            progressDialog.dismiss();
+        }
+    };
+
+
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                //要做的事情
+                String updatd = Utils.lunxun(PrinterActivity.this, order);
+                PushManager.getInstance(PrinterActivity.this).sendMessage(updatd);
+                Log.i("vvvv", "PushManager=");
+                handler.postDelayed(this, 2000);
+            }
+        };
+
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            NotificationCenter.defaultCenter().unsubscribe(PayResultEvent.class, payscriber);
+        }
+
+
+        /**
+         * 显示加载图标
+         *
+         * @param txt
+         */
+        public void showAlert(String txt, final boolean isCancel) {
+            if (progressDialog != null && progressDialog.isShowing()) {
+                return;
+            }
+            if (txt != null) {
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(this, isCancel);
+                }
+                progressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            if (isCancel) {
+                                progressDialog.dismiss();
+                            }
                         }
+                        return false;
                     }
-                    return false;
-                }
-            });
-            progressDialog.show();
-            progressDialog.showText(txt);
+                });
+                progressDialog.show();
+                progressDialog.showText(txt);
+            }
         }
-    }
 
-    /**
-     * 关闭加载图标
-     */
-    public void dismissAlert() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
+        /**
+         * 关闭加载图标
+         */
+        public void dismissAlert() {
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
         }
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode) { //resultCode为回传的标记，我在B中回传的是RESULT_OK
-            case RESULT_OK:
-                Bundle b = data.getExtras(); //data为B中回传的Intent
-                String str = b.getString("scansts");//str即为回传的值
-                if (!TextUtils.isEmpty(str)) {
-                    BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
-                    String order = bg.getStringValue(Constants.ORDER_ID, "");
-                    String updata = Utils.sentBuy(PrinterActivity.this, order + "&" + "0.01" + "&" + "3" + "&" + Utils.getXiangmu(this) + "&" + str);
-                    boolean abg = PushManager.getInstance(PrinterActivity.this).sendMessage(updata);
-                    if (abg) {
-                        showAlert("正在支付..", true);
+
+        //长连接
+        ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
+            @Override
+            public void onEvent(ConnectEvent event) {
+                BaseConfig bg = new BaseConfig(PrinterActivity.this);
+                String a = bg.getStringValue(Constants.havenet, "-1");
+                if (event.isConnect()) {
+                    isconnect = true;
+                    if ("1".equals(a)) {
+                        changeview(true);
                     } else {
-                        dismissAlert();
-                        Toast.makeText(PrinterActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+                        changeview(false);
                     }
+                } else {
+                    isconnect = false;
+                    changeview(false);
                 }
-                break;
-            default:
-                break;
+
+            }
+        };
+        //网络
+        EventSubscriber netEventSubscriber = new EventSubscriber() {
+            @Override
+            public void onEvent(NetEvent event) {
+                if (event.isConnect()) {
+                    if (isconnect) {
+                        changeview(true);
+                    } else {
+                        changeview(false);
+                    }
+                } else {
+                    changeview(false);
+                }
+            }
+        };
+
+        private void changeview(boolean conect) {
+            if (conect) {
+                mRight_bg.setImageResource(R.drawable.lianjie);
+                top_right_text.setText("在线");
+                top_right_text.setTextColor(Color.parseColor("#0973FD"));
+            } else {
+                mRight_bg.setImageResource(R.drawable.lixian);
+                top_right_text.setText("离线");
+                top_right_text.setTextColor(Color.parseColor("#EF4B55"));
+            }
         }
+
     }
-}

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.offline.SaleDataDb;
 import com.eb.sc.scanner.ClientConfig;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.ClientGlobal;
@@ -29,6 +30,7 @@ public class MyApplication extends GlobalContext{
         instance = this;
         activityManager = ActivityManagerd.getScreenManager();
         OfflLineDataDb.setup(instance);
+        SaleDataDb.setup(instance);
         ClientConfig.init(getApplicationContext());
         initSDcard();
     }

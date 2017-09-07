@@ -80,7 +80,7 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     public void messageReceived(IoSession session, Object message) throws Exception {
         super.messageReceived(session, message);
 
-        if (Utils.pullShebei(message.toString())) {
+        if (Utils.pullShebei(message.toString())){
             BaseConfig bg = new BaseConfig(mcontext);
             String sb = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
             String shebei = Integer.toHexString(Integer.parseInt(sb));
@@ -101,6 +101,13 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         }
         //获取支付结果
         if (Utils.getPay(message.toString())) {
+            BaseConfig bg = new BaseConfig(mcontext);
+            String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+        }
+
+
+        //获取支付结果轮询
+        if (Utils.getResult(message.toString())) {
             BaseConfig bg = new BaseConfig(mcontext);
             String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
             NotificationCenter.defaultCenter().publish(new PayResultEvent(sfts));

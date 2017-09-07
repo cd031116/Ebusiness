@@ -24,7 +24,7 @@
         <ImageView
             android:id="@+id/top_image"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40px"
             android:clickable="false"
             android:src="@drawable/return_btn"
             android:contentDescription="@string/app_name" />
@@ -82,6 +82,21 @@
             android:textColor="#333333"
             android:gravity="center"
             android:textSize="55px" />
+
+
+        <LinearLayout
+            android:id="@+id/close_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+        <ImageView
+            android:layout_width="40px"
+            android:layout_height="40px"
+            android:layout_marginLeft="30px"
+            android:src="@drawable/guanji"
+            android:layout_marginRight="15px"
+            />
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

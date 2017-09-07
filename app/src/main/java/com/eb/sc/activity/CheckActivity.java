@@ -84,14 +84,6 @@ public class CheckActivity extends BaseActivity {
     TextView top_right_text;
     @Bind(R.id.right_bg)
     ImageView mRight_bg;
-    @Bind(R.id.scan)
-    RelativeLayout scan;//检票
-    @Bind(R.id.idcard)
-    RelativeLayout idScan;//明细
-    @Bind(R.id.sync)
-    RelativeLayout sync;//设置
-    @Bind(R.id.setting)
-    ImageView setting;//设置
     private boolean isconnect = true;
     private DoubleClickExitHelper mDoubleClickExit;
     private List<ItemInfo> mList = new ArrayList<>();
@@ -145,7 +137,7 @@ public class CheckActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.scan, R.id.idcard, R.id.top_right_text, R.id.setting, R.id.sync})
+    @OnClick({R.id.scan, R.id.detail, R.id.top_right_text, R.id.setting, R.id.sync,R.id.sale,R.id.select,R.id.close_bg})
     void onBuy(View v) {
         switch (v.getId()) {
             case R.id.scan:
@@ -158,7 +150,7 @@ public class CheckActivity extends BaseActivity {
                 }
                 startActivity(new Intent(CheckActivity.this, SelectActivity.class));
                 break;
-            case R.id.idcard:
+            case R.id.detail:
                 startActivity(new Intent(CheckActivity.this, DetailActivity.class));
                 break;
             case R.id.sync:
@@ -183,6 +175,15 @@ public class CheckActivity extends BaseActivity {
                         }
                     }
                 }).setTitle("提示").show();
+                break;
+            case R.id.sale://售票
+                startActivity(new Intent(CheckActivity.this, SaleTickActivity.class));
+                break;
+            case R.id.select://查询
+                startActivity(new Intent(CheckActivity.this, QureActivity.class));
+                break;
+            case R.id.close_bg:
+                ExitDialog();
                 break;
         }
     }
@@ -272,7 +273,7 @@ public class CheckActivity extends BaseActivity {
     private void changeview(boolean conect) {
         if (conect) {
             mRight_bg.setImageResource(R.drawable.lianjie);
-            top_right_text.setText("链接");
+            top_right_text.setText("在线");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));
         } else {
             mRight_bg.setImageResource(R.drawable.lixian);

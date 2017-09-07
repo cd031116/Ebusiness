@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f0f0f0"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.eb.sc.activity.SettingActivity">
+
+    <include layout="@layout/view_top" />
+<!--1-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sale_bg_ac"
+        android:layout_margin="100px"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sale_px_bg"
+                android:padding="40px"
+                android:text="现金收款"
+                android:textColor="#5477A5"
+                android:textSize="60px" />
+
+            <TextView
+                android:id="@+id/x_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sale_cy_bg"
+                android:gravity="right"
+                android:padding="40px"
+                android:text="￥3540"
+                android:textColor="#E94F51"
+                android:textSize="60px" />
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sale_sl_bg"
+                android:padding="40px"
+                android:text="现金人数"
+                android:textColor="#5477A5"
+                android:textSize="60px" />
+
+                <TextView
+                    android:id="@+id/p_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="70px"
+                    android:focusable="false"
+                    android:padding="40px"
+                    android:layout_alignParentRight="true"
+                    android:gravity="right"
+                    android:textSize="60px"
+                    android:text="1" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!--2-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sale_bg_ac"
+        android:layout_marginLeft="100px"
+        android:layout_marginRight="100px"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sale_px_bg"
+                android:padding="40px"
+                android:text="微信收款"
+                android:textColor="#99C459"
+                android:textSize="60px" />
+
+            <TextView
+                android:id="@+id/weichat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sale_cy_bg"
+                android:gravity="right"
+                android:padding="40px"
+                android:text="￥3540"
+                android:textColor="#E94F51"
+                android:textSize="60px" />
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sale_sl_bg"
+                android:padding="40px"
+                android:text="售票人数"
+                android:textColor="#99C459"
+                android:textSize="60px" />
+
+            <TextView
+                android:id="@+id/w_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="70px"
+                android:focusable="false"
+                android:padding="40px"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                android:textSize="60px"
+                android:text="1" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!--3-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sale_bg_ac"
+        android:layout_marginLeft="100px"
+        android:layout_marginRight="100px"
+        android:layout_marginTop="100px"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sale_px_bg"
+                android:padding="40px"
+                android:text="支付宝收款"
+                android:textColor="#30AAD3"
+                android:textSize="60px" />
+
+            <TextView
+                android:id="@+id/ali_pay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sale_cy_bg"
+                android:gravity="right"
+                android:padding="40px"
+                android:text="￥3540"
+                android:textColor="#E94F51"
+                android:textSize="60px" />
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sale_sl_bg"
+                android:padding="40px"
+                android:text="售票人数"
+                android:textColor="#30AAD3"
+                android:textSize="60px" />
+
+            <TextView
+                android:id="@+id/a_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="70px"
+                android:focusable="false"
+                android:padding="40px"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                android:textSize="60px"
+                android:text="1" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+
+
+
+    </LinearLayout>

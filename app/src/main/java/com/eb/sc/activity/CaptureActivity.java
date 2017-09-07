@@ -14,6 +14,7 @@ import android.os.RemoteException;
 import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -50,6 +51,7 @@ import com.eb.sc.utils.AnalysisHelp;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.SupportMultipleScreensUtil;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.ScanDialog;
 import com.eb.sc.widget.ShowMsgDialog;
@@ -90,6 +92,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private RelativeLayout mContainer = null;
     private RelativeLayout mCropLayout = null;
     private boolean runFlag = true;
+
     public int getX() {
         return x;
     }
@@ -128,11 +131,13 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private String select = "";
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scan);
+        View rootView = findViewById(android.R.id.content);
+        SupportMultipleScreensUtil.init(getApplication());
+        SupportMultipleScreensUtil.scale(rootView);
         ButterKnife.bind(this);
         ExecutorFactory.executeThread(new Runnable() {
             @Override
@@ -163,10 +168,10 @@ public class CaptureActivity extends BaseActivity implements Callback {
         initView();
     }
 
-   private void initView() {
-        Bundle bd=getIntent().getExtras();
-        if(bd!=null){
-            select=bd.getString("select");
+    private void initView() {
+        Bundle bd = getIntent().getExtras();
+        if (bd != null) {
+            select = bd.getString("select");
         }
 
         // 初始化 CameraManager
@@ -193,21 +198,21 @@ public class CaptureActivity extends BaseActivity implements Callback {
         animation.setInterpolator(new LinearInterpolator());
         animation.setDuration(1200);
         mQrLineView.startAnimation(animation);
-       initData();
-   }
+        initData();
+    }
 
     private void initData() {
-        if("1".equals(select)){
+        if ("1".equals(select)) {
             top_title.setText("扫描收款码");
-        }else {
+        } else {
             top_title.setText("扫描");
         }
 
     }
 
-    Handler mHandler = new Handler(new Handler.Callback(){
+    Handler mHandler = new Handler(new Handler.Callback() {
         @Override
-        public boolean handleMessage(Message msg){
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
                     try {
@@ -230,14 +235,18 @@ public class CaptureActivity extends BaseActivity implements Callback {
     });
 
 
-
     private void toprinter() {
         BaseConfig bg = BaseConfig.getInstance(CaptureActivity.this);
-        TicketInfo tInfo = new TicketInfo();
-        tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
-        tInfo.setPrice("20");
-        tInfo.setpNum("2");
-        PrinterHelper.getInstance(CaptureActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
+        String state = bg.getStringValue(Constants.SHIFOU_PRINT, "0");
+        if ("0".equals(state)) {
+            return;
+        } else {
+            TicketInfo tInfo = new TicketInfo();
+            tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
+            tInfo.setPrice("20");
+            tInfo.setpNum("2");
+            PrinterHelper.getInstance(CaptureActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
+        }
     }
 
 
@@ -300,13 +309,12 @@ public class CaptureActivity extends BaseActivity implements Callback {
         this.scansts = result;
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
-        if("1".equals(select)){
-            Intent intent = new Intent(CaptureActivity.this,PrinterActivity.class);
+        if ("1".equals(select)) {
+            Intent intent = new Intent(CaptureActivity.this, PrinterActivity.class);
             intent.putExtra("scansts", scansts);
             setResult(RESULT_OK, intent);
             CaptureActivity.this.finish();
-        }else
-        if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this) || !isconnect) {//无网络
+        } else if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this) || !isconnect) {//无网络
             if (BusinessManager.isHaveScan(result, cannum)) {//票已检
                 showDialogMsg("已使用!");
             } else {
@@ -445,7 +453,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                             dataInfo.setUp(false);
                         }
                         OfflLineDataDb.insert(dataInfo);
-                    } else if (BusinessManager.isHaveuse(scansts, cannum) > 0){
+                    } else if (BusinessManager.isHaveuse(scansts, cannum) > 0) {
                         int isuse = BusinessManager.isHaveuse(scansts, cannum);
                         DataInfo a = OfflLineDataDb.getDB().selectById(null, DataInfo.class, scansts);
                         a.setCanuse(isuse + 1);
@@ -542,11 +550,19 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }).setTitle("提示").show();
     }
 
-    @OnClick({R.id.top_left})
+    @OnClick({R.id.top_left, R.id.close_bg})
     void onclick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
+                BaseConfig bg = BaseConfig.getInstance(CaptureActivity.this);
+                if (bg.getIntValue(Constants.IS_PAY, -1) == 0) {
+                    PushManager.getInstance(CaptureActivity.this).sendMessage(Utils.cancelOrder(this, bg.getStringValue(Constants.ORDER_ID, "")));
+                    Log.i("vvvv","getInstance1="+Utils.cancelOrder(this, bg.getStringValue(Constants.ORDER_ID, "")));
+                }
                 CaptureActivity.this.finish();
+                break;
+            case R.id.close_bg:
+                ExitDialog();
                 break;
         }
     }
@@ -602,9 +618,9 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }
     };
     //网络
-    EventSubscriber netEventSubscriber = new EventSubscriber() {
+    EventSubscriber netEventSubscriber = new EventSubscriber(){
         @Override
-        public void onEvent(NetEvent event) {
+        public void onEvent(NetEvent event){
             BaseConfig bg = new BaseConfig(CaptureActivity.this);
             if (event.isConnect()) {
                 if (isconnect) {
@@ -617,6 +633,20 @@ public class CaptureActivity extends BaseActivity implements Callback {
             }
         }
     };
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            BaseConfig bg = BaseConfig.getInstance(CaptureActivity.this);
+            if (bg.getIntValue(Constants.IS_PAY, -1) == 0){
+                PushManager.getInstance(CaptureActivity.this).sendMessage(Utils.cancelOrder(this, bg.getStringValue(Constants.ORDER_ID, "")));
+                Log.i("vvvv","getInstance="+Utils.cancelOrder(this, bg.getStringValue(Constants.ORDER_ID, "")));
+            }
+            CaptureActivity.this.finish();
+        }
+        return false;
+    }
 
 
 }

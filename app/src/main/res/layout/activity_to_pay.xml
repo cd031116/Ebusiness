@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f0f0f0"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.eb.sc.activity.SettingActivity">
+    <include layout="@layout/view_top" />
+
+
+
+        <LinearLayout
+            android:id="@+id/cash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="50px"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/xianjin_bg"
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/xianjin"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="60px"
+                android:textColor="#ffffff"
+                android:padding="40px"
+                android:text="现金付款"/>
+
+        </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/weichat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="50px"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/weixin_bg"
+        android:layout_weight="1">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/weixin"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="60px"
+            android:textColor="#ffffff"
+            android:padding="40px"
+            android:text="扫微信二维码"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ali_pay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50px"
+        android:layout_marginLeft="50px"
+        android:layout_marginTop="50px"
+        android:layout_marginBottom="100px"
+
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/ali_bg"
+        android:layout_weight="1">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/zhifubao"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="60px"
+            android:textColor="#ffffff"
+            android:padding="40px"
+            android:text="扫支付宝二维码"/>
+
+    </LinearLayout>
+
+    </LinearLayout>

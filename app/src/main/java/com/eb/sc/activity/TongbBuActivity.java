@@ -138,7 +138,7 @@ public class TongbBuActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.top_left, R.id.sycn})
+    @OnClick({R.id.top_left, R.id.sycn, R.id.close_bg})
     void onBuy(View v) {
         switch (v.getId()) {
             case R.id.top_left:
@@ -150,6 +150,9 @@ public class TongbBuActivity extends BaseActivity {
                 } else {
                     Toast.makeText(TongbBuActivity.this, "与服务器断开连接或网络不可用!", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.close_bg:
+                ExitDialog();
                 break;
         }
     }
@@ -263,7 +266,7 @@ public class TongbBuActivity extends BaseActivity {
     private void changeview(boolean conect) {
         if (conect) {
             mRight_bg.setImageResource(R.drawable.lianjie);
-            top_right_text.setText("链接");
+            top_right_text.setText("在线");
             top_right_text.setTextColor(Color.parseColor("#0973FD"));
         } else {
             mRight_bg.setImageResource(R.drawable.lixian);

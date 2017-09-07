@@ -395,11 +395,14 @@ public class MainActivity extends BaseActivity {
         FingerprintFactory.destroy(fingerprintSensor);
     }
 
-    @OnClick({R.id.top_left})
+    @OnClick({R.id.top_left,R.id.close_bg})
     void onclick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
                 MainActivity.this.finish();
+                break;
+            case R.id.close_bg:
+                ExitDialog();
                 break;
         }
     }
