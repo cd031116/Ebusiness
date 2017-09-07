@@ -488,21 +488,19 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
                     if (BusinessManager.isHaveuse(text, cannum) == 0) {
                         dataInfo.setCanuse(1);
                         Log.i("mmmm", "setCanuse=");
-                        if (!code.contains("&")) {
+                        if (code.length()==6){
                             dataInfo.setId(code);
                             dataInfo.setNet(false);
                             dataInfo.setName(Utils.getXiangmu(ScannerActivity.this));
                             dataInfo.setType(2);
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(false);
-                        } else {
-                            String arr[] = AnalysisHelp.arrayScan(code);
+                        }else {
                             dataInfo.setId(code);
                             dataInfo.setNet(false);
                             dataInfo.setpNum(reshu);
                             dataInfo.setName(Utils.getXiangmu(ScannerActivity.this));
                             dataInfo.setType(2);
-                            dataInfo.setValidTime(arr[1]);
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(false);
                         }
@@ -529,22 +527,19 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
                     DataInfo dataInfo = new DataInfo();
                     if (BusinessManager.isHaveuse(text, cannum) == 0) {
                         dataInfo.setCanuse(1);
-                        if (!code.contains("&")) {
+                        if (code.length()==6){
                             dataInfo.setId(code);
-                            dataInfo.setNet(true);
-                            dataInfo.setpNum(renshu);
+                            dataInfo.setNet(false);
                             dataInfo.setName(Utils.getXiangmu(ScannerActivity.this));
                             dataInfo.setType(2);
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
-                            dataInfo.setUp(true);
+                            dataInfo.setUp(false);
                         } else {
-                            String arr[] = AnalysisHelp.arrayScan(code);
                             dataInfo.setId(code);
-                            dataInfo.setpNum(renshu);
                             dataInfo.setNet(true);
-                            dataInfo.setType(2);
-                            dataInfo.setValidTime(arr[1]);
+                            dataInfo.setpNum(renshu);
                             dataInfo.setName(Utils.getXiangmu(ScannerActivity.this));
+                            dataInfo.setType(2);
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(true);
                         }

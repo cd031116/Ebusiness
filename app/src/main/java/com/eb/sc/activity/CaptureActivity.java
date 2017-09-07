@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.eb.sc.R;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.bean.TicketInfo;
@@ -39,7 +38,6 @@ import com.eb.sc.scan.InactivityTimer;
 import com.eb.sc.scan.camera.CameraManager;
 import com.eb.sc.scanner.BaseActivity;
 import com.eb.sc.scanner.ExecutorFactory;
-import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -63,13 +61,10 @@ import java.io.IOException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-
 /*
 * create 2017-7-29    lyj
 * 二维码扫描
 * */
-
 
 public class CaptureActivity extends BaseActivity implements Callback {
     @Bind(R.id.top_left)
@@ -173,7 +168,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
         if (bd != null) {
             select = bd.getString("select");
         }
-
         // 初始化 CameraManager
         BaseConfig bg = BaseConfig.getInstance(this);
         try {
@@ -419,14 +413,14 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }
     }
 
-    private final OnCompletionListener beepListener = new OnCompletionListener() {
+    private final OnCompletionListener beepListener = new OnCompletionListener(){
         public void onCompletion(MediaPlayer mediaPlayer) {
             mediaPlayer.seekTo(0);
         }
     };
 
     //无线
-    private void showDialog(String num, final String code) {
+    private void showDialog(String num, final String code,final String renshu) {
         new ScanDialog(this, R.style.dialog, num, "", "", new ScanDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
@@ -435,7 +429,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     if (BusinessManager.isHaveuse(scansts, cannum) == 0) {
                         dataInfo.setCanuse(1);
                         Log.i("mmmm", "setCanuse=");
-                        if (!code.contains("&")) {
+                        if (code.length()==6){
                             dataInfo.setId(code);
                             dataInfo.setNet(false);
                             dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
@@ -443,17 +437,16 @@ public class CaptureActivity extends BaseActivity implements Callback {
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(false);
                         } else {
-                            String arr[] = AnalysisHelp.arrayScan(code);
                             dataInfo.setId(code);
                             dataInfo.setNet(false);
+                            dataInfo.setpNum(renshu);
                             dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
                             dataInfo.setType(2);
-                            dataInfo.setValidTime(arr[1]);
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(false);
                         }
                         OfflLineDataDb.insert(dataInfo);
-                    } else if (BusinessManager.isHaveuse(scansts, cannum) > 0) {
+                    } else if (BusinessManager.isHaveuse(scansts, cannum) > 0){
                         int isuse = BusinessManager.isHaveuse(scansts, cannum);
                         DataInfo a = OfflLineDataDb.getDB().selectById(null, DataInfo.class, scansts);
                         a.setCanuse(isuse + 1);
@@ -476,9 +469,9 @@ public class CaptureActivity extends BaseActivity implements Callback {
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
                     DataInfo dataInfo = new DataInfo();
-                    if (BusinessManager.isHaveuse(scansts, cannum) == 0) {
+                    if (BusinessManager.isHaveuse(scansts, cannum) == 0){
                         dataInfo.setCanuse(1);
-                        if (!code.contains("&")) {
+                        if (code.length()==6){
                             dataInfo.setId(code);
                             dataInfo.setNet(true);
                             dataInfo.setpNum(renshu);
@@ -487,12 +480,10 @@ public class CaptureActivity extends BaseActivity implements Callback {
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(true);
                         } else {
-                            String arr[] = AnalysisHelp.arrayScan(code);
                             dataInfo.setId(code);
                             dataInfo.setpNum(renshu);
                             dataInfo.setNet(true);
                             dataInfo.setType(2);
-                            dataInfo.setValidTime(arr[1]);
                             dataInfo.setName(Utils.getXiangmu(CaptureActivity.this));
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(true);
@@ -513,7 +504,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     //在线成功
-    PutSubscriber putSubscriber = new PutSubscriber() {
+    PutSubscriber putSubscriber = new PutSubscriber(){
         @Override
         public void onEvent(PutEvent putEvent) {
             String srt = putEvent.getStrs();
@@ -568,40 +559,26 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     //分析二维码-无线
-    private void showresult(String strs) {
+    private void showresult(String strs){
         Log.i("tttt", "strs=" + strs);
         int a = AnalysisHelp.useScan(CaptureActivity.this, strs);
         if (a == 1) {//1------可用
-            showDialog(Utils.getXiangmu(CaptureActivity.this), strs);
+            showDialog(Utils.getXiangmu(CaptureActivity.this), strs,AnalysisHelp.renshu(strs)+"");
         } else if (a == 2) {
             showDialogMsg("票已过期!");
         } else if (a == 3) {
             showDialogMsg("票型不符合!");
         } else if (a == 4) {
-            showDialog(Utils.getXiangmu(CaptureActivity.this), strs);//梅江
+            showDialog(Utils.getXiangmu(CaptureActivity.this), strs,"");//梅江
         } else {
             showDialogMsg("无效票!");
         }
     }
 
-    //分析二维码
-    private void showresultd(String strs) {
-        int a = AnalysisHelp.StringScan(CaptureActivity.this, strs);
-        if (a == 1) {//1------可用
-            showDialogd("", strs, Utils.getXiangmu(CaptureActivity.this), "");
-        } else if (a == 2) {
-            showDialogMsg("票已过期!");
-        } else if (a == 3) {
-            showDialogMsg("票型不符合!");
-        } else {
-            showDialogMsg("未检测到票!");
-        }
-    }
-
     //长连接
-    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber(){
         @Override
-        public void onEvent(ConnectEvent event) {
+        public void onEvent(ConnectEvent event){
             BaseConfig bg = new BaseConfig(CaptureActivity.this);
             String a = bg.getStringValue(Constants.havenet, "-1");
             if (event.isConnect()) {

@@ -173,6 +173,25 @@ public class Utils {
         String data = "4022" + she  + nr_16;
         return data.toUpperCase();
     }
+
+    //登录
+    public static String ToLogin(Context context, String msg) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        String nr_16 = HexStr.str2HexStr(msg);
+        String data = "4030" + she  + nr_16;
+        return data.toUpperCase();
+    }
+    //查询
+    public static String Toquery(Context context, String msg) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        String nr_16 = HexStr.str2HexStr(msg);
+        String data = "4024" + she  + nr_16;
+        return data.toUpperCase();
+    }
+
+
     //发送购买参数
     public static String getBuy(Context context, String msg) {
         BaseConfig bg = new BaseConfig(context);
@@ -198,6 +217,31 @@ public class Utils {
         String sgs = sty.substring(2, 4);
         Log.i("tttt", "sgs=" + sgs);
         if ("20".equals(sgs)) {
+            return true;
+        }
+        return false;
+    }
+
+    //登录
+    public static boolean getLogin(String sty){
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        String sgs = sty.substring(2, 4);
+        Log.i("tttt", "sgs=" + sgs);
+        if ("30".equals(sgs)) {
+            return true;
+        }
+        return false;
+    }
+    //查询
+    public static boolean getQuery(String sty){
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        String sgs = sty.substring(2, 4);
+        Log.i("tttt", "sgs=" + sgs);
+        if ("24".equals(sgs)) {
             return true;
         }
         return false;

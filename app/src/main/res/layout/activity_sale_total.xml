@@ -10,7 +10,7 @@
     tools:context="com.eb.sc.activity.SettingActivity">
 
     <include layout="@layout/view_top" />
-<!--1-->
+    <!--1-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,17 +59,17 @@
                 android:textColor="#5477A5"
                 android:textSize="60px" />
 
-                <TextView
-                    android:id="@+id/p_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="70px"
-                    android:focusable="false"
-                    android:padding="40px"
-                    android:layout_alignParentRight="true"
-                    android:gravity="right"
-                    android:textSize="60px"
-                    android:text="1" />
+            <TextView
+                android:id="@+id/p_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="70px"
+                android:focusable="false"
+                android:padding="40px"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                android:textSize="60px"
+                android:text="1" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -206,4 +206,4 @@
 
 
 
-    </LinearLayout>
+</LinearLayout>

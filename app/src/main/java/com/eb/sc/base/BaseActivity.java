@@ -28,6 +28,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eb.sc.R;
+import com.eb.sc.activity.CheckActivity;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
 import com.eb.sc.widget.ProgressDialog;
 
@@ -254,6 +257,8 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        BaseConfig bg = new BaseConfig(BaseActivity.this);
+                        bg.setStringValue(Constants.USER_ID,"");
                         android.os.Process.killProcess(android.os.Process.myPid());
                     }
                 });

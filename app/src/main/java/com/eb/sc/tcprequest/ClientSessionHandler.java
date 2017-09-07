@@ -7,8 +7,10 @@ import android.util.Log;
 import com.eb.sc.bean.Params;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
+import com.eb.sc.sdk.eventbus.LoginEvent;
 import com.eb.sc.sdk.eventbus.PayResultEvent;
 import com.eb.sc.sdk.eventbus.PutEvent;
+import com.eb.sc.sdk.eventbus.QueryEvent;
 import com.eb.sc.sdk.eventbus.RefreshEvent;
 import com.eb.sc.sdk.eventbus.TongbuEvent;
 import com.eb.sc.sdk.eventbus.UpdateEvent;
@@ -104,7 +106,16 @@ public class ClientSessionHandler extends IoHandlerAdapter {
             BaseConfig bg = new BaseConfig(mcontext);
             String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
         }
-
+            //登录
+        if (Utils.getLogin(message.toString())) {
+            String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+            NotificationCenter.defaultCenter().publish(new LoginEvent(sfts));
+        }
+        //查询
+        if (Utils.getQuery(message.toString())) {
+            String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+            NotificationCenter.defaultCenter().publish(new QueryEvent(sfts));
+        }
 
         //获取支付结果轮询
         if (Utils.getResult(message.toString())) {

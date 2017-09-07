@@ -26,11 +26,16 @@ import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.bean.ItemInfo;
 import com.eb.sc.bean.Params;
+import com.eb.sc.bean.SaleBean;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.offline.SaleDataDb;
+import com.eb.sc.priter.PrinterActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
+import com.eb.sc.sdk.eventbus.LoginEvent;
+import com.eb.sc.sdk.eventbus.LoginSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.eventbus.RefreshEvent;
 import com.eb.sc.sdk.eventbus.RefreshSubscriber;
@@ -48,6 +53,7 @@ import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.InputDialog;
+import com.eb.sc.widget.LogDialog;
 import com.eb.sc.widget.ShengjiDialog;
 import com.eb.sc.widget.ShowMsgDialog;
 
@@ -103,6 +109,7 @@ public class CheckActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(RefreshEvent.class, refreshEvent);
         NotificationCenter.defaultCenter().subscriber(UpdateEvent.class, updateEvent);
+        NotificationCenter.defaultCenter().subscriber(LoginEvent.class, loginSubscriber);
         top_left.setVisibility(View.GONE);
 
         String b = bg.getStringValue(Constants.havelink, "-1");
@@ -135,13 +142,20 @@ public class CheckActivity extends BaseActivity {
                 OfflLineDataDb.delete(mList.get(i));
             }
         }
+
+        List<SaleBean> rList = SaleDataDb.queryAll();
+        for (int i = 0; i < rList.size(); i++) {
+            if (Long.parseLong(rList.get(i).getPrint_time()) < times) {
+                SaleDataDb.delete(rList.get(i));
+            }
+        }
     }
 
     @OnClick({R.id.scan, R.id.detail, R.id.top_right_text, R.id.setting, R.id.sync,R.id.sale,R.id.select,R.id.close_bg})
     void onBuy(View v) {
+      final   BaseConfig bg = new BaseConfig(CheckActivity.this);
         switch (v.getId()) {
             case R.id.scan:
-                BaseConfig bg = new BaseConfig(CheckActivity.this);
                 String address = bg.getStringValue(Constants.address, "");
 //                String she=  bg.getStringValue(Constants.shebeihao,"");
                 if (TextUtils.isEmpty(address)) {
@@ -158,12 +172,11 @@ public class CheckActivity extends BaseActivity {
                 startActivity(new Intent(CheckActivity.this, TongbBuActivity.class));
                 break;
             case R.id.setting:
-                final BaseConfig bgd = BaseConfig.getInstance(this);
                 new InputDialog(this, R.style.dialog, "请输入管理员密码？", new InputDialog.OnCloseListener() {
                     @Override
                     public void onClick(Dialog dialog, boolean confirm, String text) {
                         if (confirm) {
-                            String psd = bgd.getStringValue(Constants.admin_word, "-1");
+                            String psd = bg.getStringValue(Constants.admin_word, "-1");
                             if (psd.equals(text)) {
                                 startActivityForResult(new Intent(CheckActivity.this, SettingActivity.class), 1);
                             } else {
@@ -177,7 +190,28 @@ public class CheckActivity extends BaseActivity {
                 }).setTitle("提示").show();
                 break;
             case R.id.sale://售票
-                startActivity(new Intent(CheckActivity.this, SaleTickActivity.class));
+                String user_id = bg.getStringValue(Constants.USER_ID, "");
+                if(TextUtils.isEmpty(user_id)){
+                    new LogDialog(this, R.style.dialog, "请输入管理员密码？", new LogDialog.OnCloseListener() {
+                        @Override
+                        public void onClick(Dialog dialog, boolean confirm, String account,String psd) {
+                            if (confirm) {
+                                String updatd = Utils.ToLogin(CheckActivity.this, account+"&"+psd);
+                                boolean gg=  PushManager.getInstance(CheckActivity.this).sendMessage(updatd);
+                                if(gg){
+                                    showAlert("正在登录", false);
+                                }else {
+                                    Toast.makeText(CheckActivity.this,"登录失败",Toast.LENGTH_SHORT).show();
+                                }
+                                dialog.dismiss();
+                            } else {
+                                dialog.dismiss();
+                            }
+                        }
+                    }).setTitle("提示").show();
+                }else {
+                    startActivity(new Intent(CheckActivity.this, SaleTickActivity.class));
+                }
                 break;
             case R.id.select://查询
                 startActivity(new Intent(CheckActivity.this, QureActivity.class));
@@ -187,6 +221,17 @@ public class CheckActivity extends BaseActivity {
                 break;
         }
     }
+
+    //长连接
+    LoginSubscriber loginSubscriber = new LoginSubscriber() {
+        @Override
+        public void onEvent(LoginEvent event) {
+            dismissAlert();
+            BaseConfig bg = new BaseConfig(CheckActivity.this);
+             bg.setStringValue(Constants.USER_ID,event.getUser_id());
+            startActivity(new Intent(CheckActivity.this, SaleTickActivity.class));
+        }
+    };
 
     //长连接
     ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
@@ -266,7 +311,8 @@ public class CheckActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(RefreshEvent.class, refreshEvent);
-        NotificationCenter.defaultCenter().subscriber(UpdateEvent.class, updateEvent);
+        NotificationCenter.defaultCenter().unsubscribe(UpdateEvent.class, updateEvent);
+        NotificationCenter.defaultCenter().unsubscribe(LoginEvent.class, loginSubscriber);
         stopService(new Intent(CheckActivity.this, PushService.class));
     }
 

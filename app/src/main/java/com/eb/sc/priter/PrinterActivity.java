@@ -237,6 +237,7 @@ public class PrinterActivity extends BaseActivity {
                 sbean.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
                 sbean.setpNum(mInfo.getpNum());
                 sbean.setPrice(mInfo.getPrice());
+                sbean.setPrint_time(System.currentTimeMillis()+"");
                 sbean.setItem(Utils.getXiangmu(PrinterActivity.this));
                 sbean.setState(select);
                 if (!TextUtils.isEmpty(bg.getStringValue(Constants.ORDER_ID, "")) && !SaleDataDb.isHave(bg.getStringValue(Constants.ORDER_ID, ""))) {

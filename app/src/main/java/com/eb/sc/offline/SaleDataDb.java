@@ -43,6 +43,10 @@ public class SaleDataDb{
         getDB().deleteAll(null, SaleBean.class);
     }
 
+    //删除
+    public static void delete(SaleBean info){
+        getDB().deleteById(null, SaleBean.class,info.getOrderId());
+    }
 
     //1.检查是否存在这张票
     public static boolean isHave(String orderId){
