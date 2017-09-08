@@ -8,6 +8,8 @@ import android.os.SystemClock;
 
 import com.eb.sc.R;
 import com.eb.sc.bean.TicketInfo;
+import com.eb.sc.bean.TotalInfo;
+import com.eb.sc.utils.Utils;
 import com.smartdevice.aidl.IZKCService;
 
 public class PrinterHelper {
@@ -80,6 +82,36 @@ public class PrinterHelper {
         }
     }
 
+    synchronized public void printTotal(
+            IZKCService mIzkcService, TotalInfo ticketInfo) {
+
+        try {
+            if (mIzkcService != null && mIzkcService.checkPrinterAvailable()) {
+                mIzkcService.printGBKText("\n\n");
+                if (ticketInfo.getStart_bit() != null) {
+                    mIzkcService.printBitmap(ticketInfo.getStart_bit());
+                }
+                SystemClock.sleep(50);
+//				mIzkcService.printGBKText("\n");
+                mIzkcService.printGBKText("中惠旅(售票统计)"+ "\n\n");
+                mIzkcService.printGBKText(mIzkcService_CUT_OFF_RULE + "\n");
+                mIzkcService.printGBKText("售票点"+ "\t" + Utils.getXiangmu(mContext) + "\n");
+                mIzkcService.printGBKText("现金收款"+ "\t" + ticketInfo.getCash_price() + "\n");
+                mIzkcService.printGBKText("现金人数" + "\t" + ticketInfo.getCash_num() + "\n");
+                mIzkcService.printGBKText("微信收款" + "\t" + ticketInfo.getWeichat_price() + "\n");
+                mIzkcService.printGBKText("售票人数"+ "\t" + ticketInfo.getWeichat_num() + "\n");
+                mIzkcService.printGBKText("支付宝收款"+ "\t" + ticketInfo.getAli_price() + "\n");
+                mIzkcService.printGBKText("售票人数"+ "\t" + ticketInfo.getAli_num() + "\n");
+                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.PRINTER_TIME + "\t" + ticketInfo.getPrint_time() + "\n");
+                // if(mIzkcService.getBufferState(100)){
+                // }
+                mIzkcService.printGBKText("\n\n\n");
+            }
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
 
 }

@@ -18,6 +18,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.eb.sc.R;
+import com.eb.sc.utils.BaseConfig;
+import com.eb.sc.utils.Constants;
 import com.smartdevice.aidl.IZKCService;
 
 
@@ -60,7 +62,6 @@ public class BaseActivity extends Activity {
             mIzkcService = IZKCService.Stub.asInterface(service);
             if (mIzkcService != null) {
                 try {
-                    Toast.makeText(BaseActivity.this, getString(R.string.service_bind_success), Toast.LENGTH_SHORT).show();
                     DEVICE_MODEL = mIzkcService.getDeviceModel();
                     mIzkcService.setModuleFlag(module_flag);
                     if (module_flag == 3) {
@@ -167,6 +168,8 @@ public class BaseActivity extends Activity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        BaseConfig bg = new BaseConfig(BaseActivity.this);
+                        bg.setStringValue(Constants.USER_ID,"");
                         android.os.Process.killProcess(android.os.Process.myPid());
                     }
                 });

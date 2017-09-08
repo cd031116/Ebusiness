@@ -1,31 +1,50 @@
 package com.eb.sc.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eb.sc.R;
-import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.bean.SaleBean;
+import com.eb.sc.bean.TicketInfo;
+import com.eb.sc.bean.TotalInfo;
 import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.offline.SaleDataDb;
+import com.eb.sc.priter.PrinterActivity;
+import com.eb.sc.priter.PrinterHelper;
+import com.eb.sc.scanner.BaseActivity;
+import com.eb.sc.scanner.ExecutorFactory;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.SupportMultipleScreensUtil;
+import com.eb.sc.utils.Utils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SaleTotalActivity extends BaseActivity {
@@ -54,25 +73,58 @@ public class SaleTotalActivity extends BaseActivity {
     private int num = 0;
     private int w_num = 0;
     private int A_num = 0;
-
-
+    private boolean runFlag = true;
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_sale_total;
-    }
-
-    @Override
-    public void initView() {
-        super.initView();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sale_total);
+        View rootView = findViewById(android.R.id.content);
+        SupportMultipleScreensUtil.init(getApplication());
+        SupportMultipleScreensUtil.scale(rootView);
+        ButterKnife.bind(this);
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         top_title.setText("售票");
+        ExecutorFactory.executeThread(new Runnable() {
+            @Override
+            public void run() {
+                while (runFlag) {
+                    if (bindSuccessFlag) {
+                        //检测打印是否正常
+                        try {
+                            String printerSoftVersion = mIzkcService.getFirmwareVersion1();
+                            if (TextUtils.isEmpty(printerSoftVersion)) {
+                                printerSoftVersion = mIzkcService.getFirmwareVersion2();
+                            }
+                            if (TextUtils.isEmpty(printerSoftVersion)) {
+                                mIzkcService.setModuleFlag(module_flag);
+                                mHandler.obtainMessage(1).sendToTarget();
+                            } else {
+                                mHandler.obtainMessage(0, printerSoftVersion).sendToTarget();
+                                runFlag = false;
+                            }
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+        BaseConfig bg = new BaseConfig(this);
+        String b = bg.getStringValue(Constants.havelink, "-1");
+        if ("1".equals(b)) {
+            isconnect = true;
+        } else {
+            isconnect = false;
+        }
+        if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
+            bg.setStringValue(Constants.havenet, "1");
+            changeview(true);
+        } else {
+            changeview(false);
+        }
     }
 
-    @Override
-    public void initData() {
-        super.initData();
-    }
 
     private void ShowView() {
           cash = 0.0;
@@ -108,7 +160,7 @@ public class SaleTotalActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.top_left,R.id.close_bg})
+    @OnClick({R.id.top_left,R.id.close_bg,R.id.printer_tick})
     void onBuy(View v) {
         switch (v.getId()) {
             case R.id.top_left:
@@ -116,6 +168,13 @@ public class SaleTotalActivity extends BaseActivity {
                 break;
             case R.id.close_bg:
                 ExitDialog();
+                break;
+            case R.id.printer_tick:
+                if(num==0&&w_num==0&A_num==0){
+                    Toast.makeText(SaleTotalActivity.this,"暂无记录!",Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                printPurcase();
                 break;
         }
     }
@@ -137,6 +196,44 @@ public class SaleTotalActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
+
+
+    private void printPurcase( ) {
+        TotalInfo tInfo = new TotalInfo();
+
+        tInfo.setCash_price("￥"+cash);
+        tInfo.setCash_num(num + "");
+
+        tInfo.setWeichat_price("￥" + w_cash + "");
+        tInfo.setWeichat_num(w_num + "");
+
+        tInfo.setAli_price("￥" + a_cash + "");
+        tInfo.setAli_num(A_num + "");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = formatter.format(curDate);
+        tInfo.setPrint_time(str);
+        Bitmap mBitmap = null;
+        mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
+        tInfo.setStart_bit(mBitmap);
+        PrinterHelper.getInstance(this).printTotal(mIzkcService, tInfo);
+        handler.postDelayed(runnable,1000);
+    }
+
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            //要做的事情
+            SaleDataDb.deleteAll();
+            ShowView();
+        }
+    };
+
+
+
+
 
     @Override
     public void onDestroy() {
@@ -180,4 +277,28 @@ public class SaleTotalActivity extends BaseActivity {
             }
         }
     };
+
+    Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    try {
+                        mIzkcService.setModuleFlag(0);
+                    } catch (RemoteException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1:
+//                    Toast.makeText(PrinterActivity.this, "正在连接打印机，请稍后...", Toast.LENGTH_SHORT).show();
+                    break;
+                case 8:
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+    });
 }

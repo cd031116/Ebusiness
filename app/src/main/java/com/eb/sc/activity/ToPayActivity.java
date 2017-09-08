@@ -81,13 +81,14 @@ public class ToPayActivity extends BaseActivity {
 
     @OnClick({R.id.top_left,R.id.cash,R.id.weichat,R.id.ali_pay,R.id.close_bg})
     void onBuy(View v) {
+        BaseConfig bg=BaseConfig.getInstance(ToPayActivity.this);
         switch (v.getId()) {
             case R.id.top_left:
                 ToPayActivity.this.finish();
                 break;
             case R.id.cash:
                 select=0;
-                String datad = Utils.getItemId(ToPayActivity.this) + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select+ "&" + (mInfo.getpNum() + "");
+                String datad = Utils.getItemId(ToPayActivity.this) + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select+ "&" + (mInfo.getpNum() + "&"+bg.getStringValue(Constants.USER_ID,""));
                 String updatd = Utils.getBuy(ToPayActivity.this, datad);
                 boolean abgs = PushManager.getInstance(ToPayActivity.this).sendMessage(updatd);
                 if (abgs) {
@@ -100,7 +101,8 @@ public class ToPayActivity extends BaseActivity {
                 break;
             case R.id.weichat:
                 select=3;
-                String datas = Utils.getItemId(ToPayActivity.this) + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select+ "&" + (mInfo.getpNum() + "");
+                String datas = Utils.getItemId(ToPayActivity.this) + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select+ "&" + mInfo.getpNum() + "&"+bg.getStringValue(Constants.USER_ID,"");
+                Log.i("vvvv","datas="+datas);
                 String updata = Utils.getBuy(ToPayActivity.this, datas);
                 boolean abg = PushManager.getInstance(ToPayActivity.this).sendMessage(updata);
                 if (abg) {
@@ -113,7 +115,7 @@ public class ToPayActivity extends BaseActivity {
                 break;
             case R.id.ali_pay:
                 select=2;
-                String data2 = Utils.getItemId(ToPayActivity.this) + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select + "&" + (mInfo.getpNum() + "");
+                String data2 = Utils.getItemId(ToPayActivity.this) + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select + "&" + mInfo.getpNum() + "&"+bg.getStringValue(Constants.USER_ID,"");
                 String updata2 = Utils.getBuy(ToPayActivity.this, data2);
                 boolean abgd = PushManager.getInstance(ToPayActivity.this).sendMessage(updata2);
                 if (abgd) {
@@ -141,8 +143,7 @@ public class ToPayActivity extends BaseActivity {
             bg.setIntValue(Constants.IS_PAY, 0);
             if(select==0){
                 String order = bg.getStringValue(Constants.ORDER_ID, "");
-                String updata = Utils.sentBuy(ToPayActivity.this, order + "&" + "0.01" + "&" + select + "&" + Utils.getItemId(ToPayActivity.this) + "&" + "0"+"&"+mInfo.getpNum());
-                Log.i("vvvv","updata="+updata);
+                String updata = Utils.sentBuy(ToPayActivity.this, order + "&" + "0.01" + "&" + select + "&" + Utils.getItemId(ToPayActivity.this) + "&" + "0"+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
                 boolean abg = PushManager.getInstance(ToPayActivity.this).sendMessage(updata);
                 if (abg) {
                     Intent intent=new Intent(ToPayActivity.this,PrinterActivity.class);
@@ -180,7 +181,7 @@ public class ToPayActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(str)) {
                     BaseConfig bg = BaseConfig.getInstance(ToPayActivity.this);
                     String order = bg.getStringValue(Constants.ORDER_ID, "");// (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "")
-                    String updata = Utils.sentBuy(ToPayActivity.this, order + "&" +"0.01" + "&" + select + "&" + Utils.getItemId(this) + "&" + str+"&"+mInfo.getpNum());
+                    String updata = Utils.sentBuy(ToPayActivity.this, order + "&" +"0.01" + "&" + select + "&" + Utils.getItemId(this) + "&" + str+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
                     Log.i("vvvv","updata="+updata);
                     boolean abg = PushManager.getInstance(ToPayActivity.this).sendMessage(updata);
                     if (abg) {

@@ -10,6 +10,14 @@
     tools:context="com.eb.sc.activity.SettingActivity">
 
     <include layout="@layout/view_top" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
     <!--1-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -204,6 +212,21 @@
 
 
 
+    <TextView
+        android:id="@+id/printer_tick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="90px"
+        android:layout_marginRight="90px"
+        android:layout_marginTop="60px"
+        android:background="@drawable/pay_text_bg"
+        android:gravity="center_horizontal"
+        android:padding="30px"
+        android:text="打印小票"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="20px"
+        android:textSize="60px" />
 
-
+    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

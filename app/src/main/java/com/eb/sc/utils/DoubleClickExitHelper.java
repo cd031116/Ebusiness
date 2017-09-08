@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import com.eb.sc.base.BaseActivity;
 import com.eb.sc.base.MyApplication;
 
 
@@ -37,6 +38,8 @@ public class DoubleClickExitHelper {
                 mBackToast.cancel();
             }
             // 退出
+            BaseConfig bg = new BaseConfig(mActivity);
+            bg.setStringValue(Constants.USER_ID,"");
             MyApplication.instance.getActivityManager().popAllActivityExceptOne();
             return true;
         } else {

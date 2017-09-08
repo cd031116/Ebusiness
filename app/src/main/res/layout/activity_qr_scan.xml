@@ -84,7 +84,7 @@
     <RelativeLayout
         android:id="@+id/top_layout"
         android:layout_width="match_parent"
-        android:layout_height="180px"
+        android:layout_height="120px"
         android:background="@drawable/scan_mask"
         android:visibility="visible" >
 
@@ -106,7 +106,7 @@
             <ImageView
                 android:id="@+id/top_image"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40px"
                 android:clickable="false"
                 android:src="@drawable/return_btn"
                 android:contentDescription="@string/app_name" />

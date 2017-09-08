@@ -44,6 +44,7 @@ import com.eb.sc.sdk.recycle.ViewHolder;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
+import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.ProgressDialog;
@@ -126,6 +127,19 @@ public class PrinterActivity extends BaseActivity {
         });
         showAlert("..正在支付..", false);
         handler.postDelayed(runnable, 2000);
+        BaseConfig bg = new BaseConfig(this);
+        String b = bg.getStringValue(Constants.havelink, "-1");
+        if ("1".equals(b)) {
+            isconnect = true;
+        } else {
+            isconnect = false;
+        }
+        if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
+            bg.setStringValue(Constants.havenet, "1");
+            changeview(true);
+        } else {
+            changeview(false);
+        }
     }
 
 
@@ -228,6 +242,7 @@ public class PrinterActivity extends BaseActivity {
                 Log.i("vvvv", "events=");
                 handler.removeCallbacks(runnable);
                 isbuy = true;
+                s_neirong=event.getStrs();
                 top_title.setText("支付成功");
                 state.setText("已成功收款");
                 dismissAlert();

@@ -3,16 +3,22 @@ package com.eb.sc.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.eb.sc.MainActivity;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.bean.GroupInfo;
+import com.eb.sc.bean.ItemInfo;
+import com.eb.sc.business.QueryAdapter;
 import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
@@ -29,6 +35,9 @@ import com.eb.sc.utils.Utils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.OnClick;
 
@@ -43,8 +52,11 @@ public class QureActivity extends BaseActivity {
     ImageView mRight_bg;
     @Bind(R.id.password)
     EditText password;
-
+    @Bind(R.id.expand)
+    ExpandableListView expand;
+    private List<GroupInfo> mList =new ArrayList<>();
     private boolean isconnect = true;
+    private QueryAdapter mAdapter;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_qure;
@@ -69,6 +81,7 @@ public class QureActivity extends BaseActivity {
         } else {
             changeview(false);
         }
+        top_title.setText("查询");
     }
 
     @Override
@@ -95,6 +108,7 @@ public class QureActivity extends BaseActivity {
                     break;
                 }
                 String updatd = Utils.Toquery(QureActivity.this,keys);
+                Log.i("tttt","updatd="+updatd);
                 boolean gg=  PushManager.getInstance(QureActivity.this).sendMessage(updatd);
                 break;
 
@@ -127,13 +141,28 @@ public class QureActivity extends BaseActivity {
 
         }
     };
-    //网络
+    //获得数据
     QuerySubscriber querySubscriber = new QuerySubscriber() {
         @Override
         public void onEvent(QueryEvent event) {
-
+            TestData(event.getDatas());
         }
     };
+
+    /**
+     * 数据
+     */
+    private void TestData(String data) {
+        if (mList != null) {
+            mList.clear();
+        }
+        mList = JSON.parseArray(data, GroupInfo.class);
+        mAdapter=new QueryAdapter(QureActivity.this,mList);
+        expand.setAdapter(mAdapter);
+    }
+
+
+
 
     //网络
     EventSubscriber netEventSubscriber = new EventSubscriber() {

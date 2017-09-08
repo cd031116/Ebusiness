@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +17,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.eb.sc.R;
 import com.eb.sc.activity.CaptureActivity;
@@ -45,8 +48,12 @@ import com.smartdevice.aidl.ICallBack;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class ScannerActivity extends BaseActivity implements OnClickListener {
+
+public class ScannerActivity extends BaseActivity {
     private int cannum = 1;
     private boolean runFlag = true;
     public String text = "";
@@ -58,7 +65,12 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
     private boolean isconnect = true;
     private LinearLayout top_left,close_bg;
     private ShowMsgDialog smdiilag = null;
-
+    @Bind(R.id.top_right_text)
+    TextView top_right_text;
+    @Bind(R.id.right_bg)
+    ImageView mRight_bg;
+    @Bind(R.id.top_title)
+    TextView top_title;
     ICallBack.Stub mCallback = new ICallBack.Stub() {
         @Override
         public void onReturnValue(byte[] buffer, int size)
@@ -104,15 +116,27 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
-
-
+        ButterKnife.bind(this);
         BaseConfig bg = BaseConfig.getInstance(this);
         try {
             cannum = Integer.parseInt(bg.getStringValue(Constants.X_NUM, "1"));
         } catch (Exception e) {
 
         }
-        initView();
+
+        String b = bg.getStringValue(Constants.havelink, "-1");
+        if ("1".equals(b)) {
+            isconnect = true;
+        } else {
+            isconnect = false;
+        }
+        if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
+            bg.setStringValue(Constants.havenet, "1");
+            changeview(true);
+        } else {
+            changeview(false);
+        }
+        top_title.setText("扫描");
         beginToReceiverData = true;
         player = MediaPlayer.create(getApplicationContext(), R.raw.scan);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -229,16 +253,21 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
         super.onResume();
     }
 
-
-    private void initView() {
-        top_left = (LinearLayout) findViewById(R.id.top_left);
-        close_bg= (LinearLayout) findViewById(R.id.close_bg);
-        close_bg.setOnClickListener(this);
-        top_left.setOnClickListener(this);
+    private void changeview(boolean conect) {
+        if (conect) {
+            mRight_bg.setImageResource(R.drawable.lianjie);
+            top_right_text.setText("在线");
+            top_right_text.setTextColor(Color.parseColor("#0973FD"));
+        } else {
+            mRight_bg.setImageResource(R.drawable.lixian);
+            top_right_text.setText("离线");
+            top_right_text.setTextColor(Color.parseColor("#EF4B55"));
+        }
     }
 
-    @Override
-    public void onClick(View v) {
+
+    @OnClick({R.id.top_left,R.id.close_bg})
+    void onclick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
                 ScannerActivity.this.finish();
@@ -451,14 +480,14 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
             if (event.isConnect()) {
                 isconnect = true;
                 if ("1".equals(a)) {
-
+                    changeview(true);
                 } else {
-
+                    changeview(false);
                 }
             } else {
                 isconnect = false;
+                changeview(false);
             }
-
         }
     };
     //网络
@@ -468,12 +497,12 @@ public class ScannerActivity extends BaseActivity implements OnClickListener {
             BaseConfig bg = new BaseConfig(ScannerActivity.this);
             if (event.isConnect()) {
                 if (isconnect) {
-
+                    changeview(true);
                 } else {
-
+                    changeview(false);
                 }
             } else {
-
+                changeview(false);
             }
         }
     };

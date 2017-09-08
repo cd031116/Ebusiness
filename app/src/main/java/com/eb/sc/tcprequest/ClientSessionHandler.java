@@ -118,7 +118,7 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         }
 
         //获取支付结果轮询
-        if (Utils.getResult(message.toString())) {
+        if (Utils.getResult(message.toString())){
             BaseConfig bg = new BaseConfig(mcontext);
             String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
             NotificationCenter.defaultCenter().publish(new PayResultEvent(sfts));

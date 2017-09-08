@@ -4,54 +4,101 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context="com.eb.sc.activity.QureActivity">
+
     <include layout="@layout/view_top" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#EAEAEA"
         android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginTop="30px"
-        android:background="@drawable/check_edt_bg">
-
-        <EditText
-            android:id="@+id/password"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@null"
-            android:hint="查询订单"
-            android:maxLength="18"
-            android:padding="30px"
-            android:textColor="#939999"
-            android:textColorHint="#939999"
-            android:textSize="60px" />
+            android:layout_marginLeft="50px"
+            android:layout_marginRight="50px"
+            android:layout_marginTop="30px"
+            android:background="@drawable/check_edt_bg">
 
-        <TextView
-            android:id="@+id/cheeck"
-            android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="查询订单"
+                android:maxLength="18"
+                android:padding="30px"
+                android:textColor="#939999"
+                android:textColorHint="#939999"
+                android:textSize="60px" />
+
+            <TextView
+                android:id="@+id/cheeck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/select_bg_o"
+                android:padding="30px"
+                android:text="查询"
+                android:textColor="#ffffff"
+                android:textSize="60px" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/select_bg_o"
-            android:padding="30px"
-            android:text="查询"
-            android:textColor="#ffffff"
-            android:textSize="60px" />
-    </RelativeLayout>
+            android:layout_marginTop="20px"
+            android:background="#ffffff"
+            android:padding="20px">
+
+            <TextView
+                android:id="@+id/order_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="订单编号"
+                android:textColor="#7BB4E8"
+                android:textSize="50px" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical|right"
+                android:orientation="horizontal"
+                android:layout_toRightOf="@+id/order_id">
+
+                <TextView
+                    android:id="@+id/phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="联系电话"
+                    android:textColor="#7BB4E8"
+                    android:layout_marginRight="80px"
+                    android:textSize="50px" />
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#EAEAEA"/>
 
         <ExpandableListView
             android:id="@+id/expand"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:groupIndicator="@null"/>
+            android:background="#ffffff"
+            android:groupIndicator="@null" />
     </LinearLayout>
 </LinearLayout>

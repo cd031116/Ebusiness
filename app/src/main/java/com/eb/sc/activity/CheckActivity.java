@@ -227,9 +227,14 @@ public class CheckActivity extends BaseActivity {
         @Override
         public void onEvent(LoginEvent event) {
             dismissAlert();
-            BaseConfig bg = new BaseConfig(CheckActivity.this);
-             bg.setStringValue(Constants.USER_ID,event.getUser_id());
-            startActivity(new Intent(CheckActivity.this, SaleTickActivity.class));
+
+            if(event.getUser_id().contains("loginfail")){
+                Toast.makeText(CheckActivity.this,"登录失败!",Toast.LENGTH_SHORT).show();
+            }else {
+                BaseConfig bg = new BaseConfig(CheckActivity.this);
+                bg.setStringValue(Constants.USER_ID,event.getUser_id());
+                startActivity(new Intent(CheckActivity.this, SaleTickActivity.class));
+            }
         }
     };
 
