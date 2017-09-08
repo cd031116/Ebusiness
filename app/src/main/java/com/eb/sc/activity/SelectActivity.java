@@ -60,9 +60,10 @@ public class SelectActivity extends BaseActivity {
     EditText id_num;
     @Bind(R.id.t_text)
     TextView t_text;
-    String id_n="";
-    private boolean xiumian=true;
+    String id_n = "";
+    private boolean xiumian = true;
     private boolean isconnect = true;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_select;
@@ -75,17 +76,17 @@ public class SelectActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
         top_title.setText("扫描检票");
-        BaseConfig bg=BaseConfig.getInstance(this);
+        BaseConfig bg = BaseConfig.getInstance(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
         } else {
             isconnect = false;
         }
-        if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
-            bg.setStringValue(Constants.havenet,"1");
+        if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
+            bg.setStringValue(Constants.havenet, "1");
             changeview(true);
-        }else {
+        } else {
             changeview(false);
         }
     }
@@ -95,61 +96,57 @@ public class SelectActivity extends BaseActivity {
         super.initData();
         settitle();
     }
-    private void settitle(){
-        BaseConfig bg=BaseConfig.getInstance(this);
-        int select=bg.getIntValue(Constants.JI_XING,-1);
-        if(select==1){
+
+    private void settitle() {
+        BaseConfig bg = BaseConfig.getInstance(this);
+        int select = bg.getIntValue(Constants.JI_XING, -1);
+        if (select == 1) {
             t_text.setText("按键扫码");
-        }else if(select==2){
+        } else if (select == 2) {
             t_text.setText("身份证感应");
-        }else {
+        } else {
             t_text.setText("身份证感应");
         }
     }
 
 
-
-    @OnClick({R.id.idcard,R.id.scan,R.id.top_left,R.id.cheeck,R.id.close_bg})
-    void onclick(View v){
-        BaseConfig bg=BaseConfig.getInstance(this);
-        switch (v.getId()){
+    @OnClick({R.id.idcard, R.id.scan, R.id.top_left, R.id.cheeck, R.id.close_bg})
+    void onclick(View v) {
+        BaseConfig bg = BaseConfig.getInstance(this);
+        switch (v.getId()) {
             case R.id.idcard:
-                int select=bg.getIntValue(Constants.JI_XING,-1);
-                if (select==1){
-                    startActivity(new Intent(SelectActivity.this,ScannerActivity.class));
-                }else {
-                    startActivity(new Intent(SelectActivity.this,MainActivity.class));
+                int select = bg.getIntValue(Constants.JI_XING, -1);
+                if (select == 1) {
+                    startActivity(new Intent(SelectActivity.this, ScannerActivity.class));
+                } else {
+                    startActivity(new Intent(SelectActivity.this, MainActivity.class));
                 }
                 break;
             case R.id.scan:
-                Intent intent=new Intent(SelectActivity.this, CaptureActivity.class);
-                intent.putExtra("select","2");
+                Intent intent = new Intent(SelectActivity.this, CaptureActivity.class);
+                intent.putExtra("select", "2");
                 startActivity(intent);
                 break;
             case R.id.top_left:
                 SelectActivity.this.finish();
                 break;
             case R.id.cheeck:
-                 id_n=id_num.getText().toString();
-                 if(TextUtils.isEmpty(id_n)){
-                     Toast.makeText(SelectActivity.this, "请输入身份证号码!", Toast.LENGTH_SHORT).show();
-                     return;
-                 }
-                 if(!isIdNum.isIdNum(id_n)){
-                     Toast.makeText(SelectActivity.this, "您输入的身份证号码不正确!", Toast.LENGTH_SHORT).show();
-                     return;
-                 }
-                if (BusinessManager.isHave(id_n)) {//票已检
-                    showDialogMsg("票已使用!");
-                } else {
-                    if(NetWorkUtils.isNetworkConnected(this)&&isconnect){
-                            String  updata =Utils.getIdcard(this,id_n);
-                            PushManager.getInstance(this).sendMessage(updata);
-                    }else{
-                        showDialog("",id_n,Utils.getXiangmu(SelectActivity.this));
-                        Log.i("tttt","ssss=isNetworkConnected");
-                    }
+                id_n = id_num.getText().toString();
+                if (TextUtils.isEmpty(id_n)) {
+                    Toast.makeText(SelectActivity.this, "请输入身份证号码!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                if (!isIdNum.isIdNum(id_n)) {
+                    Toast.makeText(SelectActivity.this, "您输入的身份证号码不正确!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
+                    String updata = Utils.getIdcard(this, id_n);
+                    PushManager.getInstance(this).sendMessage(updata);
+                } else {
+                   Toast.makeText(SelectActivity.this,"已与服务器断开连接!",Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.close_bg:
                 ExitDialog();
@@ -159,26 +156,34 @@ public class SelectActivity extends BaseActivity {
     }
 
     //在线成功
-    PutSubscriber putSubscriber=new PutSubscriber(){
+    PutSubscriber putSubscriber = new PutSubscriber() {
         @Override
-        public void onEvent(PutEvent putEvent){
-            if(!xiumian){
-                String srt=putEvent.getStrs();
-                String sgs = putEvent.getStrs().substring(0,2);
-                String renshu= putEvent.getStrs().substring(srt.length()-2,srt.length());
-                if ("01".equals(sgs)) {
-                    showDialogMsg("无效票");
-                }else if("02".equals(sgs)){
+        public void onEvent(PutEvent putEvent) {
+            if (!xiumian) {
+                String srt = putEvent.getStrs();
+                String sgs = putEvent.getStrs().substring(0, 2);
+                String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
+                if ("06".equals(sgs)) {
+                    showDialogd("团队票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                } else if ("02".equals(sgs)) {
+                    showDialogd("儿童票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                } else if ("01".equals(sgs)) {
+                    showDialogd("成人票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                } else if ("05".equals(sgs)) {
+                    showDialogd("老年票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                } else if ("03".equals(sgs)) {
+                    showDialogd("优惠票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                } else if ("07".equals(sgs)) {
                     showDialogMsg("已使用");
-                }else {
-                    showDialogd(Utils.pullScan(putEvent.getStrs()),id_n,Utils.getXiangmu(SelectActivity.this),renshu);
+                } else {
+                    showDialogMsg("无效票");
                 }
             }
         }
     };
 
     //长连接
-    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber(){
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
         @Override
         public void onEvent(ConnectEvent event) {
             BaseConfig bg = new BaseConfig(SelectActivity.this);
@@ -212,6 +217,7 @@ public class SelectActivity extends BaseActivity {
             }
         }
     };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -231,12 +237,13 @@ public class SelectActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
+
     //有效票-有线   姓名    身份证    项目
-    private void showDialogd(String names, final String num, String code,String renshu) {
-        new CommomDialog(this, R.style.dialog, names, num, code,renshu, new CommomDialog.OnCloseListener(){
+    private void showDialogd(String names, final String num, String code, String renshu) {
+        new CommomDialog(this, R.style.dialog, names, num, code, renshu, new CommomDialog.OnCloseListener() {
             @Override
-            public void onClick(Dialog dialog, boolean confirm){
-                if (confirm){
+            public void onClick(Dialog dialog, boolean confirm) {
+                if (confirm) {
                     DataInfo data = new DataInfo();
                     data.setId(num);
                     data.setUp(true);
@@ -253,7 +260,7 @@ public class SelectActivity extends BaseActivity {
 
     //有效票
     private void showDialog(String names, final String nums, String code) {
-        new CommomDialog(this, R.style.dialog, names, nums, code, "",new CommomDialog.OnCloseListener() {
+        new CommomDialog(this, R.style.dialog, names, nums, code, "", new CommomDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {
@@ -289,15 +296,15 @@ public class SelectActivity extends BaseActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        xiumian=false;
+        xiumian = false;
         settitle();
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
-        xiumian=true;
+        xiumian = true;
     }
 }

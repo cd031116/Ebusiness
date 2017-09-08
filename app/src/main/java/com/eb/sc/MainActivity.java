@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.eb.sc.activity.CaptureActivity;
 import com.eb.sc.activity.DetailActivity;
+import com.eb.sc.activity.SelectActivity;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
@@ -352,11 +353,12 @@ public class MainActivity extends BaseActivity {
                     String updata = Utils.getIdcard(this, idCardInfo.getId());
                     PushManager.getInstance(this).sendMessage(updata);
                 } else {
-                    if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
-                        showDialogMsg("票已使用!");
-                    }else {
-                        showDialog(mLastName, idCardInfo.getId(), "", "");
-                    }
+//                    if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
+//                        showDialogMsg("票已使用!");
+//                    }else {
+//                        showDialog(mLastName, idCardInfo.getId(), "", "");
+//                    }
+                    Toast.makeText(MainActivity.this,"已与服务器断开连接!",Toast.LENGTH_SHORT).show();
                 }
                 feature = idCardInfo.getFpdata();
 //                if (idCardInfo.getPhoto() != null) {
@@ -486,13 +488,20 @@ public class MainActivity extends BaseActivity {
             String srt = putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0, 2);
             String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
-
-            if ("01".equals(sgs)) {
-                showDialogMsg("无效票");
+            if ("06".equals(sgs)) {
+                showDialogd("团队票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("02".equals(sgs)) {
+                showDialogd("儿童票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if ("01".equals(sgs)) {
+                showDialogd("成人票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if ("05".equals(sgs)) {
+                showDialogd("老年票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if ("03".equals(sgs)) {
+                showDialogd("优惠票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            } else if ("07".equals(sgs)) {
                 showDialogMsg("已使用");
             } else {
-                showDialogd(Utils.pullScan(putEvent.getStrs()), idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                showDialogMsg("无效票");
             }
         }
     };
