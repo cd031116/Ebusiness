@@ -143,7 +143,7 @@ public class ToPayActivity extends BaseActivity {
             bg.setIntValue(Constants.IS_PAY, 0);
             if(select==0){
                 String order = bg.getStringValue(Constants.ORDER_ID, "");
-                String updata = Utils.sentBuy(ToPayActivity.this, order + "&" + "0.01" + "&" + select + "&" + Utils.getItemId(ToPayActivity.this) + "&" + "0"+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
+                String updata = Utils.sentBuy(ToPayActivity.this, order + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select + "&" + Utils.getItemId(ToPayActivity.this) + "&" + "0"+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
                 boolean abg = PushManager.getInstance(ToPayActivity.this).sendMessage(updata);
                 if (abg) {
                     Intent intent=new Intent(ToPayActivity.this,PrinterActivity.class);
@@ -181,7 +181,7 @@ public class ToPayActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(str)) {
                     BaseConfig bg = BaseConfig.getInstance(ToPayActivity.this);
                     String order = bg.getStringValue(Constants.ORDER_ID, "");// (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "")
-                    String updata = Utils.sentBuy(ToPayActivity.this, order + "&" +"0.01" + "&" + select + "&" + Utils.getItemId(this) + "&" + str+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
+                    String updata = Utils.sentBuy(ToPayActivity.this, order + "&" +(Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "")+ "&" + select + "&" + Utils.getItemId(this) + "&" + str+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
                     Log.i("vvvv","updata="+updata);
                     boolean abg = PushManager.getInstance(ToPayActivity.this).sendMessage(updata);
                     if (abg) {
