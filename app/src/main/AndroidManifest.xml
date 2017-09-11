@@ -85,7 +85,7 @@
             android:name=".activity.QureActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity android:name=".activity.SaleTotalActivity"></activity>
-
+    <activity android:name=".idcard.IDCardActivity"/>
         <service
             android:name=".offline.ReceiveMsgService"
             android:exported="false">

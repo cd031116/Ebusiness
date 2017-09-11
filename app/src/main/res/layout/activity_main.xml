@@ -6,8 +6,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include layout="@layout/view_top"/>
-
+    <include layout="@layout/view_top" />
 
 
     <RelativeLayout
@@ -18,19 +17,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:src="@drawable/shenfenz"/>
+            android:src="@drawable/shenfenz" />
 
     </RelativeLayout>
-
-
-
-
-
-
-
-
-
-
 
 
 </LinearLayout>

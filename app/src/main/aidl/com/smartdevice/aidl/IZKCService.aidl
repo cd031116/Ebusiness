@@ -446,11 +446,6 @@ interface IZKCService
 	*/
 	void scan();
 
-    /**
-	*扫描（3503/3504）
-	*/
-	void scanGT();
-
 	/**
 	* 数据末尾追加回车
 	* @param status: true:追加；false:不追加
@@ -499,5 +494,23 @@ interface IZKCService
 	* @return 身份证信息
 	*/
 	String getIdentifyInfo();
+
+	/**
+	* 打开电源
+	* @return 身份证信息
+	*/
+	boolean turnOn();
+
+	/**
+	* 断开电源
+	* @return 身份证信息
+	*/
+	boolean turnOff();
+
+	/**
+	* 断开电源
+	* @return 身份证信息
+	*/
+	Bitmap getHeader();
 
 }

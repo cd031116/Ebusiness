@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -60,7 +62,7 @@ public class ScannerActivity extends BaseActivity {
     private int cannum = 1;
     private boolean runFlag = true;
     public String text = "";
-    RemoteControlReceiver screenStatusReceiver = null;
+//    RemoteControlReceiver screenStatusReceiver = null;
     MediaPlayer player;
     Vibrator vibrator;
     private String firstCodeStr = "";
@@ -143,13 +145,13 @@ public class ScannerActivity extends BaseActivity {
         beginToReceiverData = true;
         player = MediaPlayer.create(getApplicationContext(), R.raw.scan);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        screenStatusReceiver = new RemoteControlReceiver();
+//        screenStatusReceiver = new RemoteControlReceiver();
         IntentFilter screenStatusIF = new IntentFilter();
         screenStatusIF.addAction(Intent.ACTION_SCREEN_ON);
         screenStatusIF.addAction(Intent.ACTION_SCREEN_OFF);
         screenStatusIF.addAction(Intent.ACTION_SHUTDOWN);
         screenStatusIF.addAction("com.zkc.keycode");
-        registerReceiver(screenStatusReceiver, screenStatusIF);
+//        registerReceiver(screenStatusReceiver, screenStatusIF);
         //查询服务是否绑定成功，bindSuccessFlag为服务是否绑定成功的标记，在BaseActivity声明
         ExecutorFactory.executeThread(new Runnable() {
             @Override
@@ -287,10 +289,11 @@ public class ScannerActivity extends BaseActivity {
     void initScanSet() {
         if (mIzkcService != null) {
             try {
+                mIzkcService.registerCallBack("Scanner", mCallback);
+                mIzkcService.setModuleFlag(4);
                 mIzkcService.openScan(true);
                 mIzkcService.dataAppendEnter(true);
                 mIzkcService.openBackLight(0);
-                mIzkcService.setModuleFlag(4);
             } catch (RemoteException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -316,63 +319,63 @@ public class ScannerActivity extends BaseActivity {
     //屏幕关闭须要关闭扫描模块，开启省电模式；
     int count = 1;
 
-    public class RemoteControlReceiver extends BroadcastReceiver {
-        private static final String TAG = "RemoteControlReceiver";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            beginToReceiverData = false;
-            Log.i(TAG, "System message " + action);
-            if (action.equals("com.zkc.keycode")) {
-                if (count++ > 0) {
-                    count = 0;
-                    int keyValue = intent.getIntExtra("keyvalue", 0);
-                    Log.i(TAG, "KEY VALUE:" + keyValue);
-                    if (keyValue == 136 || keyValue == 135 || keyValue == 131) {
-                        Log.i(TAG, "Scan key down.........");
-                        try {
-                            if (mIzkcService != null) {
-                                mIzkcService.scan();
-                                mHandler.sendEmptyMessage(2);
-                            } else {
-                                mIzkcService.scanGT();
-                                mHandler.sendEmptyMessage(2);
-                            }
-
-                        } catch (RemoteException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            } else if (action.equals("android.intent.action.SCREEN_ON")) {
-                Log.i(TAG, "Power off,Close scan modules power.........");
-                if (mIzkcService != null) {
-                    beginToReceiverData = true;
-                    initScanSet();
-                }
-            } else if (action.equals("android.intent.action.SCREEN_OFF")) {
-                Log.i(TAG, "ACTION_SCREEN_OFF,Close scan modules power.........");
-                try {
-                    if (mIzkcService != null)
-                        mIzkcService.openScan(false);
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            } else if (action.equals("android.intent.action.ACTION_SHUTDOWN")) {
-                Log.i(TAG, "ACTION_SCREEN_ON,Open scan modules power.........");
-                try {
-                    if (mIzkcService != null)
-                        mIzkcService.openScan(false);
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+//    public class RemoteControlReceiver extends BroadcastReceiver {
+//        private static final String TAG = "RemoteControlReceiver";
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            beginToReceiverData = false;
+//            Log.i(TAG, "System message " + action);
+//            if (action.equals("com.zkc.keycode")) {
+//                if (count++ > 0) {
+//                    count = 0;
+//                    int keyValue = intent.getIntExtra("keyvalue", 0);
+//                    Log.i(TAG, "KEY VALUE:" + keyValue);
+//                    if (keyValue == 136 || keyValue == 135 || keyValue == 131) {
+//                        Log.i(TAG, "Scan key down.........");
+//                        try {
+//                            if (mIzkcService != null) {
+//                                mIzkcService.scan();
+//                                mHandler.sendEmptyMessage(2);
+//                            } else {
+////                                mIzkcService.scanGT();
+//                                mHandler.sendEmptyMessage(2);
+//                            }
+//
+//                        } catch (RemoteException e) {
+//                            // TODO Auto-generated catch block
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            } else if (action.equals("android.intent.action.SCREEN_ON")) {
+//                Log.i(TAG, "Power off,Close scan modules power.........");
+//                if (mIzkcService != null) {
+//                    beginToReceiverData = true;
+//                    initScanSet();
+//                }
+//            } else if (action.equals("android.intent.action.SCREEN_OFF")) {
+//                Log.i(TAG, "ACTION_SCREEN_OFF,Close scan modules power.........");
+//                try {
+//                    if (mIzkcService != null)
+//                        mIzkcService.openScan(false);
+//                } catch (RemoteException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+//            } else if (action.equals("android.intent.action.ACTION_SHUTDOWN")) {
+//                Log.i(TAG, "ACTION_SCREEN_ON,Open scan modules power.........");
+//                try {
+//                    if (mIzkcService != null)
+//                        mIzkcService.openScan(false);
+//                } catch (RemoteException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void onPause() {
@@ -382,7 +385,12 @@ public class ScannerActivity extends BaseActivity {
 
     @Override
     public void onDestroy() {
-        unregisterReceiver(screenStatusReceiver);
+        try {
+            mIzkcService.unregisterCallBack("Scanner", mCallback);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+//        unregisterReceiver(screenStatusReceiver);
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
@@ -453,6 +461,9 @@ public class ScannerActivity extends BaseActivity {
                 Date curDate1 = new Date(System.currentTimeMillis());//获取当前时间
                 String str1 = formatter1.format(curDate1);
                 tInfo.setOrderTime(str1 + "至" + str1);
+                Bitmap mBitmap = null;
+                mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
+                tInfo.setStart_bitmap(mBitmap);
                 PrinterHelper.getInstance(ScannerActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
                 try {
                     mIzkcService.setModuleFlag(4);

@@ -21,6 +21,7 @@ public class ByteArrayDecoder extends CumulativeProtocolDecoder {
 
     @Override
     protected boolean doDecode(IoSession session, IoBuffer buf, ProtocolDecoderOutput out) throws Exception {
+        Log.i("ClientSessionHandler","remaining"+buf.remaining());
         if(buf.remaining() > 0) {
             String getmsg = buf.getHexDump().toString().replace(" ", "");
             buf.mark();

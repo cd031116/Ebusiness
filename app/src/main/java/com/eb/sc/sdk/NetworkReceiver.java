@@ -90,13 +90,18 @@ private Context contextd;
                                 // 启动该Service
                                 contextd.startService(intentd);
                             }
-                        }, 3000);
+                        }, 2000);
                     }
                 } else {
                     Log.e("TAG", "isConnected=false:" );
                     BaseConfig bg=new BaseConfig(context);
                     bg.setStringValue(Constants.havenet,"-1");
                     NotificationCenter.defaultCenter().publish(new NetEvent(false));
+//                    Intent intentd = new Intent();
+//                    // 设置Class属性
+//                    intentd.setClass(context, ReceiveMsgService.class);
+//                    // 启动该Service
+//                    context.stopService(intentd);
                 }
             }
         }

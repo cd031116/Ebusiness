@@ -39,11 +39,6 @@ public class DoubleClickExitHelper {
             if (mBackToast != null) {
                 mBackToast.cancel();
             }
-            Intent intentd = new Intent();
-            // 设置Class属性
-            intentd.setClass(mActivity, ReceiveMsgService.class);
-            // 启动该Service
-            mActivity.stopService(intentd);
             // 退出
             BaseConfig bg = new BaseConfig(mActivity);
             bg.setStringValue(Constants.USER_ID,"");

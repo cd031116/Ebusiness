@@ -336,7 +336,6 @@ public class SettingActivity extends BaseActivity {
                     if (value.equals(mList.get(i).getName())) {
                         bg.setStringValue(Constants.address, mList.get(i).getCode());
                         bg.setStringValue(Constants.X_NUM, mList.get(i).getNum());
-
                     }
                 }
                 // 选择完后关闭popup窗口

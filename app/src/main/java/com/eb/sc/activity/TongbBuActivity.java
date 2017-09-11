@@ -161,7 +161,9 @@ public class TongbBuActivity extends BaseActivity {
     private void sycnData() {
         String sendMsg = "";
         DataInfo dataInfo = null;
+        boolean istongbu=false;
         synchronized (this) {
+            showAlert("..正在同步",false);
             for (int i = 0; i < mdata.size(); i++) {
                 dataInfo = mdata.get(i);
                 if (!dataInfo.isUp()) {
@@ -170,11 +172,11 @@ public class TongbBuActivity extends BaseActivity {
                     if (dataInfo.getType() == 1)
                         sendMsg = Utils.getIdcard_t(this, id);
                     else if (dataInfo.getType() == 2) {
-                        if (dataInfo.getId().length() == 6) {
-                            sendMsg = Utils.getscan_t_mj(this, id);
-                        } else {
-                            sendMsg = Utils.getscan_t(this, id);
-                        }
+//                        if (dataInfo.getId().length() == 6) {
+//                            sendMsg = Utils.getscan_t_mj(this, id);
+//                        } else {
+//                        }
+                        sendMsg = Utils.getscan_t(this, id);
                     }
                     Log.e("ClientSessionHandler", "sendMsg..." + sendMsg);
                     try {
@@ -182,9 +184,18 @@ public class TongbBuActivity extends BaseActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    PushManager.getInstance(TongbBuActivity.this).sendMessage(sendMsg);
+                     boolean fp= PushManager.getInstance(TongbBuActivity.this).sendMessage(sendMsg);
+                    if(fp){
+                        Toast.makeText(TongbBuActivity.this, "发送成功!", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(TongbBuActivity.this, "发送失败!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
+            istongbu=true;
+        }
+        if(istongbu){
+            dismissAlert();
         }
     }
 

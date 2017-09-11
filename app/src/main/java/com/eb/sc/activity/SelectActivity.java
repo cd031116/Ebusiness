@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,7 +16,7 @@ import com.eb.sc.MainActivity;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
-import com.eb.sc.business.BusinessManager;
+import com.eb.sc.idcard.IDCardActivity;
 import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
@@ -118,14 +117,16 @@ public class SelectActivity extends BaseActivity {
                 int select = bg.getIntValue(Constants.JI_XING, -1);
                 if (select == 1) {
                     startActivity(new Intent(SelectActivity.this, ScannerActivity.class));
-                } else {
+                } else if (select == 2){
+                    startActivity(new Intent(SelectActivity.this, IDCardActivity.class));
+                }else {
                     startActivity(new Intent(SelectActivity.this, MainActivity.class));
                 }
                 break;
             case R.id.scan:
-                Intent intent = new Intent(SelectActivity.this, CaptureActivity.class);
-                intent.putExtra("select", "2");
-                startActivity(intent);
+                    Intent intent = new Intent(SelectActivity.this, CaptureActivity.class);
+                    intent.putExtra("select", "2");
+                    startActivity(intent);
                 break;
             case R.id.top_left:
                 SelectActivity.this.finish();

@@ -1,11 +1,13 @@
 package com.eb.sc.tcprequest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.eb.sc.bean.Params;
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.offline.ReceiveMsgService;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
 import com.eb.sc.sdk.eventbus.LoginEvent;
@@ -60,6 +62,11 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         BaseConfig bg = new BaseConfig(mcontext);
         bg.setStringValue(Constants.havelink, "1");
         NotificationCenter.defaultCenter().publish(new ConnectEvent(true));
+//        Intent intentd = new Intent();
+//        // 设置Class属性
+//        intentd.setClass(mcontext, ReceiveMsgService.class);
+//        // 启动该Service
+//        mcontext.startService(intentd);
     }
 
     @Override
@@ -70,6 +77,11 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         bg.setStringValue(Constants.havelink, "-1");
         NotificationCenter.defaultCenter().publish(new ConnectEvent(false));
         tcpResponse.breakConnect();
+//        Intent intentd = new Intent();
+//        // 设置Class属性
+//        intentd.setClass(mcontext, ReceiveMsgService.class);
+//        // 启动该Service
+//        mcontext.stopService(intentd);
     }
 
     @Override

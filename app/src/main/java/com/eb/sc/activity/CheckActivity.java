@@ -183,6 +183,12 @@ public class CheckActivity extends BaseActivity {
                 }).setTitle("提示").show();
                 break;
             case R.id.sale://售票
+                String addressd = bg.getStringValue(Constants.address, "");
+//                String she=  bg.getStringValue(Constants.shebeihao,"");
+                if (TextUtils.isEmpty(addressd)) {
+                    Toast.makeText(CheckActivity.this, "您还没设置售票项目,请前往设置中心设置!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String user_id = bg.getStringValue(Constants.USER_ID, "");
                 if(TextUtils.isEmpty(user_id)){
                     new LogDialog(this, R.style.dialog, "请输入管理员密码？", new LogDialog.OnCloseListener() {

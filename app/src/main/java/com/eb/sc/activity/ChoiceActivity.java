@@ -35,9 +35,12 @@ public class ChoiceActivity extends BaseActivity {
     ImageView image_one;
     @Bind(R.id.image_two)
     ImageView image_two;
-
     @Bind(R.id.image_three)
     ImageView image_three;
+
+    @Bind(R.id.image_one_t)
+    ImageView image_one_t;
+
 
     private int select = 1;
     @Override
@@ -58,7 +61,7 @@ public class ChoiceActivity extends BaseActivity {
         super.initData();
     }
 
-    @OnClick({R.id.submit,R.id.one,R.id.two})
+    @OnClick({R.id.submit,R.id.one,R.id.two,R.id.three,R.id.one_t})
     void onclick(View v) {
         switch (v.getId()) {
             case R.id.submit:
@@ -74,29 +77,41 @@ public class ChoiceActivity extends BaseActivity {
                 select = 1;
                 setview(select);
                 break;
-            case R.id.two:
-                if (select == 2) {
+
+            case R.id.one_t:
+                if (select == 2){
                     return;
                 }
                 select = 2;
                 setview(select);
                 break;
-            case R.id.three:
+
+            case R.id.two:
                 if (select == 3) {
                     return;
                 }
                 select = 3;
                 setview(select);
                 break;
+            case R.id.three:
+                if (select == 4) {
+                    return;
+                }
+                select = 4;
+                setview(select);
+                break;
         }
     }
     private void setview(int index) {
         image_one.setImageResource(R.drawable.order_pay_gray_gou);
+        image_one_t.setImageResource(R.drawable.order_pay_gray_gou);
         image_two.setImageResource(R.drawable.order_pay_gray_gou);
         image_three.setImageResource(R.drawable.order_pay_gray_gou);
         if (index == 1) {
             image_one.setImageResource(R.drawable.order_pay_red_gou);
-        } else if(index==2){
+        } else if(index == 2){
+            image_one_t.setImageResource(R.drawable.order_pay_red_gou);
+        }else if(index==3){
             image_two.setImageResource(R.drawable.order_pay_red_gou);
         }else {
             image_three.setImageResource(R.drawable.order_pay_red_gou);

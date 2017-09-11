@@ -59,7 +59,11 @@ public class PrinterHelper {
                 mIzkcService.printGBKText("中惠旅"+ "\n\n");
                 mIzkcService.printGBKText(mIzkcService_CUT_OFF_RULE + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.SERIAL_NUMBER_TAG + "\t" + ticketInfo.getOrderId() + "\n");
-                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getOrderName() + "\n");
+                if(!TextUtils.isEmpty(ticketInfo.getOrderName())){
+                    mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getOrderName() + "\n");
+                }else {
+                    mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getItem() + "\n");
+                }
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_UNIT_PRICE_TAG + "\t" + ticketInfo.getPrice() + "\n");
                 if(!TextUtils.isEmpty(ticketInfo.getpNum())){
                     mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_AMOUNT_TAG + "\t" + ticketInfo.getpNum() + "\n");

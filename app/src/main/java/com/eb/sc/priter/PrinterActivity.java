@@ -1,5 +1,6 @@
 package com.eb.sc.priter;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -84,6 +85,7 @@ public class PrinterActivity extends BaseActivity {
     private String s_neirong, order = "";
     private boolean isconnect = true;
     private boolean isbuy = false;
+    private boolean ispringter = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,11 +176,23 @@ public class PrinterActivity extends BaseActivity {
 
 
     private void printPurcase(String sttrs) {
+        String aa = "";
+        try {
+            aa = mIzkcService.getPrinterStatus();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        if (TextUtils.isEmpty(aa) || "缺纸/".equals(aa)) {
+            ispringter = true;
+            Toast.makeText(PrinterActivity.this, "打印机没检测到打印纸!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
         TicketInfo tInfo = new TicketInfo();
         String order_id = bg.getStringValue(Constants.ORDER_ID, "");
         tInfo.setOrderId(order_id);
-        tInfo.setPrice(mInfo.getPrice());
+        tInfo.setPrice((Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + ""));
         tInfo.setpNum(mInfo.getpNum() + "");
         tInfo.setOrderName(Utils.getXiangmu(this));
         tInfo.setItem(Utils.getXiangmu(PrinterActivity.this));
@@ -205,7 +219,7 @@ public class PrinterActivity extends BaseActivity {
         }
 
         PrinterHelper.getInstance(this).printPurchaseBillModelTwo(mIzkcService, tInfo);
-
+        ispringter = true;
     }
 
 
@@ -213,7 +227,11 @@ public class PrinterActivity extends BaseActivity {
     void onclick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
-                PrinterActivity.this.finish();
+                if (!ispringter) {
+                    exitDialog();
+                } else {
+                    PrinterActivity.this.finish();
+                }
                 break;
             case R.id.printer_tick:
                 if (isbuy) {
@@ -227,6 +245,17 @@ public class PrinterActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!ispringter) {
+                exitDialog();
+            } else {
+                PrinterActivity.this.finish();
+            }
+        }
+        return false;
+    }
 
     //收到反回的数据
     PayResultSubscriber payscriber = new PayResultSubscriber() {
@@ -235,140 +264,175 @@ public class PrinterActivity extends BaseActivity {
             Log.i("vvvv", "event=" + event.getStrs());
             if (event.getStrs().contains("cancel")) {
                 dismissAlert();
-                Toast.makeText(PrinterActivity.this,"用户取消支付",Toast.LENGTH_SHORT).show();
+                Toast.makeText(PrinterActivity.this, "用户取消支付", Toast.LENGTH_SHORT).show();
                 handler.removeCallbacks(runnable);
                 PrinterActivity.this.finish();
             } else if (!event.getStrs().contains("nopay")) {
                 Log.i("vvvv", "events=");
                 handler.removeCallbacks(runnable);
                 isbuy = true;
-                s_neirong=event.getStrs();
+                s_neirong = event.getStrs();
                 top_title.setText("支付成功");
                 state.setText("已成功收款");
+                state.setTextColor(Color.parseColor("#51AD5F"));
                 dismissAlert();
                 BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
                 bg.setIntValue(Constants.IS_PAY, 1);
                 SaleBean sbean = new SaleBean();
                 sbean.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
                 sbean.setpNum(mInfo.getpNum());
-                sbean.setPrice(mInfo.getPrice());
-                sbean.setPrint_time(System.currentTimeMillis()+"");
+                sbean.setPrice((Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + ""));
+                sbean.setPrint_time(System.currentTimeMillis() + "");
                 sbean.setItem(Utils.getXiangmu(PrinterActivity.this));
                 sbean.setState(select);
                 if (!TextUtils.isEmpty(bg.getStringValue(Constants.ORDER_ID, "")) && !SaleDataDb.isHave(bg.getStringValue(Constants.ORDER_ID, ""))) {
                     SaleDataDb.insert(sbean);
                 }
+            } else {
+                top_title.setText("支付失败");
+                state.setTextColor(Color.parseColor("#E22018"));
+                state.setText("支付失败!");
+                isbuy = false;
+                dismissAlert();
+                ispringter = true;
             }
         }
     };
 
 
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                //要做的事情
-                String updatd = Utils.lunxun(PrinterActivity.this, order);
-                PushManager.getInstance(PrinterActivity.this).sendMessage(updatd);
-                Log.i("vvvv", "PushManager=");
-                handler.postDelayed(this, 2000);
-            }
-        };
-
-
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
         @Override
-        public void onDestroy() {
-            super.onDestroy();
-            NotificationCenter.defaultCenter().unsubscribe(PayResultEvent.class, payscriber);
+        public void run() {
+            // TODO Auto-generated method stub
+            //要做的事情
+            String updatd = Utils.lunxun(PrinterActivity.this, order);
+            PushManager.getInstance(PrinterActivity.this).sendMessage(updatd);
+            Log.i("vvvv", "PushManager=");
+            handler.postDelayed(this, 2000);
         }
+    };
 
 
-        /**
-         * 显示加载图标
-         *
-         * @param txt
-         */
-        public void showAlert(String txt, final boolean isCancel) {
-            if (progressDialog != null && progressDialog.isShowing()) {
-                return;
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        NotificationCenter.defaultCenter().unsubscribe(PayResultEvent.class, payscriber);
+    }
+
+
+    /**
+     * 显示加载图标
+     *
+     * @param txt
+     */
+    public void showAlert(String txt, final boolean isCancel) {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        if (txt != null) {
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(this, isCancel);
             }
-            if (txt != null) {
-                if (progressDialog == null) {
-                    progressDialog = new ProgressDialog(this, isCancel);
-                }
-                progressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                    @Override
-                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            if (isCancel) {
-                                progressDialog.dismiss();
-                            }
+            progressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        if (isCancel) {
+                            progressDialog.dismiss();
                         }
-                        return false;
+                    }
+                    return false;
+                }
+            });
+            progressDialog.show();
+            progressDialog.showText(txt);
+        }
+    }
+
+    /**
+     * 关闭加载图标
+     */
+    public void dismissAlert() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+
+    //长连接
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
+        @Override
+        public void onEvent(ConnectEvent event) {
+            BaseConfig bg = new BaseConfig(PrinterActivity.this);
+            String a = bg.getStringValue(Constants.havenet, "-1");
+            if (event.isConnect()) {
+                isconnect = true;
+                if ("1".equals(a)) {
+                    changeview(true);
+                } else {
+                    changeview(false);
+                }
+            } else {
+                isconnect = false;
+                changeview(false);
+            }
+
+        }
+    };
+    //网络
+    EventSubscriber netEventSubscriber = new EventSubscriber() {
+        @Override
+        public void onEvent(NetEvent event) {
+            if (event.isConnect()) {
+                if (isconnect) {
+                    changeview(true);
+                } else {
+                    changeview(false);
+                }
+            } else {
+                changeview(false);
+            }
+        }
+    };
+
+    private void changeview(boolean conect) {
+        if (conect) {
+            mRight_bg.setImageResource(R.drawable.lianjie);
+            top_right_text.setText("在线");
+            top_right_text.setTextColor(Color.parseColor("#0973FD"));
+        } else {
+            mRight_bg.setImageResource(R.drawable.lixian);
+            top_right_text.setText("离线");
+            top_right_text.setTextColor(Color.parseColor("#EF4B55"));
+        }
+    }
+
+    public void exitDialog() {
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(this);
+        normalDialog.setTitle("提示");
+        normalDialog.setMessage("您还没有打印票,确定退出?");
+        normalDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PrinterActivity.this.finish();
                     }
                 });
-                progressDialog.show();
-                progressDialog.showText(txt);
-            }
-        }
-
-        /**
-         * 关闭加载图标
-         */
-        public void dismissAlert() {
-            if (progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-        }
-
-
-        //长连接
-        ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
-            @Override
-            public void onEvent(ConnectEvent event) {
-                BaseConfig bg = new BaseConfig(PrinterActivity.this);
-                String a = bg.getStringValue(Constants.havenet, "-1");
-                if (event.isConnect()) {
-                    isconnect = true;
-                    if ("1".equals(a)) {
-                        changeview(true);
-                    } else {
-                        changeview(false);
+        normalDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
-                } else {
-                    isconnect = false;
-                    changeview(false);
-                }
-
-            }
-        };
-        //网络
-        EventSubscriber netEventSubscriber = new EventSubscriber() {
-            @Override
-            public void onEvent(NetEvent event) {
-                if (event.isConnect()) {
-                    if (isconnect) {
-                        changeview(true);
-                    } else {
-                        changeview(false);
-                    }
-                } else {
-                    changeview(false);
-                }
-            }
-        };
-
-        private void changeview(boolean conect) {
-            if (conect) {
-                mRight_bg.setImageResource(R.drawable.lianjie);
-                top_right_text.setText("在线");
-                top_right_text.setTextColor(Color.parseColor("#0973FD"));
-            } else {
-                mRight_bg.setImageResource(R.drawable.lixian);
-                top_right_text.setText("离线");
-                top_right_text.setTextColor(Color.parseColor("#EF4B55"));
-            }
-        }
-
+                });
+        // 显示
+        normalDialog.show();
     }
+}

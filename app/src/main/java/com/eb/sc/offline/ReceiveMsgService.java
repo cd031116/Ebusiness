@@ -11,10 +11,7 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.eb.sc.MainActivity;
-import com.eb.sc.activity.TongbBuActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.tcprequest.PushManager;
@@ -39,8 +36,7 @@ public class ReceiveMsgService extends Service {// 实时监听网络状态改�
             String action = intent.getAction();
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 Timer timer = new Timer();
-                timer.schedule(new QunXTask(getApplicationContext()), new Date());
-                Log.i("ClientSessionHandler","CONNECTIVITY_ACTION");
+                timer.schedule(new QunXTask(getApplicationContext()), 1000);
             }
         }
     };
@@ -58,7 +54,6 @@ public class ReceiveMsgService extends Service {// 实时监听网络状态改�
         IntentFilter mFilter = new IntentFilter();
         mFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION); // 添加接收网络连接状态改变的Action
         registerReceiver(mReceiver, mFilter);
-        Log.i("ClientSessionHandler","onCreate");
     }
 
     class QunXTask extends TimerTask {
@@ -71,6 +66,7 @@ public class ReceiveMsgService extends Service {// 实时监听网络状态改�
         @Override
         public void run() {
             if (isNetworkConnected(context) || isWifiConnected(context)) {
+
                 isContected = true;
                 BaseConfig bg=BaseConfig.getInstance(context);
                 String b = bg.getStringValue(Constants.havelink, "-1");
@@ -153,13 +149,12 @@ public class ReceiveMsgService extends Service {// 实时监听网络状态改�
                     if (dataInfo.getType() == 1)
                         sendMsg = Utils.getIdcard_t(this, id);
                     else if (dataInfo.getType() == 2) {
-                        if (dataInfo.getId().length() == 6) {
-                            sendMsg = Utils.getscan_t_mj(this, id);
-                        } else {
-                            sendMsg = Utils.getscan_t(this, id);
-                        }
+//                        if (dataInfo.getId().length() == 6) {
+//                            sendMsg = Utils.getscan_t_mj(this, id);
+//                        } else {
+//                        }
+                        sendMsg = Utils.getscan_t(this, id);
                     }
-                    Log.e("ClientSessionHandler", "sendMsg..." + sendMsg);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {

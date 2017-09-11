@@ -3,6 +3,8 @@ package com.eb.sc.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -38,6 +40,7 @@ import com.eb.sc.scan.InactivityTimer;
 import com.eb.sc.scan.camera.CameraManager;
 import com.eb.sc.scanner.BaseActivity;
 import com.eb.sc.scanner.ExecutorFactory;
+import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -57,6 +60,8 @@ import com.eb.sc.widget.ShowMsgDialog;
 import org.aisen.android.component.eventbus.NotificationCenter;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -229,7 +234,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     });
 
 
-    private void toprinter() {
+    private void toprinter(String renshu) {
         BaseConfig bg = BaseConfig.getInstance(CaptureActivity.this);
         String state = bg.getStringValue(Constants.SHIFOU_PRINT, "0");
         if ("0".equals(state)) {
@@ -237,8 +242,20 @@ public class CaptureActivity extends BaseActivity implements Callback {
         } else {
             TicketInfo tInfo = new TicketInfo();
             tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
-            tInfo.setPrice("20");
-            tInfo.setpNum("2");
+            tInfo.setPrice(Utils.getPrice(CaptureActivity.this));
+            tInfo.setpNum(renshu);
+            tInfo.setItem(Utils.getXiangmu(CaptureActivity.this));
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+            String str = formatter.format(curDate);
+            tInfo.setpTime(str);
+            SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date curDate1 = new Date(System.currentTimeMillis());//获取当前时间
+            String str1 = formatter1.format(curDate1);
+            tInfo.setOrderTime(str1 + "至" + str1);
+            Bitmap mBitmap = null;
+            mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
+            tInfo.setStart_bitmap(mBitmap);
             PrinterHelper.getInstance(CaptureActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
         }
     }
@@ -456,7 +473,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
 
                     handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
-                    toprinter();
+                    toprinter(renshu);
                 }
             }
         }).setTitle("提示").show();
@@ -497,7 +514,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     }
                     handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
-                    toprinter();
+                    toprinter(renshu);
                 }
             }
         }).setTitle("提示").show();
