@@ -1,6 +1,7 @@
 package com.eb.sc.utils;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.KeyEvent;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.base.MyApplication;
+import com.eb.sc.offline.ReceiveMsgService;
 
 
 /**
@@ -37,6 +39,11 @@ public class DoubleClickExitHelper {
             if (mBackToast != null) {
                 mBackToast.cancel();
             }
+            Intent intentd = new Intent();
+            // 设置Class属性
+            intentd.setClass(mActivity, ReceiveMsgService.class);
+            // 启动该Service
+            mActivity.stopService(intentd);
             // 退出
             BaseConfig bg = new BaseConfig(mActivity);
             bg.setStringValue(Constants.USER_ID,"");

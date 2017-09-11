@@ -59,6 +59,7 @@ public class TongbBuActivity extends BaseActivity {
     private List<DataInfo> mdata = new ArrayList<>();
     LinearLayoutManager layoutManager;
     private boolean isReturn;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_tongb_bu;
@@ -108,7 +109,7 @@ public class TongbBuActivity extends BaseActivity {
                 } else {
                     holder.setText(R.id.state, "已上传");
                     holder.setTextColor(R.id.state, Color.parseColor("#5CE064"));
-                    if(!TextUtils.isEmpty(info.getpName())){
+                    if (!TextUtils.isEmpty(info.getpName())) {
                         holder.setText(R.id.state, "无效票");
                         holder.setTextColor(R.id.state, Color.parseColor("#FD1E1D"));
                     }
@@ -129,9 +130,9 @@ public class TongbBuActivity extends BaseActivity {
         }
         List<DataInfo> mlist = BusinessManager.querAll();
         for (int i = 0; i < mlist.size(); i++) {
-            Log.i("tttt","mlistmlistmlist="+mlist.get(i).getpName());
+            Log.i("tttt", "mlistmlistmlist=" + mlist.get(i).getpName());
 //            if (!mlist.get(i).isUp()) {
-                mdata.add(mlist.get(i));
+            mdata.add(mlist.get(i));
 //            }
         }
         mAdapter.notifyDataSetChanged();
@@ -159,21 +160,21 @@ public class TongbBuActivity extends BaseActivity {
 
     private void sycnData() {
         String sendMsg = "";
-        DataInfo dataInfo=null;
+        DataInfo dataInfo = null;
         synchronized (this) {
-            for (int i = 0; i < mdata.size(); i++){
-                 dataInfo = mdata.get(i);
+            for (int i = 0; i < mdata.size(); i++) {
+                dataInfo = mdata.get(i);
                 if (!dataInfo.isUp()) {
                     //二维码，身份证信息
                     String id = dataInfo.getId();
                     if (dataInfo.getType() == 1)
                         sendMsg = Utils.getIdcard_t(this, id);
-                    else if (dataInfo.getType() == 2){
-//                                         if(dataInfo.getId().length()==6){
-//                                             sendMsg = Utils.getscan_t_mj(this, id);
-//                                         } else {
-//                                         }
-                        sendMsg = Utils.getscan_t(this, id);
+                    else if (dataInfo.getType() == 2) {
+                        if (dataInfo.getId().length() == 6) {
+                            sendMsg = Utils.getscan_t_mj(this, id);
+                        } else {
+                            sendMsg = Utils.getscan_t(this, id);
+                        }
                     }
                     Log.e("ClientSessionHandler", "sendMsg..." + sendMsg);
                     try {
@@ -224,33 +225,33 @@ public class TongbBuActivity extends BaseActivity {
     };
 
     //上传信息
-    TongbuSubscriber tongbuEventSubscriber = new TongbuSubscriber(){
+    TongbuSubscriber tongbuEventSubscriber = new TongbuSubscriber() {
         @Override
         public void onEvent(TongbuEvent event) {
-            DataInfo dataInfo=null;
-                if("1".equals(event.getIsResponse())){
-                    for (int i=0;i<mdata.size();i++){
-                      if(mdata.get(i).getId().equals(event.getResponseStr())){
-                          dataInfo=mdata.get(i);
-                          mdata.get(i).setUp(true);
-                          BusinessManager.updataUp(dataInfo);
-                          mAdapter.notifyDataSetChanged();
-                      }
+            DataInfo dataInfo = null;
+            if ("1".equals(event.getIsResponse())) {
+                for (int i = 0; i < mdata.size(); i++) {
+                    if (mdata.get(i).getId().equals(event.getResponseStr())) {
+                        dataInfo = mdata.get(i);
+                        mdata.get(i).setUp(true);
+                        BusinessManager.updataUp(dataInfo);
+                        mAdapter.notifyDataSetChanged();
                     }
-                }else {
-                    if("1".equals(event.getCode())){
-                        for (int i=0;i<mdata.size();i++){
-                            if(mdata.get(i).getId().equals(event.getResponseStr())){
-                                dataInfo=mdata.get(i);
-                                dataInfo.setUp(true);
-                                dataInfo.setpName("无效票");
-                                mdata.get(i).setUp(true);
-                                BusinessManager.updataUp(dataInfo);
-                                mAdapter.notifyDataSetChanged();
-                            }
+                }
+            } else {
+                if ("1".equals(event.getCode())) {
+                    for (int i = 0; i < mdata.size(); i++) {
+                        if (mdata.get(i).getId().equals(event.getResponseStr())) {
+                            dataInfo = mdata.get(i);
+                            dataInfo.setUp(true);
+                            dataInfo.setpName("无效票");
+                            mdata.get(i).setUp(true);
+                            BusinessManager.updataUp(dataInfo);
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
                 }
+            }
         }
     };
 

@@ -5,6 +5,7 @@ package com.eb.sc.offline;/**
 import android.content.Context;
 
 import com.eb.sc.bean.DataInfo;
+import com.eb.sc.business.BusinessManager;
 
 import org.aisen.android.component.orm.SqliteUtility;
 import org.aisen.android.component.orm.SqliteUtilityBuilder;
@@ -19,7 +20,7 @@ import java.util.List;
 */
 public class OfflLineDataDb {
     public  static void setup(Context context) {
-        new SqliteUtilityBuilder().configDBName("OffLineDB").configVersion(1).build(context);
+        new SqliteUtilityBuilder().configDBName("OffLineDB").configVersion(2).build(context);
     }
     public static SqliteUtility getDB() {
         return SqliteUtility.getInstance("OffLineDB");
@@ -48,5 +49,17 @@ public class OfflLineDataDb {
     public static void deleteueryAll() {
          getDB().deleteAll(null, DataInfo.class);
     }
+
+    public static void sysn(String id,String isUp){
+        DataInfo a= getDB().selectById(null,DataInfo.class,id);
+        if("1".equals(isUp)){
+            a.setUp(true);
+        }else {
+            a.setUp(true);
+            a.setpName("无效票");
+        }
+        updata(a);
+    }
+
 
 }

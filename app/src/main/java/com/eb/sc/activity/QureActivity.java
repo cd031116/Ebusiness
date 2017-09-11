@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,9 @@ public class QureActivity extends BaseActivity {
     EditText password;
     @Bind(R.id.expand)
     ExpandableListView expand;
+    @Bind(R.id.empty)
+    RelativeLayout empty;
+
     private List<GroupInfo> mList =new ArrayList<>();
     private boolean isconnect = true;
     private QueryAdapter mAdapter;
@@ -156,9 +160,26 @@ public class QureActivity extends BaseActivity {
         if (mList != null) {
             mList.clear();
         }
-        mList = JSON.parseArray(data, GroupInfo.class);
-        mAdapter=new QueryAdapter(QureActivity.this,mList);
-        expand.setAdapter(mAdapter);
+        if(data==null||TextUtils.isEmpty(data)){
+            expand.setVisibility(View.GONE);
+            empty.setVisibility(View.VISIBLE);
+        }else if(!data.startsWith("[{")&&!data.endsWith("}]")){
+            expand.setVisibility(View.GONE);
+            empty.setVisibility(View.VISIBLE);
+        }else {
+            mList = JSON.parseArray(data, GroupInfo.class);
+            if (!"null".equals(data) || mList.size() > 0) {
+                expand.setVisibility(View.VISIBLE);
+                empty.setVisibility(View.GONE);
+                mAdapter = new QueryAdapter(QureActivity.this, mList);
+                expand.setAdapter(mAdapter);
+            } else {
+                expand.setVisibility(View.GONE);
+                empty.setVisibility(View.VISIBLE);
+            }
+        }
+
+
     }
 
 

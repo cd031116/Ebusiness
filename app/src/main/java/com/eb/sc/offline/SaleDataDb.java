@@ -20,7 +20,7 @@ import java.util.List;
 
 public class SaleDataDb{
     public  static void setup(Context context) {
-        new SqliteUtilityBuilder().configDBName("SaleDB").configVersion(1).build(context);
+        new SqliteUtilityBuilder().configDBName("SaleDB").configVersion(2).build(context);
     }
     public static SqliteUtility getDB() {
         return SqliteUtility.getInstance("SaleDB");

@@ -158,7 +158,7 @@ public class AnalysisHelp {
         return "";
     }
 
-    public static String getScanjieguo(String str) {
+    public static String getScanjieguo(String str){
         if (TextUtils.isEmpty(str)) {
             return "";//字符为空
         }

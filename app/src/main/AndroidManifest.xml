@@ -85,6 +85,14 @@
             android:name=".activity.QureActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity android:name=".activity.SaleTotalActivity"></activity>
+
+        <service
+            android:name=".offline.ReceiveMsgService"
+            android:exported="false">
+            <intent-filter android:priority="1000">
+                <action android:name="com.dbjtech.waiqin.destroy"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

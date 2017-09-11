@@ -16,7 +16,6 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("kkkk","kkkkkkkkkkkkkkkkk");
         if (intent.getAction().equals(action_boot)){
             Intent ootStartIntent=new Intent(context,StartActivity.class);
             ootStartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -142,13 +142,6 @@ public class CheckActivity extends BaseActivity {
                 OfflLineDataDb.delete(mList.get(i));
             }
         }
-
-        List<SaleBean> rList = SaleDataDb.queryAll();
-        for (int i = 0; i < rList.size(); i++) {
-            if (Long.parseLong(rList.get(i).getPrint_time()) < times) {
-                SaleDataDb.delete(rList.get(i));
-            }
-        }
     }
 
     @OnClick({R.id.scan, R.id.detail, R.id.top_right_text, R.id.setting, R.id.sync,R.id.sale,R.id.select,R.id.close_bg})
@@ -370,6 +363,9 @@ public class CheckActivity extends BaseActivity {
         BaseConfig bg = new BaseConfig(CheckActivity.this);
         String list_item = bg.getStringValue(Constants.px_list, "");
         if (TextUtils.isEmpty(list_item)) {
+            return;
+        }
+        if(!list_item.startsWith("[{")&&!list_item.endsWith("}]")){
             return;
         }
         mList = JSON.parseArray(list_item, ItemInfo.class);

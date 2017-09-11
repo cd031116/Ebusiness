@@ -25,7 +25,7 @@ public class Utils {
         BaseConfig bg = new BaseConfig(context);
         String s = bg.getStringValue(Constants.address, "-1");
         String list_item = bg.getStringValue(Constants.px_list, "");
-        if (TextUtils.isEmpty(list_item)) {
+        if(!list_item.startsWith("[{")&&!list_item.endsWith("}]")){
             return "";
         }
         List<ItemInfo> mList = JSON.parseArray(list_item, ItemInfo.class);
@@ -42,7 +42,7 @@ public class Utils {
         BaseConfig bg = new BaseConfig(context);
         String s = bg.getStringValue(Constants.address, "-1");
         String list_item = bg.getStringValue(Constants.px_list, "");
-        if (TextUtils.isEmpty(list_item)) {
+        if(!list_item.startsWith("[{")&&!list_item.endsWith("}]")){
             return "";
         }
         List<ItemInfo> mList = JSON.parseArray(list_item, ItemInfo.class);
@@ -63,7 +63,7 @@ public class Utils {
         BaseConfig bg = new BaseConfig(context);
         String s = bg.getStringValue(Constants.address, "-1");
         String list_item = bg.getStringValue(Constants.px_list, "");
-        if (TextUtils.isEmpty(list_item)) {
+        if(!list_item.startsWith("[{")&&!list_item.endsWith("}]")){
             return "";
         }
         List<ItemInfo> mList = JSON.parseArray(list_item, ItemInfo.class);
@@ -124,7 +124,6 @@ public class Utils {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");
         String nr_16 = HexStr.str2HexStr(str);
-
         String data = "4012" + she  + nr_16;
         return data.toUpperCase();
     }
@@ -134,15 +133,7 @@ public class Utils {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");
         String nr_16 = HexStr.str2HexStr(str);
-        String leng_16 = HexStr.shiTo16(nr_16.length());
-        if (leng_16.length() <= 1) {
-            leng_16 = "000" + leng_16;
-        } else if (leng_16.length() <= 2) {
-            leng_16 = "00" + leng_16;
-        } else if (leng_16.length() <= 3) {
-            leng_16 = "0" + leng_16;
-        }
-        String data = "4014" + she + leng_16 + nr_16;
+        String data = "4014" + she  + nr_16;
         return data.toUpperCase();
     }
 

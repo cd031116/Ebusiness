@@ -31,7 +31,6 @@
         android:textColorHint="#807e7e"
         android:textColor="#333333"
         android:hint="账号"
-        android:inputType="number"
         android:background="@drawable/check_edt_bg"/>
 
     <EditText
@@ -47,7 +46,6 @@
         android:textColor="#333333"
         android:password="true"
         android:hint="密码 "
-        android:inputType="number"
         android:background="@drawable/check_edt_bg"/>
 
 

@@ -306,6 +306,9 @@ public class SettingActivity extends BaseActivity {
         if (TextUtils.isEmpty(list_item)) {
             return;
         }
+        if(!list_item.startsWith("[{")&&!list_item.endsWith("}]")){
+            return;
+        }
         mList = JSON.parseArray(list_item, ItemInfo.class);
         for (int i = 0; i < mList.size(); i++) {
             testData.add(mList.get(i).getName());

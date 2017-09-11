@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.eb.sc.bean.Params;
+import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
 import com.eb.sc.sdk.eventbus.LoginEvent;
@@ -134,24 +135,27 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         //升级
         if (Utils.pullShengji(message.toString())) {
 //            NotificationCenter.defaultCenter().publish(new TongbuEvent(2, message.toString()));
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
             NotificationCenter.defaultCenter().publish(new UpdateEvent(jieguo.substring(jieguo.length()-1,jieguo.length())));
         }
 //        是同步  身份证1
         if (Utils.pullSync(message.toString())) {
 //            NotificationCenter.defaultCenter().publish(new TongbuEvent(2, message.toString()));
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
             NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo),"1"));
+            OfflLineDataDb.sysn(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo));
         }
         //  二维码2
         if (Utils.pullscan(message.toString())) {
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getScanjieguo(jieguo),AnalysisHelp.getScanresylt(jieguo),"1"));
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
+            NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo),"1"));
+            OfflLineDataDb.sysn(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo));
         }
         //  二维码 票务通
         if (Utils.pullscanMj(message.toString())) {
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(20, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getScanjieguo(jieguo),AnalysisHelp.getScanresylt(jieguo),"1"));
+            String jieguo= HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
+            NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo),"1"));
+            OfflLineDataDb.sysn(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo));
         }
 
         if (message.toString().length() <7) {

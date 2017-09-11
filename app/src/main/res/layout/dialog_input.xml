@@ -30,6 +30,7 @@
         android:layout_marginBottom="40px"
         android:textColorHint="#807e7e"
         android:textColor="#333333"
+        android:password="true"
         android:hint="输入管理员密码"
         android:inputType="number"
         android:background="@drawable/check_edt_bg"/>

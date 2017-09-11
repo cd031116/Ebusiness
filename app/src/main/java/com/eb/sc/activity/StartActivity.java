@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.offline.ReceiveMsgService;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
 import com.eb.sc.utils.BaseConfig;
@@ -50,22 +51,27 @@ public class StartActivity extends BaseActivity {
 
     @Override
     public void initView() {
+        Intent intent = new Intent();
+        // 设置Class属性
+        intent.setClass(StartActivity.this, ReceiveMsgService.class);
+        // 启动该Service
+        startService(intent);
         AlphaAnimation aa = new AlphaAnimation(0.5f, 1.0f);
         aa.setDuration(500);
         contentView.startAnimation(aa);
-        aa.setAnimationListener(new Animation.AnimationListener() {
+        aa.setAnimationListener(new Animation.AnimationListener(){
             @Override
             public void onAnimationEnd(Animation arg0) {
                 redirectTo();
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationRepeat(Animation animation){
 
             }
 
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void onAnimationStart(Animation animation){
 
             }
         });
