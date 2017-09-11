@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.text.TextUtils;
 
 import com.eb.sc.R;
 import com.eb.sc.bean.TicketInfo;
@@ -60,7 +61,9 @@ public class PrinterHelper {
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.SERIAL_NUMBER_TAG + "\t" + ticketInfo.getOrderId() + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getOrderName() + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_UNIT_PRICE_TAG + "\t" + ticketInfo.getPrice() + "\n");
-                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_AMOUNT_TAG + "\t" + ticketInfo.getpNum() + "\n");
+                if(!TextUtils.isEmpty(ticketInfo.getpNum())){
+                    mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_AMOUNT_TAG + "\t" + ticketInfo.getpNum() + "\n");
+                }
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_CONTAINS_TYPE + "\t" + ticketInfo.getItem() + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.USE_TIME + "\t" + ticketInfo.getOrderTime() + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.PRINTER_TIME + "\t" + ticketInfo.getpTime() + "\n");

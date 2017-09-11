@@ -50,7 +50,7 @@
         android:textStyle="bold"
         android:gravity="center"
         android:textColor="#ffffff"
-        android:textSize="60px"
+        android:textSize="50px"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

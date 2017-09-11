@@ -48,6 +48,9 @@ import com.smartdevice.aidl.ICallBack;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -420,13 +423,12 @@ public class ScannerActivity extends BaseActivity {
                 if (confirm) {
                     text = "";
                     dialog.dismiss();
-                    toprinter();
                 }
             }
         }).setTitle("提示").show();
     }
 
-    private void toprinter(){
+    private void toprinter(String renshu){
             BaseConfig bg = BaseConfig.getInstance(ScannerActivity.this);
             String state= bg.getStringValue(Constants.SHIFOU_PRINT, "0");
             if("0".equals(state)){
@@ -440,8 +442,17 @@ public class ScannerActivity extends BaseActivity {
                 }
                 TicketInfo tInfo = new TicketInfo();
                 tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
-                tInfo.setPrice("20");
-                tInfo.setpNum("2");
+                tInfo.setPrice(Utils.getPrice(ScannerActivity.this));
+                tInfo.setpNum(renshu);
+                tInfo.setItem(Utils.getXiangmu(ScannerActivity.this));
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+                String str = formatter.format(curDate);
+                tInfo.setpTime(str);
+                SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+                Date curDate1 = new Date(System.currentTimeMillis());//获取当前时间
+                String str1 = formatter1.format(curDate1);
+                tInfo.setOrderTime(str1 + "至" + str1);
                 PrinterHelper.getInstance(ScannerActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
                 try {
                     mIzkcService.setModuleFlag(4);
@@ -542,6 +553,7 @@ public class ScannerActivity extends BaseActivity {
                     }
                     text = "";
                     dialog.dismiss();
+                    toprinter(reshu);
                 }
             }
         }).setTitle("提示").show();
@@ -581,6 +593,7 @@ public class ScannerActivity extends BaseActivity {
                     }
                     text = "";
                     dialog.dismiss();
+                    toprinter(renshu);
                 }
             }
         }).setTitle("提示").show();
