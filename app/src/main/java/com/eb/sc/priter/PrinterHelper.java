@@ -89,6 +89,52 @@ public class PrinterHelper {
         }
     }
 
+    synchronized public void printhexiao(
+            IZKCService mIzkcService, TicketInfo ticketInfo) {
+
+        try {
+            if (mIzkcService != null && mIzkcService.checkPrinterAvailable()) {
+                mIzkcService.printGBKText("\n\n");
+                if (ticketInfo.getStart_bitmap() != null) {
+                    mIzkcService.printBitmap(ticketInfo.getStart_bitmap());
+                }
+                SystemClock.sleep(50);
+//				mIzkcService.printGBKText("\n");
+                mIzkcService.printGBKText("中惠旅(核销)"+ "\n\n");
+                mIzkcService.printGBKText(mIzkcService_CUT_OFF_RULE + "\n");
+                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.SERIAL_NUMBER_TAG + "\t" + ticketInfo.getOrderId() + "\n");
+                if(!TextUtils.isEmpty(ticketInfo.getOrderName())){
+                    mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getOrderName() + "\n");
+                }else {
+                    mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getItem() + "\n");
+                }
+                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_UNIT_PRICE_TAG + "\t" + ticketInfo.getPrice() + "\n");
+                if(!TextUtils.isEmpty(ticketInfo.getpNum())){
+                    mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_AMOUNT_TAG + "\t" + ticketInfo.getpNum() + "\n");
+                }
+                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_CONTAINS_TYPE + "\t" + ticketInfo.getItem() + "\n");
+                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.USE_TIME + "\t" + ticketInfo.getOrderTime() + "\n");
+                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.PRINTER_TIME + "\t" + ticketInfo.getpTime() + "\n");
+                mIzkcService.printGBKText("\n");
+                mIzkcService.printGBKText(mIzkcService_CUT_OFF_RULE);
+                // if(mIzkcService.getBufferState(100)){
+                if (ticketInfo.getEnd_bitmap()!= null) {
+                    SystemClock.sleep(200);
+//					mIzkcService.printBitmap(bill.end_bitmap);
+                    mIzkcService.printBitmap(ticketInfo.getEnd_bitmap());
+
+                }
+                // }
+                mIzkcService.printGBKText("\n\n\n");
+            }
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+
+
     synchronized public void printTotal(
             IZKCService mIzkcService, TotalInfo ticketInfo) {
 

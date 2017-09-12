@@ -138,7 +138,7 @@ public class CheckActivity extends BaseActivity {
         List<DataInfo> mList = OfflLineDataDb.queryAll();
         long times = ChangeData.getNowtime();
         for (int i = 0; i < mList.size(); i++) {
-            if (Long.parseLong(mList.get(i).getInsertTime()) < times) {
+            if (Long.parseLong(mList.get(i).getInsertTime()) < times){
                 OfflLineDataDb.delete(mList.get(i));
             }
         }

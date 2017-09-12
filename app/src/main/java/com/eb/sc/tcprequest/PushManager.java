@@ -120,11 +120,14 @@ public class PushManager {
             connectFuture = connector.connect(new InetSocketAddress(bg.getStringValue(Constants.tcp_ip,""),Integer.parseInt(bg.getStringValue(Constants.ip_port,""))));
             Log.e("dawns", "connector: ");
             //等待是否连接成功，相当于是转异步执行为同步执行。
-            connectFuture.awaitUninterruptibly();
+              connectFuture.awaitUninterruptibly();
             Log.e("dawns", "connectFuture: ");
+            bg.setStringValue(Constants.havelink, "-1");
             //连接成功后获取会话对象。如果没有上面的等待，由于connect()方法是异步的，session 可能会无法获取。
+
             ioSession = connectFuture.getSession();
 //            String encrypt = AESCipher.encrypt(Params.KEY,);
+            bg.setStringValue(Constants.havelink, "1");
             Log.e("dawns", "ioSession: ");
             sendMessage(Params.SHENGJI);
             String by=  bg.getStringValue(Constants.px_list,"");

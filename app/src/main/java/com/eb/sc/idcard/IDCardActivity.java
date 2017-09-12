@@ -178,13 +178,16 @@ public class IDCardActivity extends BaseActivity {
             }else {
                 Log.i("result","getSubUtilSimple=");
                 isgetIdcard=true;
-                idcard_id=result.substring(result.indexOf("：4")+1, result.lastIndexOf("签发机关"));
+                idcard_id=result.substring(result.indexOf("号码：4")+1, result.lastIndexOf("签发机关"));
+                idcard_id=idcard_id.substring(2,idcard_id.length()).trim();
                 Log.i("result","result="+result);
+                Log.i("result","idcard_id="+idcard_id);
                 if (NetWorkUtils.isNetworkConnected(IDCardActivity.this) && isconnect) {
                     String updata = Utils.getIdcard(IDCardActivity.this,idcard_id);
                     PushManager.getInstance(IDCardActivity.this).sendMessage(updata);
                 } else {
                     Toast.makeText(IDCardActivity.this,"与服务器断开连接",Toast.LENGTH_SHORT).show();
+                    isgetIdcard=false;
                 }
             }
 

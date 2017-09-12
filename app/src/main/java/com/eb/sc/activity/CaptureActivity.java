@@ -256,7 +256,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             Bitmap mBitmap = null;
             mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
             tInfo.setStart_bitmap(mBitmap);
-            PrinterHelper.getInstance(CaptureActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
+            PrinterHelper.getInstance(CaptureActivity.this).printhexiao(mIzkcService, tInfo);
         }
     }
 

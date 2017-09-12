@@ -464,7 +464,7 @@ public class ScannerActivity extends BaseActivity {
                 Bitmap mBitmap = null;
                 mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
                 tInfo.setStart_bitmap(mBitmap);
-                PrinterHelper.getInstance(ScannerActivity.this).printPurchaseBillModelTwo(mIzkcService, tInfo);
+                PrinterHelper.getInstance(ScannerActivity.this).printhexiao(mIzkcService, tInfo);
                 try {
                     mIzkcService.setModuleFlag(4);
                 } catch (RemoteException e) {

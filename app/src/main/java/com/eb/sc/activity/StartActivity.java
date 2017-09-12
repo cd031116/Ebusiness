@@ -102,6 +102,4 @@ public class StartActivity extends BaseActivity {
         this.finish();
     }
 
-
-
 }
