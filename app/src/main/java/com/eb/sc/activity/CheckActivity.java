@@ -289,7 +289,7 @@ public class CheckActivity extends BaseActivity {
             public void onClick(Dialog dialog, boolean confirm, String text) {
                 if (confirm) {
                     dialog.dismiss();
-                    Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.pgyer.com/5IzM"));
+                    Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.pgyer.com/sIfT"));
                     it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
                     CheckActivity.this.startActivity(it);
 

@@ -55,8 +55,7 @@ public class OfflLineDataDb {
         if("1".equals(isUp)){
             a.setUp(true);
         }else {
-            a.setUp(true);
-            a.setpName("无效票");
+            a.setUp(false);
         }
         updata(a);
     }

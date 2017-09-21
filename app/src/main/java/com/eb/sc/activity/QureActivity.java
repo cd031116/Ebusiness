@@ -93,8 +93,6 @@ public class QureActivity extends BaseActivity {
         super.initData();
     }
 
-
-
     @OnClick({R.id.top_left,R.id.close_bg,R.id.cheeck})
     void onclick(View v) {
         BaseConfig bg = BaseConfig.getInstance(this);
@@ -115,9 +113,9 @@ public class QureActivity extends BaseActivity {
                 Log.i("tttt","updatd="+updatd);
                 boolean gg=  PushManager.getInstance(QureActivity.this).sendMessage(updatd);
                 break;
-
         }
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

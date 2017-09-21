@@ -242,7 +242,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         } else {
             TicketInfo tInfo = new TicketInfo();
             tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
-            tInfo.setPrice(Utils.getPrice(CaptureActivity.this));
+            tInfo.setPrice(Double.parseDouble(Utils.getPrice(CaptureActivity.this))*Double.parseDouble(renshu)+"");
             tInfo.setpNum(renshu);
             tInfo.setItem(Utils.getXiangmu(CaptureActivity.this));
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -438,7 +438,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
 
     //无线
     private void showDialog(String num, final String code,final String renshu) {
-        new ScanDialog(this, R.style.dialog, num, "", "", new ScanDialog.OnCloseListener() {
+        new ScanDialog(this, R.style.dialog, num, "", renshu, new ScanDialog.OnCloseListener() {
             @Override
             public void onClick(Dialog dialog, boolean confirm) {
                 if (confirm) {

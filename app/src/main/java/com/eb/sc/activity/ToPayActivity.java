@@ -18,6 +18,8 @@ import com.eb.sc.priter.PrinterActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
+import com.eb.sc.sdk.eventbus.FinishEvent;
+import com.eb.sc.sdk.eventbus.FinishEventSubsrciber;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
 import com.eb.sc.sdk.eventbus.GetOrderSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
@@ -52,6 +54,7 @@ public class ToPayActivity extends BaseActivity {
     @Override
     public void initView(){
         super.initView();
+        NotificationCenter.defaultCenter().subscriber(FinishEvent.class,finishscriber);
         NotificationCenter.defaultCenter().subscriber(GetOrderEvent.class, getOrderscriber);
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
@@ -202,6 +205,16 @@ public class ToPayActivity extends BaseActivity {
                 break;
         }
     }
+
+
+    //长连接
+    FinishEventSubsrciber finishscriber = new FinishEventSubsrciber(){
+        @Override
+        public void onEvent(FinishEvent event) {
+           ToPayActivity.this.finish();
+        }
+    };
+
     //长连接
     ConnentSubscriber connectEventSubscriber = new ConnentSubscriber(){
         @Override

@@ -35,11 +35,13 @@ import com.eb.sc.scanner.ExecutorFactory;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
+import com.eb.sc.sdk.eventbus.FinishEvent;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
 import com.eb.sc.sdk.eventbus.GetOrderSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.eventbus.PayResultEvent;
 import com.eb.sc.sdk.eventbus.PayResultSubscriber;
+import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.sdk.recycle.CommonAdapter;
 import com.eb.sc.sdk.recycle.ViewHolder;
 import com.eb.sc.tcprequest.PushManager;
@@ -81,6 +83,10 @@ public class PrinterActivity extends BaseActivity {
     ImageView mRight_bg;
     @Bind(R.id.state)
     TextView state;
+    @Bind(R.id.printer_tick)
+    TextView printer_tick;
+
+
     private int select = 0;
     private String s_neirong, order = "";
     private boolean isconnect = true;
@@ -220,6 +226,7 @@ public class PrinterActivity extends BaseActivity {
 
         PrinterHelper.getInstance(this).printPurchaseBillModelTwo(mIzkcService, tInfo);
         ispringter = true;
+        printer_tick.setEnabled(false);
     }
 
 
@@ -240,6 +247,7 @@ public class PrinterActivity extends BaseActivity {
                 break;
             case R.id.check_tick:
                 startActivity(new Intent(PrinterActivity.this, SelectActivity.class));
+                NotificationCenter.defaultCenter().publish(new FinishEvent());
                 this.finish();
                 break;
         }

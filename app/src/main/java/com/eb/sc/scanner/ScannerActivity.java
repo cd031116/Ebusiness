@@ -271,7 +271,7 @@ public class ScannerActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.top_left,R.id.close_bg})
+    @OnClick({R.id.top_left,R.id.close_bg,R.id.clisk})
     void onclick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
@@ -279,6 +279,13 @@ public class ScannerActivity extends BaseActivity {
                 break;
             case R.id.close_bg:
                 ExitDialog();
+                break;
+            case R.id.clisk:
+                try {
+                    mIzkcService.scan();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
                 break;
@@ -450,7 +457,7 @@ public class ScannerActivity extends BaseActivity {
                 }
                 TicketInfo tInfo = new TicketInfo();
                 tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
-                tInfo.setPrice(Utils.getPrice(ScannerActivity.this));
+                tInfo.setPrice(Double.parseDouble(Utils.getPrice(ScannerActivity.this))*Double.parseDouble(renshu)+"");
                 tInfo.setpNum(renshu);
                 tInfo.setItem(Utils.getXiangmu(ScannerActivity.this));
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

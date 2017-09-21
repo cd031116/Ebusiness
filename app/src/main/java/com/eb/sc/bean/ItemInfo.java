@@ -12,6 +12,15 @@ public class ItemInfo implements Serializable{
     private String Code;
     private String Num;
     private String Price;
+    private String PlaceholderCode;
+
+    public String getPlaceholderCode() {
+        return PlaceholderCode;
+    }
+
+    public void setPlaceholderCode(String placeholderCode) {
+        PlaceholderCode = placeholderCode;
+    }
     public String getId() {
         return Id;
     }

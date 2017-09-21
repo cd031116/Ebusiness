@@ -128,7 +128,7 @@ public class IDCardActivity extends BaseActivity {
 
 
     private void initView() {
-        handler.postDelayed(runnable,2000);
+        handler.postDelayed(runnable,800);
         top_title.setText("身份证感应");
         BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
@@ -150,9 +150,8 @@ public class IDCardActivity extends BaseActivity {
         @Override
         public void run() {
             if(!isgetIdcard){
-                Log.i("result","BarAsyncTask=");
                 new BarAsyncTask().execute();
-                handler.postDelayed(this, 2000);
+                handler.postDelayed(this, 800);
             }
         }
     };
@@ -163,7 +162,6 @@ public class IDCardActivity extends BaseActivity {
 
             try {
                 result = mIzkcService.getIdentifyInfo();
-                Log.i("result","getIdentifyInfo=");
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -172,11 +170,11 @@ public class IDCardActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(String resultd) {
-            if(TextUtils.isEmpty(result)||"未找到卡".equals(result)){
+            if(TextUtils.isEmpty(result)||"未找到卡".equals(result)||"选卡失败，请重新放卡".equals(result)||result.length()<13){
                 Log.i("result","未找到卡=");
                 return;
             }else {
-                Log.i("result","getSubUtilSimple=");
+                Log.i("result","result="+result);
                 isgetIdcard=true;
                 idcard_id=result.substring(result.indexOf("号码：4")+1, result.lastIndexOf("签发机关"));
                 idcard_id=idcard_id.substring(2,idcard_id.length()).trim();

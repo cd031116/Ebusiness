@@ -54,7 +54,22 @@ public class Utils {
         return "";
     }
 
-
+    //根据code得到PlaceholderCode
+    public static String getItemCode(Context context) {
+        BaseConfig bg = new BaseConfig(context);
+        String s = bg.getStringValue(Constants.address, "-1");
+        String list_item = bg.getStringValue(Constants.px_list, "");
+        if (TextUtils.isEmpty(list_item)) {
+            return "";
+        }
+        List<ItemInfo> mList = JSON.parseArray(list_item, ItemInfo.class);
+        for (int i = 0; i < mList.size(); i++) {
+            if (s.equals(mList.get(i).getCode())){
+                return mList.get(i).getPlaceholderCode();
+            }
+        }
+        return "";
+    }
 
 
 

@@ -242,21 +242,21 @@ public class TongbBuActivity extends BaseActivity {
             DataInfo dataInfo = null;
             if ("1".equals(event.getIsResponse())) {
                 for (int i = 0; i < mdata.size(); i++) {
-                    if (mdata.get(i).getId().equals(event.getResponseStr())) {
+                    if (mdata.get(i).getId().equals(event.getResponseStr())){
                         dataInfo = mdata.get(i);
+                        dataInfo.setUp(true);
                         mdata.get(i).setUp(true);
                         BusinessManager.updataUp(dataInfo);
                         mAdapter.notifyDataSetChanged();
                     }
                 }
             } else {
-                if ("1".equals(event.getCode())) {
+                if ("1".equals(event.getCode())){
                     for (int i = 0; i < mdata.size(); i++) {
-                        if (mdata.get(i).getId().equals(event.getResponseStr())) {
+                        if (mdata.get(i).getId().equals(event.getResponseStr())){
                             dataInfo = mdata.get(i);
-                            dataInfo.setUp(true);
-                            dataInfo.setpName("无效票");
-                            mdata.get(i).setUp(true);
+                            dataInfo.setUp(false);
+                            mdata.get(i).setUp(false);
                             BusinessManager.updataUp(dataInfo);
                             mAdapter.notifyDataSetChanged();
                         }
