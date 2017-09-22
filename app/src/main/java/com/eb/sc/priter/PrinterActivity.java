@@ -96,6 +96,7 @@ public class PrinterActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        printer_tick.setEnabled(false);
         NotificationCenter.defaultCenter().subscriber(PayResultEvent.class, payscriber);
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
@@ -276,7 +277,7 @@ public class PrinterActivity extends BaseActivity {
                 handler.removeCallbacks(runnable);
                 PrinterActivity.this.finish();
             } else if (!event.getStrs().contains("nopay")) {
-                Log.i("vvvv", "events=");
+                printer_tick.setEnabled(true);
                 handler.removeCallbacks(runnable);
                 isbuy = true;
                 s_neirong = event.getStrs();

@@ -52,6 +52,7 @@ import com.eb.sc.utils.AnalysisHelp;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.PlayVedio;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.ScanDialog;
@@ -483,7 +484,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private void showDialogd(String num, final String code, String name, final String renshu) {
         new ScanDialog(this, R.style.dialog, num, name, renshu, new ScanDialog.OnCloseListener() {
             @Override
-            public void onClick(Dialog dialog, boolean confirm) {
+            public void onClick(final  Dialog dialog, boolean confirm) {
                 if (confirm) {
                     DataInfo dataInfo = new DataInfo();
                     if (BusinessManager.isHaveuse(scansts, cannum) == 0){
@@ -528,18 +529,25 @@ public class CaptureActivity extends BaseActivity implements Callback {
             String sgs = putEvent.getStrs().substring(0, 2);
             String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
             if ("06".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this,8);
                 showDialogd("团队票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("02".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this,2);
                 showDialogd("儿童票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("01".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this,5);
                 showDialogd("成人票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("05".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this,3);
                 showDialogd("老年票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("03".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this,7);
                 showDialogd("优惠票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("07".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this,6);
                 showDialogMsg("已使用");
             } else {
+                PlayVedio.getInstance().play(CaptureActivity.this,1);
                 showDialogMsg("无效票");
             }
         }
@@ -580,14 +588,19 @@ public class CaptureActivity extends BaseActivity implements Callback {
         Log.i("tttt", "strs=" + strs);
         int a = AnalysisHelp.useScan(CaptureActivity.this, strs);
         if (a == 1) {//1------可用
+            PlayVedio.getInstance().play(CaptureActivity.this,4);
             showDialog(Utils.getXiangmu(CaptureActivity.this), strs,AnalysisHelp.renshu(strs)+"");
         } else if (a == 2) {
+            PlayVedio.getInstance().play(CaptureActivity.this,1);
             showDialogMsg("票已过期!");
         } else if (a == 3) {
+            PlayVedio.getInstance().play(CaptureActivity.this,1);
             showDialogMsg("票型不符合!");
         } else if (a == 4) {
+            PlayVedio.getInstance().play(CaptureActivity.this,4);
             showDialog(Utils.getXiangmu(CaptureActivity.this), strs,"");//梅江
         } else {
+            PlayVedio.getInstance().play(CaptureActivity.this,1);
             showDialogMsg("无效票!");
         }
     }

@@ -131,7 +131,6 @@ public class CheckActivity extends BaseActivity {
         super.initData();
         TestData();
         cleardata();
-        Log.e("ClientSessionHandler", "shebei..." + Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
     }
 
     private void cleardata() {
@@ -353,7 +352,6 @@ public class CheckActivity extends BaseActivity {
         if (!TextUtils.isEmpty(result)) {
             bg.setStringValue(Constants.tcp_ip, result);
             PushManager.getInstance(CheckActivity.this).add();
-            Log.e("ClientSessionHandler", "result..." + result);
         }
         TestData();
         PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
@@ -362,8 +360,8 @@ public class CheckActivity extends BaseActivity {
     /**
      *
      */
-    private void TestData() {
-        if (mList != null) {
+    private void TestData(){
+        if (mList != null){
             mList.clear();
         }
         BaseConfig bg = new BaseConfig(CheckActivity.this);

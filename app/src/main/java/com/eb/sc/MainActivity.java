@@ -22,6 +22,7 @@ import com.eb.sc.activity.SelectActivity;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
+import com.eb.sc.idcard.IDCardActivity;
 import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
@@ -35,6 +36,7 @@ import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.PlayVedio;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
@@ -95,7 +97,7 @@ public class MainActivity extends BaseActivity {
     private boolean isconnect = true;
 
     @Override
-    protected int getLayoutId() {
+    protected int getLayoutId(){
         return R.layout.activity_main;
     }
 
@@ -489,18 +491,25 @@ public class MainActivity extends BaseActivity {
             String sgs = putEvent.getStrs().substring(0, 2);
             String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
             if ("06".equals(sgs)) {
+                PlayVedio.getInstance().play(MainActivity.this,8);
                 showDialogd("团队票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("02".equals(sgs)) {
+                PlayVedio.getInstance().play(MainActivity.this,2);
                 showDialogd("儿童票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("01".equals(sgs)) {
+                PlayVedio.getInstance().play(MainActivity.this,5);
                 showDialogd("成人票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("05".equals(sgs)) {
+                PlayVedio.getInstance().play(MainActivity.this,3);
                 showDialogd("老年票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("03".equals(sgs)) {
+                PlayVedio.getInstance().play(MainActivity.this,7);
                 showDialogd("优惠票", idcard_id, Utils.getXiangmu(MainActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("07".equals(sgs)) {
+                PlayVedio.getInstance().play(MainActivity.this,6);
                 showDialogMsg("已使用");
             } else {
+                PlayVedio.getInstance().play(MainActivity.this,1);
                 showDialogMsg("无效票");
             }
         }

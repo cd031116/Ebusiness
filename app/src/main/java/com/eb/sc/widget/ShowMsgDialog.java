@@ -3,6 +3,7 @@ package com.eb.sc.widget;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -57,6 +58,12 @@ public class ShowMsgDialog   extends Dialog implements View.OnClickListener {
         setCanceledOnTouchOutside(false);
         setCancelable(false);
         initView();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                submit.performClick();
+            }
+        },1000);
     }
 
     private void initView(){

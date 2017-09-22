@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,6 +43,7 @@ import com.eb.sc.utils.AnalysisHelp;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.PlayVedio;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.ScanDialog;
@@ -62,14 +64,15 @@ public class ScannerActivity extends BaseActivity {
     private int cannum = 1;
     private boolean runFlag = true;
     public String text = "";
-//    RemoteControlReceiver screenStatusReceiver = null;
+    //    RemoteControlReceiver screenStatusReceiver = null;
     MediaPlayer player;
     Vibrator vibrator;
     private String firstCodeStr = "";
     private boolean beginToReceiverData = true;
     private boolean isconnect = true;
-    private LinearLayout top_left,close_bg;
+    private LinearLayout top_left, close_bg;
     private ShowMsgDialog smdiilag = null;
+    private AudioManager audioManager;
     @Bind(R.id.top_right_text)
     TextView top_right_text;
     @Bind(R.id.right_bg)
@@ -199,12 +202,10 @@ public class ScannerActivity extends BaseActivity {
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }
             }
         });
-
     }
 
     Handler mHandler = new Handler(new Handler.Callback() {
@@ -218,14 +219,13 @@ public class ScannerActivity extends BaseActivity {
                 case 1:
 //                    playBeepSoundAndVibrate();
                     Log.i("clientd", "text=" + text);
-
-                    if (TextUtils.isEmpty(text)) {
+                    if (TextUtils.isEmpty(text)){
                         break;
                     }
                     if (text.contains("system")) {
+                        text="";
                         break;
                     }
-
 
                     if (!NetWorkUtils.isNetworkConnected(ScannerActivity.this) || !isconnect) {//无网络
                         if (BusinessManager.isHaveScan(text, cannum)) {//票已检
@@ -271,7 +271,7 @@ public class ScannerActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.top_left,R.id.close_bg,R.id.clisk})
+    @OnClick({R.id.top_left, R.id.close_bg, R.id.clisk})
     void onclick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
@@ -413,18 +413,25 @@ public class ScannerActivity extends BaseActivity {
             String sgs = putEvent.getStrs().substring(0, 2);
             String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
             if ("06".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this,8);
                 showDialogd("团队票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("02".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this,2);
                 showDialogd("儿童票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("01".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this,5);
                 showDialogd("成人票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("05".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this,3);
                 showDialogd("老年票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("03".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this,7);
                 showDialogd("优惠票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("07".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this,6);
                 showDialogMsg("已使用");
             } else {
+                PlayVedio.getInstance().play(ScannerActivity.this,1);
                 showDialogMsg("无效票");
             }
         }
@@ -443,42 +450,42 @@ public class ScannerActivity extends BaseActivity {
         }).setTitle("提示").show();
     }
 
-    private void toprinter(String renshu){
-            BaseConfig bg = BaseConfig.getInstance(ScannerActivity.this);
-            String state= bg.getStringValue(Constants.SHIFOU_PRINT, "0");
-            if("0".equals(state)){
-                return;
-            }else {
-                try {
-                    mIzkcService.setModuleFlag(0);
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                TicketInfo tInfo = new TicketInfo();
-                tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
-                tInfo.setPrice(Double.parseDouble(Utils.getPrice(ScannerActivity.this))*Double.parseDouble(renshu)+"");
-                tInfo.setpNum(renshu);
-                tInfo.setItem(Utils.getXiangmu(ScannerActivity.this));
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date curDate = new Date(System.currentTimeMillis());//获取当前时间
-                String str = formatter.format(curDate);
-                tInfo.setpTime(str);
-                SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
-                Date curDate1 = new Date(System.currentTimeMillis());//获取当前时间
-                String str1 = formatter1.format(curDate1);
-                tInfo.setOrderTime(str1 + "至" + str1);
-                Bitmap mBitmap = null;
-                mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
-                tInfo.setStart_bitmap(mBitmap);
-                PrinterHelper.getInstance(ScannerActivity.this).printhexiao(mIzkcService, tInfo);
-                try {
-                    mIzkcService.setModuleFlag(4);
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+    private void toprinter(String renshu) {
+        BaseConfig bg = BaseConfig.getInstance(ScannerActivity.this);
+        String state = bg.getStringValue(Constants.SHIFOU_PRINT, "0");
+        if ("0".equals(state)) {
+            return;
+        } else {
+            try {
+                mIzkcService.setModuleFlag(0);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
+            TicketInfo tInfo = new TicketInfo();
+            tInfo.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
+            tInfo.setPrice(Double.parseDouble(Utils.getPrice(ScannerActivity.this)) * Double.parseDouble(renshu) + "");
+            tInfo.setpNum(renshu);
+            tInfo.setItem(Utils.getXiangmu(ScannerActivity.this));
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+            String str = formatter.format(curDate);
+            tInfo.setpTime(str);
+            SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date curDate1 = new Date(System.currentTimeMillis());//获取当前时间
+            String str1 = formatter1.format(curDate1);
+            tInfo.setOrderTime(str1 + "至" + str1);
+            Bitmap mBitmap = null;
+            mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
+            tInfo.setStart_bitmap(mBitmap);
+            PrinterHelper.getInstance(ScannerActivity.this).printhexiao(mIzkcService, tInfo);
+            try {
+                mIzkcService.setModuleFlag(4);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -487,14 +494,19 @@ public class ScannerActivity extends BaseActivity {
         int a = AnalysisHelp.useScan(ScannerActivity.this, strs);
         Log.i("tttt", "aaaaaa=" + a);
         if (a == 1) {//1------可用
+            PlayVedio.getInstance().play(ScannerActivity.this,4);
             showDialog(Utils.getXiangmu(ScannerActivity.this), strs, AnalysisHelp.renshu(strs) + "");
         } else if (a == 2) {
+            PlayVedio.getInstance().play(ScannerActivity.this,1);
             showDialogMsg("票已过期!");
         } else if (a == 3) {
+            PlayVedio.getInstance().play(ScannerActivity.this,1);
             showDialogMsg("票型不符合!");
         } else if (a == 4) {
+            PlayVedio.getInstance().play(ScannerActivity.this,4);
             showDialog(Utils.getXiangmu(ScannerActivity.this), strs, "");//梅江
         } else {
+            PlayVedio.getInstance().play(ScannerActivity.this,1);
             showDialogMsg("无效票!");
         }
     }
@@ -546,14 +558,14 @@ public class ScannerActivity extends BaseActivity {
                     if (BusinessManager.isHaveuse(text, cannum) == 0) {
                         dataInfo.setCanuse(1);
                         Log.i("mmmm", "setCanuse=");
-                        if (code.length()==6){
+                        if (code.length() == 6) {
                             dataInfo.setId(code);
                             dataInfo.setNet(false);
                             dataInfo.setName(Utils.getXiangmu(ScannerActivity.this));
                             dataInfo.setType(2);
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(false);
-                        }else {
+                        } else {
                             dataInfo.setId(code);
                             dataInfo.setNet(false);
                             dataInfo.setpNum(reshu);
@@ -586,7 +598,7 @@ public class ScannerActivity extends BaseActivity {
                     DataInfo dataInfo = new DataInfo();
                     if (BusinessManager.isHaveuse(text, cannum) == 0) {
                         dataInfo.setCanuse(1);
-                        if (code.length()==6){
+                        if (code.length() == 6) {
                             dataInfo.setId(code);
                             dataInfo.setNet(false);
                             dataInfo.setName(Utils.getXiangmu(ScannerActivity.this));

@@ -184,14 +184,42 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120px"
+            android:background="#ffffff"
+            android:orientation="horizontal"
+            android:padding="20px">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="当前版本"
+                android:padding="20px"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:textColor="#333333"
+                android:textSize="50px" />
+
+            <TextView
+                android:id="@+id/number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="20px"
+                android:textSize="50px"
+                android:layout_marginRight="20px"/>
+
+        </RelativeLayout>
 
 
         <RelativeLayout
             android:id="@+id/amend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="120px"
+            android:layout_marginTop="1px"
             android:background="#ffffff"
             android:orientation="horizontal"
             android:padding="20px">

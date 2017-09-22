@@ -171,6 +171,7 @@ public class ToPayActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(GetOrderEvent.class, getOrderscriber);
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(FinishEvent.class,finishscriber);
     }
 
 

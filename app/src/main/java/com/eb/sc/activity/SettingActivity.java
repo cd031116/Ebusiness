@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.eb.sc.BuildConfig;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.base.MyApplication;
@@ -81,6 +82,8 @@ public class SettingActivity extends BaseActivity {
     TextView submit;
     @Bind(R.id.radio)
     ImageButton mradio;
+    @Bind(R.id.number)
+    TextView number;
 
     //----------------------------
     /**
@@ -104,7 +107,7 @@ public class SettingActivity extends BaseActivity {
     private String address_ip = "";
 
     @Override
-    protected int getLayoutId() {
+    protected int getLayoutId(){
         return R.layout.activity_setting;
     }
 
@@ -134,7 +137,7 @@ public class SettingActivity extends BaseActivity {
         } else {
             mradio.setSelected(false);
         }
-
+        number.setText(BuildConfig.VERSION_NAME);
     }
 
     @Override

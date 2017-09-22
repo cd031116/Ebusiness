@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eb.sc.R;
+import com.eb.sc.activity.CaptureActivity;
 import com.eb.sc.activity.SelectActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.offline.OfflLineDataDb;
@@ -35,6 +36,7 @@ import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.PlayVedio;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.CommomDialog;
@@ -126,9 +128,25 @@ public class IDCardActivity extends BaseActivity {
         }
     });
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mIzkcService!=null){
+            try {
+                Log.i("result","mIzkcService!=null");
+                mIzkcService.turnOn();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+
+    }
 
     private void initView() {
-        handler.postDelayed(runnable,800);
+        thandler=new MyHandler();
+        handler.postDelayed(runnable,400);
         top_title.setText("身份证感应");
         BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
@@ -151,7 +169,7 @@ public class IDCardActivity extends BaseActivity {
         public void run() {
             if(!isgetIdcard){
                 new BarAsyncTask().execute();
-                handler.postDelayed(this, 800);
+                handler.postDelayed(this, 400);
             }
         }
     };
@@ -222,18 +240,25 @@ public class IDCardActivity extends BaseActivity {
             String sgs = putEvent.getStrs().substring(0, 2);
             String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
             if ("06".equals(sgs)) {
+                PlayVedio.getInstance().play(IDCardActivity.this,8);
                 showDialogd("团队票", idcard_id, Utils.getXiangmu(IDCardActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("02".equals(sgs)) {
+                PlayVedio.getInstance().play(IDCardActivity.this,2);
                 showDialogd("儿童票", idcard_id, Utils.getXiangmu(IDCardActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("01".equals(sgs)) {
+                PlayVedio.getInstance().play(IDCardActivity.this,5);
                 showDialogd("成人票", idcard_id, Utils.getXiangmu(IDCardActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("05".equals(sgs)) {
+                PlayVedio.getInstance().play(IDCardActivity.this,3);
                 showDialogd("老年票", idcard_id, Utils.getXiangmu(IDCardActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("03".equals(sgs)) {
+                PlayVedio.getInstance().play(IDCardActivity.this,7);
                 showDialogd("优惠票", idcard_id, Utils.getXiangmu(IDCardActivity.this), String.valueOf(Integer.parseInt(renshu)));
             } else if ("07".equals(sgs)) {
+                PlayVedio.getInstance().play(IDCardActivity.this,6);
                 showDialogMsg("已使用");
             } else {
+                PlayVedio.getInstance().play(IDCardActivity.this,1);
                 showDialogMsg("无效票");
             }
         }
@@ -351,8 +376,9 @@ public class IDCardActivity extends BaseActivity {
         // 显示
         normalDialog.show();
     }
-
-    @OnClick({R.id.top_left,R.id.close_bg})
+    MyHandler thandler;//定义handler
+    Message msg;
+    @OnClick({R.id.top_left,R.id.close_bg,R.id.clis})
     void onclick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
@@ -361,7 +387,38 @@ public class IDCardActivity extends BaseActivity {
             case R.id.close_bg:
                 ExitDialog();
                 break;
+            case R.id.clis:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String result = null;
+                        try {
+                            result = mIzkcService.getIdentifyInfo();
+                            if(TextUtils.isEmpty(result))return;
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        Bundle bundle=new Bundle();
+                        bundle.putString("num",result);//bundle中也可以放序列化或包裹化的类对象数据
+                        msg=thandler.obtainMessage();//每发送一次都要重新获取
+                        msg.setData(bundle);
+                        thandler.sendMessage(msg);//用handler向主线程发送信息
+                    }
+                }).start();
+                break;
             default:
                 break;
         }
-    }}
+    }
+    //自定义handler类
+    class MyHandler extends Handler{
+        @Override
+        //接收别的线程的信息并处理
+        public void handleMessage(Message msg) {
+            Bundle bundle=msg.getData();
+            Toast.makeText(IDCardActivity.this,""+bundle.get("num").toString(),Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+}

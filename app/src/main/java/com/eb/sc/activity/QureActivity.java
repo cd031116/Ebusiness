@@ -62,7 +62,7 @@ public class QureActivity extends BaseActivity {
     private boolean isconnect = true;
     private QueryAdapter mAdapter;
     @Override
-    protected int getLayoutId() {
+    protected int getLayoutId(){
         return R.layout.activity_qure;
     }
 
@@ -176,12 +176,7 @@ public class QureActivity extends BaseActivity {
                 empty.setVisibility(View.VISIBLE);
             }
         }
-
-
     }
-
-
-
 
     //网络
     EventSubscriber netEventSubscriber = new EventSubscriber() {

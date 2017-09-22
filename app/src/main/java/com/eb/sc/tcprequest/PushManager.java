@@ -2,6 +2,10 @@ package com.eb.sc.tcprequest;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -32,6 +36,8 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+
+import static com.squareup.okhttp.internal.Internal.logger;
 
 /**
  * Created by lyj on 2017/7/28.
@@ -87,6 +93,8 @@ public class PushManager {
     }
 
 
+
+
     public   void add(){
         BaseConfig bg=new BaseConfig(mcontext);
         String dd=bg.getStringValue(Constants.tcp_ip,"");
@@ -94,15 +102,15 @@ public class PushManager {
             manager=null;
             return ;
         }
-        Log.e("dawns", "dd: ");
         if(!NetWorkUtils.isNetworkConnected(mcontext)){
             manager=null;
             return ;
         }
-        Log.e("dawns", "NetWorkUtils: ");
         BarAsyncTask task=new BarAsyncTask();
         task.execute();
     }
+
+
 
     /**
      * 连接
@@ -124,7 +132,6 @@ public class PushManager {
             Log.e("dawns", "connectFuture: ");
             bg.setStringValue(Constants.havelink, "-1");
             //连接成功后获取会话对象。如果没有上面的等待，由于connect()方法是异步的，session 可能会无法获取。
-
             ioSession = connectFuture.getSession();
 //            String encrypt = AESCipher.encrypt(Params.KEY,);
             bg.setStringValue(Constants.havelink, "1");
@@ -137,6 +144,7 @@ public class PushManager {
             return true;
         } catch (Exception e){
             e.printStackTrace();
+           new RelayTask().execute();
         }
         return false;
     }
@@ -154,6 +162,23 @@ public class PushManager {
         }
     }
 
+    class RelayTask extends AsyncTask<Integer, Integer, String> {
+        @Override
+        protected String doInBackground(Integer... params) {
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            connect();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+        }
+    }
 
     /**
      * 关闭
