@@ -37,7 +37,7 @@ public class ByteArrayDecoder extends CumulativeProtocolDecoder {
                     if(buf.remaining() > 0){
                         return true;
                     }
-                    if (buf != null) {
+                    if (buf != null){
                         buf.flip();
                     }
                 }

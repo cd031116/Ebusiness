@@ -96,7 +96,6 @@ public class PrinterActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        printer_tick.setEnabled(false);
         NotificationCenter.defaultCenter().subscriber(PayResultEvent.class, payscriber);
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
@@ -105,6 +104,7 @@ public class PrinterActivity extends BaseActivity {
         select = getIntent().getExtras().getInt("select");
         setContentView(R.layout.activity_printer);
         ButterKnife.bind(this);
+        printer_tick.setEnabled(false);
         View rootView = findViewById(android.R.id.content);
         SupportMultipleScreensUtil.init(getApplication());
         SupportMultipleScreensUtil.scale(rootView);
@@ -134,7 +134,7 @@ public class PrinterActivity extends BaseActivity {
                 }
             }
         });
-        showAlert("..正在支付..", false);
+        showAlert("..正在支付..", true);
         handler.postDelayed(runnable, 2000);
         BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");

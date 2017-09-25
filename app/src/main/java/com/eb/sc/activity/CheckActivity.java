@@ -225,7 +225,6 @@ public class CheckActivity extends BaseActivity {
         @Override
         public void onEvent(LoginEvent event) {
             dismissAlert();
-
             if(event.getUser_id().contains("loginfail")){
                 Toast.makeText(CheckActivity.this,"登录失败!",Toast.LENGTH_SHORT).show();
             }else {

@@ -199,6 +199,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         animation.setDuration(1200);
         mQrLineView.startAnimation(animation);
         initData();
+        light();
     }
 
     private void initData() {
@@ -265,15 +266,15 @@ public class CaptureActivity extends BaseActivity implements Callback {
     boolean flag = true;
 
     protected void light() {
-        if (flag == true) {
-            flag = false;
-            // 开闪光灯
-            CameraManager.get().openLight();
-        } else {
-            flag = true;
-            // 关闪光灯
-            CameraManager.get().offLight();
-        }
+        CameraManager.get().openLight();
+//        if (flag == true) {
+//            flag = false;
+//            // 开闪光灯
+//        } else {
+//            flag = true;
+//            // 关闪光灯
+//            CameraManager.get().offLight();
+//        }
 
     }
 
