@@ -372,15 +372,15 @@ public class SettingActivity extends BaseActivity {
     private void showDialogMsg() {
         new RestartDialog(this, R.style.dialog, "您修改了IP地址,需重启应用!", new RestartDialog.OnCloseListener() {
             @Override
-            public void onClick(Dialog dialog, boolean confirm, String text) {
+            public void onClick(Dialog dialog, boolean confirm, String text){
                 if (confirm) {
                     PushManager.getInstance(SettingActivity.this).close();
                     BaseConfig bg = new BaseConfig(SettingActivity.this);
                     bg.setStringValue(Constants.tcp_ip, ip_tcp.getText().toString());
                     bg.setStringValue(Constants.address, "");
                     bg.setStringValue(Constants.px_list, "");
+                    bg.setStringValue(Constants.shebeihao,"");
                     dialog.dismiss();
-
                     Intent i = getBaseContext().getPackageManager()
                             .getLaunchIntentForPackage(getBaseContext().getPackageName());
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

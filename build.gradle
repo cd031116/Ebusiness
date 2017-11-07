@@ -28,8 +28,8 @@ ext {
             minSdkVersion    : 16,
             targetSdkVersion : 25,
             applicationId    : "com.eb.sc",
-            versionCode      : 2,
-            versionName      : "2.0.0"
+            versionCode      : 4,
+            versionName      : "4.0.0"
     ]
 
     // support lib version

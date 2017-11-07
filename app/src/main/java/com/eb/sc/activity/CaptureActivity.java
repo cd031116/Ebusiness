@@ -199,7 +199,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         animation.setDuration(1200);
         mQrLineView.startAnimation(animation);
         initData();
-        light();
+//        light();
     }
 
     private void initData() {
@@ -547,7 +547,10 @@ public class CaptureActivity extends BaseActivity implements Callback {
             } else if ("07".equals(sgs)) {
                 PlayVedio.getInstance().play(CaptureActivity.this,6);
                 showDialogMsg("已使用");
-            } else {
+            } else if("09".equals(sgs)){
+                PlayVedio.getInstance().play(CaptureActivity.this,9);
+                showDialogMsg("已过期");
+            }else {
                 PlayVedio.getInstance().play(CaptureActivity.this,1);
                 showDialogMsg("无效票");
             }
@@ -592,7 +595,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             PlayVedio.getInstance().play(CaptureActivity.this,4);
             showDialog(Utils.getXiangmu(CaptureActivity.this), strs,AnalysisHelp.renshu(strs)+"");
         } else if (a == 2) {
-            PlayVedio.getInstance().play(CaptureActivity.this,1);
+            PlayVedio.getInstance().play(CaptureActivity.this,9);
             showDialogMsg("票已过期!");
         } else if (a == 3) {
             PlayVedio.getInstance().play(CaptureActivity.this,1);

@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.eb.sc.R;
 
 /**
- * Created by Administrator on 2017/9/2.
+ * Created by lyj on 2017/9/2.
  */
 
 public class ProgressDialog extends Dialog {

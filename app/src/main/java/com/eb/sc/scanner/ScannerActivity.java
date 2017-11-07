@@ -326,63 +326,7 @@ public class ScannerActivity extends BaseActivity {
     //屏幕关闭须要关闭扫描模块，开启省电模式；
     int count = 1;
 
-//    public class RemoteControlReceiver extends BroadcastReceiver {
-//        private static final String TAG = "RemoteControlReceiver";
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            String action = intent.getAction();
-//            beginToReceiverData = false;
-//            Log.i(TAG, "System message " + action);
-//            if (action.equals("com.zkc.keycode")) {
-//                if (count++ > 0) {
-//                    count = 0;
-//                    int keyValue = intent.getIntExtra("keyvalue", 0);
-//                    Log.i(TAG, "KEY VALUE:" + keyValue);
-//                    if (keyValue == 136 || keyValue == 135 || keyValue == 131) {
-//                        Log.i(TAG, "Scan key down.........");
-//                        try {
-//                            if (mIzkcService != null) {
-//                                mIzkcService.scan();
-//                                mHandler.sendEmptyMessage(2);
-//                            } else {
-////                                mIzkcService.scanGT();
-//                                mHandler.sendEmptyMessage(2);
-//                            }
-//
-//                        } catch (RemoteException e) {
-//                            // TODO Auto-generated catch block
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            } else if (action.equals("android.intent.action.SCREEN_ON")) {
-//                Log.i(TAG, "Power off,Close scan modules power.........");
-//                if (mIzkcService != null) {
-//                    beginToReceiverData = true;
-//                    initScanSet();
-//                }
-//            } else if (action.equals("android.intent.action.SCREEN_OFF")) {
-//                Log.i(TAG, "ACTION_SCREEN_OFF,Close scan modules power.........");
-//                try {
-//                    if (mIzkcService != null)
-//                        mIzkcService.openScan(false);
-//                } catch (RemoteException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-//            } else if (action.equals("android.intent.action.ACTION_SHUTDOWN")) {
-//                Log.i(TAG, "ACTION_SCREEN_ON,Open scan modules power.........");
-//                try {
-//                    if (mIzkcService != null)
-//                        mIzkcService.openScan(false);
-//                } catch (RemoteException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
+
 
     @Override
     public void onPause() {
@@ -430,7 +374,10 @@ public class ScannerActivity extends BaseActivity {
             } else if ("07".equals(sgs)) {
                 PlayVedio.getInstance().play(ScannerActivity.this,6);
                 showDialogMsg("已使用");
-            } else {
+            }  else if ("09".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this,9);
+                showDialogMsg("已过期");
+            }else {
                 PlayVedio.getInstance().play(ScannerActivity.this,1);
                 showDialogMsg("无效票");
             }
@@ -497,7 +444,7 @@ public class ScannerActivity extends BaseActivity {
             PlayVedio.getInstance().play(ScannerActivity.this,4);
             showDialog(Utils.getXiangmu(ScannerActivity.this), strs, AnalysisHelp.renshu(strs) + "");
         } else if (a == 2) {
-            PlayVedio.getInstance().play(ScannerActivity.this,1);
+            PlayVedio.getInstance().play(ScannerActivity.this,9);
             showDialogMsg("票已过期!");
         } else if (a == 3) {
             PlayVedio.getInstance().play(ScannerActivity.this,1);

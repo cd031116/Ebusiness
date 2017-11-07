@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20px"
-        android:textSize="60px"
+        android:textSize="55px"
         android:layout_marginLeft="80px"
         android:layout_marginRight="80px"
         android:layout_marginBottom="40px"

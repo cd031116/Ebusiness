@@ -75,9 +75,7 @@ public class StartActivity extends BaseActivity {
 
             }
         });
-
     }
-
 
     @Override
     public void initData() {

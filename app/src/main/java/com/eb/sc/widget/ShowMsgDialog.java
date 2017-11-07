@@ -63,7 +63,7 @@ public class ShowMsgDialog   extends Dialog implements View.OnClickListener {
             public void run() {
                 submit.performClick();
             }
-        },1000);
+        },2000);
     }
 
     private void initView(){

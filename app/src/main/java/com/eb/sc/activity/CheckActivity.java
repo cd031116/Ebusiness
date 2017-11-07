@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -103,7 +104,7 @@ public class CheckActivity extends BaseActivity {
     public void initView() {
         super.initView();
         mDoubleClickExit = new DoubleClickExitHelper(this);
-        BaseConfig bg = new BaseConfig(this);
+        BaseConfig bg = BaseConfig.getInstance(this);
         bg.setStringValue(Constants.admin_word, "123456");
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
@@ -131,6 +132,11 @@ public class CheckActivity extends BaseActivity {
         super.initData();
         TestData();
         cleardata();
+        BaseConfig bg = new BaseConfig(this);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        if(TextUtils.isEmpty(she)){
+            PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+        }
     }
 
     private void cleardata() {
@@ -197,7 +203,7 @@ public class CheckActivity extends BaseActivity {
                                 String updatd = Utils.ToLogin(CheckActivity.this, account+"&"+psd);
                                 boolean gg=  PushManager.getInstance(CheckActivity.this).sendMessage(updatd);
                                 if(gg){
-                                    showAlert("正在登录", false);
+                                    showAlert("正在登录", true);
                                 }else {
                                     Toast.makeText(CheckActivity.this,"登录失败",Toast.LENGTH_SHORT).show();
                                 }
@@ -303,7 +309,11 @@ public class CheckActivity extends BaseActivity {
     RefreshSubscriber refreshEvent = new RefreshSubscriber() {
         @Override
         public void onEvent(RefreshEvent refreshEvent) {
-            PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+            BaseConfig bg = BaseConfig.getInstance(CheckActivity.this);
+            String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+            if(TextUtils.isEmpty(she)){
+                PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+            }
         }
     };
 
@@ -382,7 +392,18 @@ public class CheckActivity extends BaseActivity {
             }
         }
     }
+    @Override
+    public void onAttachedToWindow() {
+//关键：在onAttachedToWindow中设置FLAG_HOMEKEY_DISPATCHED
+//        this.getWindow().addFlags(WindowManager.LayoutParams.KE);
+        super.onAttachedToWindow();
+    }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+// 返回true，不响应其他key
+        return true;
+    }
 
     @Override
     public void onResume() {

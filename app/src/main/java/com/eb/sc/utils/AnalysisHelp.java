@@ -90,6 +90,7 @@ public class AnalysisHelp {
     private static boolean havexm(Context context, String str) {
         String t16 = str.substring(8, 24);
         String t2 = HexStr.t16tot2(t16);
+        Log.i("","");
         int xm_id = Integer.parseInt(Utils.getItemCode(context));
         if(t2.substring(xm_id-1,xm_id).equals("1")){
             return  true;

@@ -31,6 +31,20 @@
                 android:text=""/>
 
 
+        <TextView
+            android:id="@+id/check_buy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="50px"
+            android:text="查看支付结果"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="60px"
+            android:layout_marginRight="60px"
+            android:layout_marginTop="60px"
+            android:visibility="gone"
+            android:gravity="center_horizontal"
+            android:background="@drawable/pay_text_bg"
+            android:padding="30px"/>
 
         <TextView
             android:id="@+id/printer_tick"
@@ -59,7 +73,6 @@
             android:gravity="center_horizontal"
             android:background="@drawable/pay_text_bg"
             android:padding="30px"/>
-
 
 
     </LinearLayout>

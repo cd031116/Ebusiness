@@ -38,4 +38,6 @@ public class Constants {
     public  static final String IS_PAY="is_pay";
 
     public  static final String USER_ID="user_id";
+
+    public  static final String USER_ORDER="order_id";
 }

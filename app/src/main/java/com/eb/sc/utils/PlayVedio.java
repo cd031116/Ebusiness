@@ -47,6 +47,8 @@ public class PlayVedio {
             player = MediaPlayer.create(mcontext, R.raw.youhuipiao);
         }else  if(index==8){
             player = MediaPlayer.create(mcontext, R.raw.tuanduipiao);
+        }else if(index==9){
+            player = MediaPlayer.create(mcontext, R.raw.yiguoqi);
         }
 
         try {

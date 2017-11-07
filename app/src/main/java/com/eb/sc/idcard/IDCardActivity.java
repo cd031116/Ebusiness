@@ -131,6 +131,8 @@ public class IDCardActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        thandler=new MyHandler();
+        handler.postDelayed(runnable,400);
         if(mIzkcService!=null){
             try {
                 Log.i("result","mIzkcService!=null");
@@ -145,8 +147,7 @@ public class IDCardActivity extends BaseActivity {
     }
 
     private void initView() {
-        thandler=new MyHandler();
-        handler.postDelayed(runnable,400);
+
         top_title.setText("身份证感应");
         BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
@@ -169,7 +170,7 @@ public class IDCardActivity extends BaseActivity {
         public void run() {
             if(!isgetIdcard){
                 new BarAsyncTask().execute();
-                handler.postDelayed(this, 400);
+                handler.postDelayed(this, 100);
             }
         }
     };
@@ -216,11 +217,6 @@ public class IDCardActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
         super.onDestroy();
-    }
-
-
-    @Override
-    protected void onStop() {
         if (mIzkcService != null) {
             try {
                 mIzkcService.turnOff();
@@ -229,8 +225,15 @@ public class IDCardActivity extends BaseActivity {
             }
         }
         handler.removeCallbacks(runnable);
+    }
+
+
+    @Override
+    protected void onStop() {
+        handler.removeCallbacks(runnable);
         super.onStop();
     }
+
 
     //在线成功
     PutSubscriber putSubscriber = new PutSubscriber() {
@@ -257,7 +260,10 @@ public class IDCardActivity extends BaseActivity {
             } else if ("07".equals(sgs)) {
                 PlayVedio.getInstance().play(IDCardActivity.this,6);
                 showDialogMsg("已使用");
-            } else {
+            } else if("09".equals(sgs)){
+                PlayVedio.getInstance().play(IDCardActivity.this,9);
+                showDialogMsg("已过期");
+            }else {
                 PlayVedio.getInstance().play(IDCardActivity.this,1);
                 showDialogMsg("无效票");
             }

@@ -155,6 +155,7 @@ public class Utils {
     public static String getShebeipul(Context context, String msg) {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.address, "");
+        Log.i("dawn","she="+she);
         String str = msg + "&" + she;
         String nr_16 = HexStr.str2Hex16(str);
         String data = "40100001"  + nr_16;
@@ -208,6 +209,15 @@ public class Utils {
     }
     //发送收款二维码
     public static String sentBuy(Context context, String msg) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        String nr_16 = HexStr.str2HexStr(msg);
+        String data = "4021" + she  + nr_16;
+        return data.toUpperCase();
+    }
+
+    //发送已打印
+    public static String sentprint(Context context, String msg) {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
         String nr_16 = HexStr.str2HexStr(msg);

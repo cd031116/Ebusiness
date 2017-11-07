@@ -18,18 +18,16 @@ import java.nio.charset.Charset;
 
 public class ByteArrayDecoder extends CumulativeProtocolDecoder {
 
-
     @Override
     protected boolean doDecode(IoSession session, IoBuffer buf, ProtocolDecoderOutput out) throws Exception {
-        Log.i("ClientSessionHandler","remaining"+buf.remaining());
+        Log.i("ClientSessionHandler","remaining="+buf.remaining());
         if(buf.remaining() > 0) {
             String getmsg = buf.getHexDump().toString().replace(" ", "");
             buf.mark();
             buf.reset();
             if (getmsg.startsWith("4022")) {
                 String getbody = HexStr.hexStr2Str((getmsg.toString()).substring(8, getmsg.toString().length()));
-                if (getbody.length() < 114) {
-
+                if (!getbody.endsWith("&")) {
                     return false;
                 }else {
                     out.write(buf.getHexDump().toString().replace(" ", ""));

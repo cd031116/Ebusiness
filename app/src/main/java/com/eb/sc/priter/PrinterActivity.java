@@ -10,22 +10,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.eb.sc.R;
-import com.eb.sc.activity.CaptureActivity;
-import com.eb.sc.activity.QureActivity;
 import com.eb.sc.activity.SelectActivity;
-import com.eb.sc.activity.ToPayActivity;
 import com.eb.sc.bean.SaleBean;
 import com.eb.sc.bean.TickBean;
 import com.eb.sc.bean.TicketInfo;
@@ -36,14 +29,10 @@ import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.FinishEvent;
-import com.eb.sc.sdk.eventbus.GetOrderEvent;
-import com.eb.sc.sdk.eventbus.GetOrderSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.eventbus.PayResultEvent;
 import com.eb.sc.sdk.eventbus.PayResultSubscriber;
-import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.sdk.recycle.CommonAdapter;
-import com.eb.sc.sdk.recycle.ViewHolder;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -51,14 +40,11 @@ import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.ProgressDialog;
-
 import org.aisen.android.component.eventbus.NotificationCenter;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -85,7 +71,8 @@ public class PrinterActivity extends BaseActivity {
     TextView state;
     @Bind(R.id.printer_tick)
     TextView printer_tick;
-
+    @Bind(R.id.check_buy)
+    TextView check_buy;
 
     private int select = 0;
     private String s_neirong, order = "";
@@ -102,6 +89,8 @@ public class PrinterActivity extends BaseActivity {
         mInfo = (TickBean) getIntent().getSerializableExtra("tick");
         order = getIntent().getExtras().getString("order");
         select = getIntent().getExtras().getInt("select");
+        BaseConfig bg=BaseConfig.getInstance(this);
+        bg.setStringValue(Constants.USER_ORDER,order);
         setContentView(R.layout.activity_printer);
         ButterKnife.bind(this);
         printer_tick.setEnabled(false);
@@ -136,7 +125,6 @@ public class PrinterActivity extends BaseActivity {
         });
         showAlert("..正在支付..", true);
         handler.postDelayed(runnable, 2000);
-        BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
             isconnect = true;
@@ -194,8 +182,9 @@ public class PrinterActivity extends BaseActivity {
             Toast.makeText(PrinterActivity.this, "打印机没检测到打印纸!", Toast.LENGTH_SHORT).show();
             return;
         }
+        BaseConfig bg=BaseConfig.getInstance(PrinterActivity.this);
+        boolean abg = PushManager.getInstance(PrinterActivity.this).sendMessage(Utils.sentprint(PrinterActivity.this, bg.getStringValue(Constants.ORDER_ID, "")));
 
-        BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
         TicketInfo tInfo = new TicketInfo();
         String order_id = bg.getStringValue(Constants.ORDER_ID, "");
         tInfo.setOrderId(order_id);
@@ -228,10 +217,11 @@ public class PrinterActivity extends BaseActivity {
         PrinterHelper.getInstance(this).printPurchaseBillModelTwo(mIzkcService, tInfo);
         ispringter = true;
         printer_tick.setEnabled(false);
+        bg.setStringValue(Constants.USER_ORDER,"");
     }
 
 
-    @OnClick({R.id.top_left, R.id.printer_tick, R.id.check_tick})
+    @OnClick({R.id.top_left, R.id.printer_tick, R.id.check_tick,R.id.check_buy})
     void onclick(View v) {
         switch (v.getId()) {
             case R.id.top_left:
@@ -251,13 +241,22 @@ public class PrinterActivity extends BaseActivity {
                 NotificationCenter.defaultCenter().publish(new FinishEvent());
                 this.finish();
                 break;
+            case  R.id.check_buy:
+                String updatd = Utils.lunxun(PrinterActivity.this, order);
+                 boolean postg=PushManager.getInstance(PrinterActivity.this).sendMessage(updatd);
+                if(postg){
+                    showAlert("..正在查询..", true);
+                }else {
+                    Toast.makeText(PrinterActivity.this,"发送失败",Toast.LENGTH_LONG).show();
+                }
+                break;
         }
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, KeyEvent event){
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!ispringter) {
+            if (!ispringter&&isbuy) {
                 exitDialog();
             } else {
                 PrinterActivity.this.finish();
@@ -271,6 +270,7 @@ public class PrinterActivity extends BaseActivity {
         @Override
         public void onEvent(PayResultEvent event) {
             Log.i("vvvv", "event=" + event.getStrs());
+            check_buy.setVisibility(View.GONE);
             if (event.getStrs().contains("cancel")) {
                 dismissAlert();
                 Toast.makeText(PrinterActivity.this, "用户取消支付", Toast.LENGTH_SHORT).show();
@@ -317,14 +317,13 @@ public class PrinterActivity extends BaseActivity {
             //要做的事情
             String updatd = Utils.lunxun(PrinterActivity.this, order);
             PushManager.getInstance(PrinterActivity.this).sendMessage(updatd);
-            Log.i("vvvv", "PushManager=");
             handler.postDelayed(this, 2000);
         }
     };
 
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(){
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(PayResultEvent.class, payscriber);
     }

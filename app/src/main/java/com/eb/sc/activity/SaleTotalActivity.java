@@ -232,9 +232,6 @@ public class SaleTotalActivity extends BaseActivity {
     };
 
 
-
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();

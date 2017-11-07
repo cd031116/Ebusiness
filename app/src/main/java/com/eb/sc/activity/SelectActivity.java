@@ -30,6 +30,7 @@ import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
+import com.eb.sc.utils.PlayVedio;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.utils.isIdNum;
 import com.eb.sc.widget.CommomDialog;
@@ -101,6 +102,7 @@ public class SelectActivity extends BaseActivity {
         int select = bg.getIntValue(Constants.JI_XING, -1);
         if (select == 1) {
             t_text.setText("按键扫码");
+            scan.setVisibility(View.GONE);
         } else if (select == 2) {
             t_text.setText("身份证感应");
         } else {
@@ -115,7 +117,7 @@ public class SelectActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.idcard:
                 int select = bg.getIntValue(Constants.JI_XING, -1);
-                if (select == 1) {
+                if (select == 1){
                     startActivity(new Intent(SelectActivity.this, ScannerActivity.class));
                 } else if (select == 2){
                     startActivity(new Intent(SelectActivity.this, IDCardActivity.class));
@@ -165,18 +167,28 @@ public class SelectActivity extends BaseActivity {
                 String sgs = putEvent.getStrs().substring(0, 2);
                 String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
                 if ("06".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this,8);
                     showDialogd("团队票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
                 } else if ("02".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this,2);
                     showDialogd("儿童票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
                 } else if ("01".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this,5);
                     showDialogd("成人票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
                 } else if ("05".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this,3);
                     showDialogd("老年票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
                 } else if ("03".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this,7);
                     showDialogd("优惠票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
                 } else if ("07".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this,6);
                     showDialogMsg("已使用");
-                } else {
+                } else if("09".equals(sgs)){
+                    PlayVedio.getInstance().play(SelectActivity.this,9);
+                    showDialogMsg("已过期");
+                }else {
+                    PlayVedio.getInstance().play(SelectActivity.this,1);
                     showDialogMsg("无效票");
                 }
             }
