@@ -59,6 +59,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/*
+*
+* @author lyj
+* @describe 扫描界面
+* @data 2017/11/10
+* */
 
 public class ScannerActivity extends BaseActivity {
     private int cannum = 1;

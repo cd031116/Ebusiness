@@ -56,7 +56,7 @@ import butterknife.OnClick;
  * @author zkc-soft
  *         Created by Administrator on 2017/4/12 15:16
  * @ClassName: IDCardActivity.java
- * @Description: 身份信息页面
+ * @Description: 身份证感应信息页面
  */
 
 public class IDCardActivity extends BaseActivity {

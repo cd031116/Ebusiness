@@ -32,7 +32,7 @@ import org.apache.mina.core.session.IoSession;
 import java.nio.ByteBuffer;
 
 /**
- * Created by lyj on 2017/7/28.
+ *lyj
  */
 
 public class ClientSessionHandler extends IoHandlerAdapter {

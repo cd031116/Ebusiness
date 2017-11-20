@@ -12,9 +12,13 @@ import android.widget.Toast;
 import com.eb.sc.R;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
 
-/**
- * Created by Administrator on 2017/9/7.
- */
+/*
+*
+* @author lyj
+* @describe 登录弹出框
+* @data 2017/11/10
+* */
+
 
 public class LogDialog extends Dialog  implements View.OnClickListener{
 

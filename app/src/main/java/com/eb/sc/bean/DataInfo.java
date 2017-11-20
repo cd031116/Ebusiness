@@ -7,7 +7,7 @@ import org.aisen.android.component.orm.annotation.PrimaryKey;
 import java.io.Serializable;
 
 /**
- * created by lyj at 2017-7-28
+ * created by lyj at 2017-7-28 实体类
  */
 
 public class DataInfo implements Serializable {

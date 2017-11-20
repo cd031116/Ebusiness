@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
 
 
 /**
- * Created by lyj on 2017/2/6 0006.
+ * Created by lyj on 2017/2/6 0006.基类
  */
 
 public class BaseActivity extends AppCompatActivity implements BaseViewInterface {
@@ -46,13 +46,12 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
     private TextView msg;
     InputMethodManager manager;
     private ProgressDialog progressDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.instance.getActivityManager().pushActivity(this);
-        manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
+        manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (getLayoutId() != 0) {
             // setContentView(getLayoutId());
             contentView = View.inflate(this, getLayoutId(), null);
@@ -162,13 +161,6 @@ public class BaseActivity extends AppCompatActivity implements BaseViewInterface
         return super.onTouchEvent(event);
     }
 
-    protected boolean onHome() {
-        return false;
-    }
-
-    protected boolean onBack() {
-        return false;
-    }
 
     @Override
     public void onResume() {

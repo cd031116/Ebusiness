@@ -32,6 +32,12 @@ import org.aisen.android.component.eventbus.NotificationCenter;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+/*
+*
+* @author lyj
+* @describe 售票界面入口
+* @data 2017/11/10
+* */
 
 public class SaleTickActivity extends BaseActivity {
     @Bind(R.id.top_left)

@@ -15,7 +15,7 @@ import com.eb.sc.utils.SupportMultipleScreensUtil;
 /*
 *
 * @author lyj
-* @describe  弹出框
+* @describe  票型检测弹出框
 * @data 2017/7/29
 * */
 

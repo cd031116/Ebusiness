@@ -33,6 +33,12 @@ import org.aisen.android.component.eventbus.NotificationCenter;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+/*
+*
+* @author lyj
+* @describe 付款方式选择和订单获取
+* @data 2017/11/10
+* */
 
 public class ToPayActivity extends BaseActivity {
     @Bind(R.id.top_left)

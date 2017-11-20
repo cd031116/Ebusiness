@@ -40,6 +40,12 @@ import org.aisen.android.component.eventbus.NotificationCenter;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+/*
+*
+* @author lyj
+* @describe 检票功能选择入口
+* @data 2017/11/10
+* */
 
 public class SelectActivity extends BaseActivity {
     @Bind(R.id.top_left)

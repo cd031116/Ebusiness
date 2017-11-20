@@ -39,9 +39,13 @@ import java.nio.charset.Charset;
 
 import static com.squareup.okhttp.internal.Internal.logger;
 
-/**
- * Created by lyj on 2017/7/28.
- */
+/*
+*
+* @author lyj
+* @describe tcp/ip协议管理类
+* @data 2017/11/10
+* */
+
 
 public class PushManager {
     private static volatile PushManager manager;

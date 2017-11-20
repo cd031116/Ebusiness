@@ -25,6 +25,12 @@ import org.aisen.android.component.eventbus.NotificationCenter;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+/*
+*
+* @author lyj
+* @describe 设备型号设置
+* @data 2017/11/10
+* */
 
 public class ChoiceActivity extends BaseActivity {
     @Bind(R.id.top_left)

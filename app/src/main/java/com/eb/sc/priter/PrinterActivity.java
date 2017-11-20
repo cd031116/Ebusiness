@@ -50,9 +50,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-/**
- * Created by Administrator on 2017/9/1.
- */
+/*
+*
+* @author lyj
+* @describe 售票结果显示和票据打印
+* @data 2017/11/10
+* */
+
 
 public class PrinterActivity extends BaseActivity {
     private Bitmap mBitmap = null;

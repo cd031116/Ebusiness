@@ -40,6 +40,12 @@ import java.util.concurrent.CountDownLatch;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+/*
+*
+* @author lyj
+* @describe 离线核销同步
+* @data 2017/11/10
+* */
 
 public class TongbBuActivity extends BaseActivity {
     @Bind(R.id.top_left)

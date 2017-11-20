@@ -77,7 +77,7 @@ import butterknife.OnClick;
 /*
 *
 * @author lyj
-* @describe  功能入口界面
+* @describe  功能入口界面(主界面)
 * @data 2017/7/29
 * */
 
@@ -103,6 +103,7 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
+
         mDoubleClickExit = new DoubleClickExitHelper(this);
         BaseConfig bg = BaseConfig.getInstance(this);
         bg.setStringValue(Constants.admin_word, "123456");
@@ -342,12 +343,19 @@ public class CheckActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return mDoubleClickExit.onKeyDown(keyCode, event);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_HOME:
+
+                return false;//return false;
+            case KeyEvent.KEYCODE_BACK:
+
+
+
+                return true;
         }
-        Log.e("dawns", "onKeyDown: ");
         return super.onKeyDown(keyCode, event);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -394,8 +402,6 @@ public class CheckActivity extends BaseActivity {
     }
     @Override
     public void onAttachedToWindow() {
-//关键：在onAttachedToWindow中设置FLAG_HOMEKEY_DISPATCHED
-//        this.getWindow().addFlags(WindowManager.LayoutParams.KE);
         super.onAttachedToWindow();
     }
 

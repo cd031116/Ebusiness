@@ -38,6 +38,12 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+/*
+*
+* @author lyj
+* @describe 核销统计
+* @data 2017/11/10
+* */
 
 public class DetailActivity extends BaseActivity {
     @Bind(R.id.top_left)

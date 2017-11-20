@@ -15,7 +15,7 @@ import java.util.List;
 /**
 *
 *@author lyj
-*@description
+*@description 本地数据存储管理
 *@date 2017/7/28
 */
 public class OfflLineDataDb {

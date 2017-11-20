@@ -56,6 +56,12 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+/*
+*
+* @author lyj
+* @describe 设置界面
+* @data 2017/11/10
+* */
 
 public class SettingActivity extends BaseActivity {
     @Bind(R.id.top_left)
@@ -255,7 +261,6 @@ public class SettingActivity extends BaseActivity {
                 isconnect = false;
                 changeview(false);
             }
-
         }
     };
     //网络
