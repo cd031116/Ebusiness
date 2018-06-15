@@ -1,4 +1,4 @@
-package com.eb.sc.priter;
+package com.eb.sc.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,14 +16,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.eb.sc.R;
-import com.eb.sc.activity.SelectActivity;
 import com.eb.sc.bean.SaleBean;
 import com.eb.sc.bean.TickBean;
 import com.eb.sc.bean.TicketInfo;
 import com.eb.sc.offline.SaleDataDb;
+import com.eb.sc.priter.PrinterActivity;
+import com.eb.sc.priter.PrinterHelper;
 import com.eb.sc.scanner.BaseActivity;
-import com.eb.sc.scanner.ExecutorFactory;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -40,25 +40,19 @@ import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.SupportMultipleScreensUtil;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.ProgressDialog;
+
 import org.aisen.android.component.eventbus.NotificationCenter;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-
-/*
-*
-* @author lyj
-* @describe 售票结果显示和票据打印
-* @data 2017/11/10
-* */
-
-
-public class PrinterActivity extends BaseActivity {
+public class SunmiPritActivity extends BaseActivity {
     private Bitmap mBitmap = null;
     private boolean runFlag = true;
     private CommonAdapter<TickBean> mAdapter;
@@ -77,6 +71,7 @@ public class PrinterActivity extends BaseActivity {
     TextView printer_tick;
     @Bind(R.id.check_buy)
     TextView check_buy;
+
 
     private int select = 0;
     private String s_neirong, order = "";
@@ -102,31 +97,6 @@ public class PrinterActivity extends BaseActivity {
         SupportMultipleScreensUtil.init(getApplication());
         SupportMultipleScreensUtil.scale(rootView);
         top_title.setText("正在支付");
-        ExecutorFactory.executeThread(new Runnable() {
-            @Override
-            public void run() {
-                while (runFlag) {
-                    if (bindSuccessFlag) {
-                        //检测打印是否正常
-                        try {
-                            String printerSoftVersion = mIzkcService.getFirmwareVersion1();
-                            if (TextUtils.isEmpty(printerSoftVersion)) {
-                                printerSoftVersion = mIzkcService.getFirmwareVersion2();
-                            }
-                            if (TextUtils.isEmpty(printerSoftVersion)) {
-                                mIzkcService.setModuleFlag(module_flag);
-                                mHandler.obtainMessage(1).sendToTarget();
-                            } else {
-                                mHandler.obtainMessage(0, printerSoftVersion).sendToTarget();
-                                runFlag = false;
-                            }
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
         showAlert("..正在支付..", true);
         handler.postDelayed(runnable, 2000);
         String b = bg.getStringValue(Constants.havelink, "-1");
@@ -143,57 +113,49 @@ public class PrinterActivity extends BaseActivity {
         }
     }
 
-
-    Handler mHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    try {
-                        mIzkcService.setModuleFlag(0);
-                    } catch (RemoteException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    break;
-                case 1:
-//                    Toast.makeText(PrinterActivity.this, "正在连接打印机，请稍后...", Toast.LENGTH_SHORT).show();
-                    break;
-                case 8:
-                    break;
-                default:
-                    break;
-            }
-            return false;
+    @OnClick({R.id.top_left, R.id.printer_tick, R.id.check_tick,R.id.check_buy})
+    void onclick(View v) {
+        switch (v.getId()) {
+            case R.id.top_left:
+                if (!ispringter) {
+                    exitDialog();
+                } else {
+                    SunmiPritActivity.this.finish();
+                }
+                break;
+            case R.id.printer_tick:
+                if (isbuy) {
+                    printPurcase(s_neirong);
+                }
+                break;
+            case R.id.check_tick:
+                startActivity(new Intent(SunmiPritActivity.this, SelectActivity.class));
+                NotificationCenter.defaultCenter().publish(new FinishEvent());
+                this.finish();
+                break;
+            case  R.id.check_buy:
+                String updatd = Utils.lunxun(SunmiPritActivity.this, order);
+                boolean postg=PushManager.getInstance(SunmiPritActivity.this).sendMessage(updatd);
+                if(postg){
+                    showAlert("..正在查询..", true);
+                }else {
+                    Toast.makeText(SunmiPritActivity.this,"发送失败",Toast.LENGTH_LONG).show();
+                }
+                break;
         }
-    });
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
-
+    //打印相关
     private void printPurcase(String sttrs) {
-        String aa = "";
-        try {
-            aa = mIzkcService.getPrinterStatus();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        if (TextUtils.isEmpty(aa) || "缺纸/".equals(aa)) {
-            ispringter = true;
-            Toast.makeText(PrinterActivity.this, "打印机没检测到打印纸!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        BaseConfig bg=BaseConfig.getInstance(PrinterActivity.this);
-        boolean abg = PushManager.getInstance(PrinterActivity.this).sendMessage(Utils.sentprint(PrinterActivity.this, bg.getStringValue(Constants.ORDER_ID, "")));
         String arrs[]=sttrs.split("#");
+        String aa = "";
+        BaseConfig bg=BaseConfig.getInstance(SunmiPritActivity.this);
+        boolean abg = PushManager.getInstance(SunmiPritActivity.this).sendMessage(Utils.sentprint(SunmiPritActivity.this, bg.getStringValue(Constants.ORDER_ID, "")));
         TicketInfo tInfo = new TicketInfo();
         String order_id = bg.getStringValue(Constants.ORDER_ID, "");
         String arrss[]=order_id.split("&");
+        Log.i("hhhh","arrssarrss="+arrss[0]);
         tInfo.setOrderId(arrss[0]);
-        tInfo.setOrderId(order_id);
         tInfo.setPrice((Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + ""));
         tInfo.setpNum(mInfo.getpNum() + "");
         tInfo.setOrderName(mInfo.getNmae());
@@ -212,65 +174,14 @@ public class PrinterActivity extends BaseActivity {
         Bitmap mBitmap = null;
         mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
         tInfo.setStart_bitmap(mBitmap);
-        Bitmap btMap;
-        try {
-            btMap = mIzkcService.createQRCode(arrs[0], 240, 240);
-            tInfo.setEnd_bitmap(btMap);
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 
-        PrinterHelper.getInstance(this).printPurchaseBillModelTwo(mIzkcService, tInfo);
+        PrinterHelper.getInstance(this).sunmiprit(tInfo,arrs[0]);
         ispringter = true;
         printer_tick.setEnabled(false);
         bg.setStringValue(Constants.USER_ORDER,"");
     }
 
 
-    @OnClick({R.id.top_left, R.id.printer_tick, R.id.check_tick,R.id.check_buy})
-    void onclick(View v) {
-        switch (v.getId()) {
-            case R.id.top_left:
-                if (!ispringter) {
-                    exitDialog();
-                } else {
-                    PrinterActivity.this.finish();
-                }
-                break;
-            case R.id.printer_tick:
-                if (isbuy) {
-                    printPurcase(s_neirong);
-                }
-                break;
-            case R.id.check_tick:
-                startActivity(new Intent(PrinterActivity.this, SelectActivity.class));
-                NotificationCenter.defaultCenter().publish(new FinishEvent());
-                this.finish();
-                break;
-            case  R.id.check_buy:
-                String updatd = Utils.lunxun(PrinterActivity.this, order);
-                 boolean postg=PushManager.getInstance(PrinterActivity.this).sendMessage(updatd);
-                if(postg){
-                    showAlert("..正在查询..", true);
-                }else {
-                    Toast.makeText(PrinterActivity.this,"发送失败",Toast.LENGTH_LONG).show();
-                }
-                break;
-        }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!ispringter&&isbuy) {
-                exitDialog();
-            } else {
-                PrinterActivity.this.finish();
-            }
-        }
-        return false;
-    }
 
     //收到反回的数据
     PayResultSubscriber payscriber = new PayResultSubscriber() {
@@ -279,9 +190,9 @@ public class PrinterActivity extends BaseActivity {
             check_buy.setVisibility(View.GONE);
             if (event.getStrs().contains("cancel")) {
                 dismissAlert();
-                Toast.makeText(PrinterActivity.this, "用户取消支付", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SunmiPritActivity.this, "用户取消支付", Toast.LENGTH_SHORT).show();
                 handler.removeCallbacks(runnable);
-                PrinterActivity.this.finish();
+                SunmiPritActivity.this.finish();
             } else if (!event.getStrs().contains("nopay")) {
                 printer_tick.setEnabled(true);
                 handler.removeCallbacks(runnable);
@@ -292,7 +203,7 @@ public class PrinterActivity extends BaseActivity {
                 state.setText("已成功收款");
                 state.setTextColor(Color.parseColor("#51AD5F"));
                 dismissAlert();
-                BaseConfig bg = BaseConfig.getInstance(PrinterActivity.this);
+                BaseConfig bg = BaseConfig.getInstance(SunmiPritActivity.this);
                 bg.setIntValue(Constants.IS_PAY, 1);
                 SaleBean sbean = new SaleBean();
                 sbean.setOrderId(bg.getStringValue(Constants.ORDER_ID, ""));
@@ -316,21 +227,46 @@ public class PrinterActivity extends BaseActivity {
         }
     };
 
-
     Handler handler = new Handler();
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
             // TODO Auto-generated method stub
             //要做的事情
-            String updatd = Utils.lunxun(PrinterActivity.this, order);
-            PushManager.getInstance(PrinterActivity.this).sendMessage(updatd);
+            String updatd = Utils.lunxun(SunmiPritActivity.this, order);
+            PushManager.getInstance(SunmiPritActivity.this).sendMessage(updatd);
             handler.postDelayed(this, 2000);
         }
     };
 
-    @Override
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!ispringter&&isbuy) {
+                exitDialog();
+            } else {
+                SunmiPritActivity.this.finish();
+            }
+        }
+        return false;
+    }
+
+
+    private void changeview(boolean conect) {
+        if (conect) {
+            mRight_bg.setImageResource(R.drawable.lianjie);
+            top_right_text.setText("在线");
+            top_right_text.setTextColor(Color.parseColor("#0973FD"));
+        } else {
+            mRight_bg.setImageResource(R.drawable.lixian);
+            top_right_text.setText("离线");
+            top_right_text.setTextColor(Color.parseColor("#EF4B55"));
+        }
+    }
+
+
+    @Override
     public void onDestroy(){
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(PayResultEvent.class, payscriber);
@@ -338,6 +274,41 @@ public class PrinterActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(PayResultEvent.class, netEventSubscriber);
     }
 
+    //长连接
+    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
+        @Override
+        public void onEvent(ConnectEvent event) {
+            BaseConfig bg = new BaseConfig(SunmiPritActivity.this);
+            String a = bg.getStringValue(Constants.havenet, "-1");
+            if (event.isConnect()) {
+                isconnect = true;
+                if ("1".equals(a)) {
+                    changeview(true);
+                } else {
+                    changeview(false);
+                }
+            } else {
+                isconnect = false;
+                changeview(false);
+            }
+
+        }
+    };
+    //网络
+    EventSubscriber netEventSubscriber = new EventSubscriber() {
+        @Override
+        public void onEvent(NetEvent event) {
+            if (event.isConnect()) {
+                if (isconnect) {
+                    changeview(true);
+                } else {
+                    changeview(false);
+                }
+            } else {
+                changeview(false);
+            }
+        }
+    };
 
     /**
      * 显示加载图标
@@ -376,56 +347,6 @@ public class PrinterActivity extends BaseActivity {
             progressDialog.dismiss();
         }
     }
-
-
-    //长连接
-    ConnentSubscriber connectEventSubscriber = new ConnentSubscriber() {
-        @Override
-        public void onEvent(ConnectEvent event) {
-            BaseConfig bg = new BaseConfig(PrinterActivity.this);
-            String a = bg.getStringValue(Constants.havenet, "-1");
-            if (event.isConnect()) {
-                isconnect = true;
-                if ("1".equals(a)) {
-                    changeview(true);
-                } else {
-                    changeview(false);
-                }
-            } else {
-                isconnect = false;
-                changeview(false);
-            }
-
-        }
-    };
-    //网络
-    EventSubscriber netEventSubscriber = new EventSubscriber() {
-        @Override
-        public void onEvent(NetEvent event) {
-            if (event.isConnect()) {
-                if (isconnect) {
-                    changeview(true);
-                } else {
-                    changeview(false);
-                }
-            } else {
-                changeview(false);
-            }
-        }
-    };
-
-    private void changeview(boolean conect) {
-        if (conect) {
-            mRight_bg.setImageResource(R.drawable.lianjie);
-            top_right_text.setText("在线");
-            top_right_text.setTextColor(Color.parseColor("#0973FD"));
-        } else {
-            mRight_bg.setImageResource(R.drawable.lixian);
-            top_right_text.setText("离线");
-            top_right_text.setTextColor(Color.parseColor("#EF4B55"));
-        }
-    }
-
     public void exitDialog() {
         /* @setIcon 设置对话框图标
          * @setTitle 设置对话框标题
@@ -440,7 +361,7 @@ public class PrinterActivity extends BaseActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        PrinterActivity.this.finish();
+                        SunmiPritActivity.this.finish();
                     }
                 });
         normalDialog.setNegativeButton("取消",

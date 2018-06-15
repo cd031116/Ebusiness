@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
  * Created by lyj on 2017/2/6 0006.基类
  */
 
-public class BaseActivity extends AppCompatActivity implements BaseViewInterface {
+public class BaseActivity extends org.aisen.android.ui.activity.basic.BaseActivity implements BaseViewInterface {
     protected View contentView;
     private TextView msg;
     InputMethodManager manager;

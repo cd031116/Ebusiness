@@ -19,7 +19,7 @@ public class BusinessManager {
 
     //1.检查是否存在这张票
     public static boolean isHaveScan(String id,int num){
-        DataInfo a= OfflLineDataDb.getDB().selectById(null,DataInfo.class,id);
+        DataInfo a=  OfflLineDataDb.getDB().selectById(null,DataInfo.class,id);
         if(a==null){
             return false;
         }else  if(a.getCanuse()<num){
@@ -32,7 +32,7 @@ public class BusinessManager {
 
     //1.检查是否存在这张票
     public static boolean isHave(String id){
-        DataInfo a= OfflLineDataDb.getDB().selectById(null,DataInfo.class,id);
+        DataInfo a=  OfflLineDataDb.getDB().selectById(null,DataInfo.class,id);
         if(a==null){
             return false;
         }else{
@@ -45,7 +45,8 @@ public class BusinessManager {
 
     //1.检查是否存在这张票
     public static int isHaveuse(String id,int num){
-        DataInfo a= OfflLineDataDb.getDB().selectById(null,DataInfo.class,id);
+        DataInfo a=  OfflLineDataDb.getDB().selectById(null,DataInfo.class,id);
+        Log.i("mmmm","selectById=");
         if(a==null){
             return 0;//不存在
         }else  if(a.getCanuse()<num){
@@ -64,7 +65,7 @@ public class BusinessManager {
         if(mList!=null){
             mList.clear();
         }
-        List<DataInfo> data=OfflLineDataDb.queryAll();
+        List<DataInfo> data= OfflLineDataDb.queryAll();
             for(int i=0;i<data.size();i++){
                 Log.i("tttt","data="+data.get(i).getpName());
                 DataInfo bean = data.get(i);

@@ -23,6 +23,7 @@ import com.eb.sc.sdk.eventbus.FinishEventSubsrciber;
 import com.eb.sc.sdk.eventbus.GetOrderEvent;
 import com.eb.sc.sdk.eventbus.GetOrderSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
+import com.eb.sc.sdk.permission.CameraPermissionAction;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -30,6 +31,7 @@ import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.Utils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
+import org.aisen.android.support.action.IAction;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -97,7 +99,7 @@ public class ToPayActivity extends BaseActivity {
                 break;
             case R.id.cash:
                 select=0;
-                String datad = Utils.getItemId(ToPayActivity.this) + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select+ "&" + (mInfo.getpNum() + "&"+bg.getStringValue(Constants.USER_ID,""));
+                String datad =mInfo.getId_tick() + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select+ "&" + (mInfo.getpNum() + "&"+bg.getStringValue(Constants.USER_ID,""));
                 String updatd = Utils.getBuy(ToPayActivity.this, datad);
                 boolean abgs = PushManager.getInstance(ToPayActivity.this).sendMessage(updatd);
                 if (abgs) {
@@ -110,7 +112,7 @@ public class ToPayActivity extends BaseActivity {
                 break;
             case R.id.weichat:
                 select=3;
-                String datas = Utils.getItemId(ToPayActivity.this) + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select+ "&" + mInfo.getpNum() + "&"+bg.getStringValue(Constants.USER_ID,"");
+                String datas = mInfo.getId_tick()  + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select+ "&" + mInfo.getpNum() + "&"+bg.getStringValue(Constants.USER_ID,"");
                 Log.i("vvvv","datas="+datas);
                 String updata = Utils.getBuy(ToPayActivity.this, datas);
                 boolean abg = PushManager.getInstance(ToPayActivity.this).sendMessage(updata);
@@ -124,7 +126,7 @@ public class ToPayActivity extends BaseActivity {
                 break;
             case R.id.ali_pay:
                 select=2;
-                String data2 = Utils.getItemId(ToPayActivity.this) + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select + "&" + mInfo.getpNum() + "&"+bg.getStringValue(Constants.USER_ID,"");
+                String data2 = mInfo.getId_tick()  + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select + "&" + mInfo.getpNum() + "&"+bg.getStringValue(Constants.USER_ID,"");
                 String updata2 = Utils.getBuy(ToPayActivity.this, data2);
                 boolean abgd = PushManager.getInstance(ToPayActivity.this).sendMessage(updata2);
                 if (abgd) {
@@ -146,28 +148,37 @@ public class ToPayActivity extends BaseActivity {
         @Override
         public void onEvent(GetOrderEvent event){
             dismissAlert();
+            Log.i("hhhh","event="+event.getOrder_id());
             String order_id = event.getOrder_id();
             BaseConfig bg = BaseConfig.getInstance(ToPayActivity.this);
             bg.setStringValue(Constants.ORDER_ID, order_id);
             bg.setIntValue(Constants.IS_PAY, 0);
             if(select==0){
                 String order = bg.getStringValue(Constants.ORDER_ID, "");
-                String updata = Utils.sentBuy(ToPayActivity.this, order + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select + "&" + Utils.getItemId(ToPayActivity.this) + "&" + "0"+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
+                String updata = Utils.sentBuy(ToPayActivity.this, order + "&" + (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "") + "&" + select + "&" + mInfo.getId_tick()  + "&" + "0"+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
                 boolean abg = PushManager.getInstance(ToPayActivity.this).sendMessage(updata);
                 if (abg) {
-                    Intent intent=new Intent(ToPayActivity.this,PrinterActivity.class);
-                    Bundle mBundle = new Bundle();
-                    mBundle.putSerializable("tick", mInfo);
-                    mBundle.putString("order",order+"&"+Utils.getItemId(ToPayActivity.this)+"&"+mInfo.getpNum()+"");
-                    intent.putExtras(mBundle);
-                    startActivity(intent);
+                    int jixing= bg.getIntValue(Constants.JI_XING,-1);
+                    if(jixing==4){
+                        Intent intent=new Intent(ToPayActivity.this,SunmiPritActivity.class);
+                        Bundle mBundle = new Bundle();
+                        mBundle.putSerializable("tick", mInfo);
+                        mBundle.putString("order",order+"&"+mInfo.getId_tick()+"&"+mInfo.getpNum()+"");
+                        intent.putExtras(mBundle);
+                        startActivity(intent);
+                    }else {
+                        Intent intent=new Intent(ToPayActivity.this,PrinterActivity.class);
+                        Bundle mBundle = new Bundle();
+                        mBundle.putSerializable("tick", mInfo);
+                        mBundle.putString("order",order+"&"+mInfo.getId_tick()+"&"+mInfo.getpNum()+"");
+                        intent.putExtras(mBundle);
+                        startActivity(intent);
+                    }
                 } else {
                     Toast.makeText(ToPayActivity.this, "网络慢!", Toast.LENGTH_SHORT).show();
                 }
             }else {
-                Intent intent = new Intent(ToPayActivity.this, CaptureActivity.class);
-                intent.putExtra("select", "1");
-                startActivityForResult(intent, 0);
+                callKefu();
             }
         }
     };
@@ -181,6 +192,21 @@ public class ToPayActivity extends BaseActivity {
     }
 
 
+    private void callKefu() {
+        if (ToPayActivity.this instanceof org.aisen.android.ui.activity.basic.BaseActivity) {
+            org.aisen.android.ui.activity.basic.BaseActivity aisenBaseActivity =
+                    (org.aisen.android.ui.activity.basic.BaseActivity) ToPayActivity.this;
+            new IAction(aisenBaseActivity, new CameraPermissionAction(aisenBaseActivity,
+                    null)) {
+                @Override
+                public void doAction() {
+                    Intent intent = new Intent(ToPayActivity.this, CaptureActivity.class);
+                    intent.putExtra("select", "1");
+                    startActivityForResult(intent, 0);
+                }
+            }.run();
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -191,17 +217,28 @@ public class ToPayActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(str)) {
                     BaseConfig bg = BaseConfig.getInstance(ToPayActivity.this);
                     String order = bg.getStringValue(Constants.ORDER_ID, "");// (Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "")
-                    String updata = Utils.sentBuy(ToPayActivity.this, order + "&" +(Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "")+ "&" + select + "&" + Utils.getItemId(this) + "&" + str+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
+                    String updata = Utils.sentBuy(ToPayActivity.this, order + "&" +(Double.parseDouble(mInfo.getPrice()) * mInfo.getpNum() + "")+ "&" + select + "&" + mInfo.getId_tick() + "&" + str+"&"+mInfo.getpNum()+"&"+bg.getStringValue(Constants.USER_ID,""));
                     Log.i("vvvv","updata="+updata);
                     boolean abg = PushManager.getInstance(ToPayActivity.this).sendMessage(updata);
                     if (abg) {
-                        Intent intent=new Intent(ToPayActivity.this,PrinterActivity.class);
-                        Bundle mBundle = new Bundle();
-                        mBundle.putSerializable("tick", mInfo);
-                        mBundle.putString("order",order+"&"+Utils.getItemId(this)+"&"+mInfo.getpNum()+"");
-                        mBundle.putInt("select",select);
-                        intent.putExtras(mBundle);
-                        startActivity(intent);
+                        int jixing= bg.getIntValue(Constants.JI_XING,-1);
+                        if(jixing==4){
+                            Intent intent=new Intent(ToPayActivity.this,SunmiPritActivity.class);
+                            Bundle mBundle = new Bundle();
+                            mBundle.putSerializable("tick", mInfo);
+                            mBundle.putString("order",order+"&"+mInfo.getId_tick()+"&"+mInfo.getpNum()+"");
+                            mBundle.putInt("select",select);
+                            intent.putExtras(mBundle);
+                            startActivity(intent);
+                        }else {
+                            Intent intent=new Intent(ToPayActivity.this,PrinterActivity.class);
+                            Bundle mBundle = new Bundle();
+                            mBundle.putSerializable("tick", mInfo);
+                            mBundle.putString("order",order+"&"+mInfo.getId_tick()+"&"+mInfo.getpNum()+"");
+                            mBundle.putInt("select",select);
+                            intent.putExtras(mBundle);
+                            startActivity(intent);
+                        }
                     } else {
 
                         Toast.makeText(ToPayActivity.this, "支付失败", Toast.LENGTH_SHORT).show();

@@ -15,6 +15,7 @@ import com.eb.sc.sdk.eventbus.PayResultEvent;
 import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.sdk.eventbus.QueryEvent;
 import com.eb.sc.sdk.eventbus.RefreshEvent;
+import com.eb.sc.sdk.eventbus.SaleEvent;
 import com.eb.sc.sdk.eventbus.TongbuEvent;
 import com.eb.sc.sdk.eventbus.UpdateEvent;
 import com.eb.sc.utils.AESCipher;
@@ -32,7 +33,7 @@ import org.apache.mina.core.session.IoSession;
 import java.nio.ByteBuffer;
 
 /**
- *lyj
+ * lyj
  */
 
 public class ClientSessionHandler extends IoHandlerAdapter {
@@ -94,87 +95,105 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
         super.messageReceived(session, message);
-
-        if (Utils.pullShebei(message.toString())){
-            BaseConfig bg = new BaseConfig(mcontext);
-            String sb = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
-            String shebei = Integer.toHexString(Integer.parseInt(sb));
-            if (shebei.length() <= 1) {
-                shebei = "000" + shebei;
-            } else if (shebei.length() <= 2) {
-                shebei = "00" + shebei;
-            } else if (shebei.length() <= 3) {
-                shebei = "0" + shebei;
+        Log.d("dddd", "messageReceived: " + message.toString() + ",message:" + HexStr.hexStr2Str((message.toString())));
+        Log.d("dddd", "message: " + message.toString().substring(0, 2));
+        if ("40".equals(message.toString().substring(0, 2))) {
+            if (Utils.pullShebei(message.toString())) {
+                BaseConfig bg = new BaseConfig(mcontext);
+                String sb = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+                String shebei = Integer.toHexString(Integer.parseInt(sb));
+                Log.i("ClientSessionHandler", "shebei=" + shebei);
+                if (shebei.length() <= 1) {
+                    shebei = "000" + shebei;
+                } else if (shebei.length() <= 2) {
+                    shebei = "00" + shebei;
+                } else if (shebei.length() <= 3) {
+                    shebei = "0" + shebei;
+                }
+                bg.setStringValue(Constants.shebeihao, shebei);
             }
-            bg.setStringValue(Constants.shebeihao, shebei);
-        }
-        //获取订单
-        if (Utils.getOrderid(message.toString())) {
-            BaseConfig bg = new BaseConfig(mcontext);
-            String orderId=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new GetOrderEvent(orderId));
-        }
-        //获取支付结果
-        if (Utils.getPay(message.toString())) {
-            BaseConfig bg = new BaseConfig(mcontext);
-            String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
-        }
+            //获取订单
+            if (Utils.getOrderid(message.toString())) {
+                BaseConfig bg = new BaseConfig(mcontext);
+                String orderId = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+                NotificationCenter.defaultCenter().publish(new GetOrderEvent(orderId));
+            }
+            //获取支付结果
+            if (Utils.getPay(message.toString())) {
+                BaseConfig bg = new BaseConfig(mcontext);
+                String sfts = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+            }
+
+            //售票
+            if (Utils.getShouPiao(message.toString())) {
+                String sfts = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+                NotificationCenter.defaultCenter().publish(new SaleEvent(sfts));
+            }
+
             //登录
-        if (Utils.getLogin(message.toString())) {
-            String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new LoginEvent(sfts));
-        }
-        //查询
-        if (Utils.getQuery(message.toString())) {
-            String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new QueryEvent(sfts));
-        }
+            if (Utils.getLogin(message.toString())) {
+                String sfts = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+                NotificationCenter.defaultCenter().publish(new LoginEvent(sfts));
+            }
+            //查询
+            if (Utils.getQuery(message.toString())) {
+                String sfts = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+                NotificationCenter.defaultCenter().publish(new QueryEvent(sfts));
+            }
 
-        //获取支付结果轮询
-        if (Utils.getResult(message.toString())){
-            BaseConfig bg = new BaseConfig(mcontext);
-            String sfts=HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new PayResultEvent(sfts));
-        }
+            //获取支付结果轮询
+            if (Utils.getResult(message.toString())) {
+                BaseConfig bg = new BaseConfig(mcontext);
+                String sfts = HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length()));
+                NotificationCenter.defaultCenter().publish(new PayResultEvent(sfts));
+            }
 
-        //是项目item
-        if (Utils.pullItem(message.toString())){
-            BaseConfig bg = new BaseConfig(mcontext);
-            bg.setStringValue(Constants.px_list, HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length())));
-            NotificationCenter.defaultCenter().publish(new RefreshEvent());
-        }
-
-        //升级
-        if (Utils.pullShengji(message.toString())) {
+            //是项目item
+            if (Utils.pullItem(message.toString())) {
+                BaseConfig bg = new BaseConfig(mcontext);
+                bg.setStringValue(Constants.px_list, HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length())));
+                NotificationCenter.defaultCenter().publish(new RefreshEvent());
+            }
+            //升级
+            if (Utils.pullShengji(message.toString())) {
 //            NotificationCenter.defaultCenter().publish(new TongbuEvent(2, message.toString()));
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new UpdateEvent(jieguo.substring(jieguo.length()-1,jieguo.length())));
-        }
+                String jieguo = HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
+                Log.i("mmmm", "event=" + jieguo.substring(jieguo.length() - 1, jieguo.length()));
+
+                Thread.sleep(1000);
+                NotificationCenter.defaultCenter().publish(new UpdateEvent(jieguo.substring(jieguo.length() - 1, jieguo.length())));
+
+            }
 //        是同步  身份证1
-        if (Utils.pullSync(message.toString())) {
+            if (Utils.pullSync(message.toString())) {
 //            NotificationCenter.defaultCenter().publish(new TongbuEvent(2, message.toString()));
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo),"1"));
-            OfflLineDataDb.sysn(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo));
-        }
-        //  二维码2
-        if (Utils.pullscan(message.toString())) {
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo),"1"));
-            OfflLineDataDb.sysn(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo));
-        }
-        //  二维码 票务通
-        if (Utils.pullscanMj(message.toString())) {
-            String jieguo= HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
-            NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo),"1"));
-            OfflLineDataDb.sysn(AnalysisHelp.getjieguo(jieguo),AnalysisHelp.getresylt(jieguo));
+                String jieguo = HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
+                NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo), AnalysisHelp.getresylt(jieguo), "1"));
+                OfflLineDataDb.sysn(AnalysisHelp.getjieguo(jieguo), AnalysisHelp.getresylt(jieguo));
+            }
+            //  二维码2
+            if (Utils.pullscan(message.toString())) {
+                String jieguo = HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
+                NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo), AnalysisHelp.getresylt(jieguo), "1"));
+                OfflLineDataDb.sysn(AnalysisHelp.getjieguo(jieguo), AnalysisHelp.getresylt(jieguo));
+            }
+            //  二维码 票务通
+            if (Utils.pullscanMj(message.toString())) {
+                String jieguo = HexStr.hexStr2Str((message.toString()).substring(16, message.toString().length()));
+                NotificationCenter.defaultCenter().publish(new TongbuEvent(AnalysisHelp.getjieguo(jieguo), AnalysisHelp.getresylt(jieguo), "1"));
+                OfflLineDataDb.sysn(AnalysisHelp.getjieguo(jieguo), AnalysisHelp.getresylt(jieguo));
+            }
+
+            if (message.toString().length() < 7) {
+                NotificationCenter.defaultCenter().publish(new PutEvent(2, message.toString()));
+            }
+//        tcpResponse.receivedMessage(message.toString().trim());
+            Log.e("ClientSessionHandler", "客户端接受消息成功..." + HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length())));
+        } else {
+            //检票
+            NotificationCenter.defaultCenter().publish(new PutEvent(1, message.toString()));
         }
 
-        if (message.toString().length() <7) {
-            NotificationCenter.defaultCenter().publish(new PutEvent(2, message.toString()));
-        }
-//        tcpResponse.receivedMessage(message.toString().trim());
-        Log.e("ClientSessionHandler", "客户端接受消息成功..." + HexStr.hexStr2Str((message.toString()).substring(8, message.toString().length())));
     }
 
     @Override

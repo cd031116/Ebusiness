@@ -136,9 +136,11 @@ public class BaseActivity extends Activity {
 //				SCREEN_ON = true;
                 try {
                     //打开电源
+                    if (mIzkcService!=null){
                     mIzkcService.setModuleFlag(8);
 //					SystemClock.sleep(1000);
                     mIzkcService.setModuleFlag(module_flag);
+                    }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

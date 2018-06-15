@@ -47,7 +47,7 @@
                 android:background="@drawable/sale_cy_bg"
                 android:gravity="right"
                 android:padding="40px"
-                android:text="￥3540"
+                android:text="￥"
                 android:textColor="#E94F51"
                 android:textSize="60px" />
 
@@ -111,7 +111,7 @@
                 android:background="@drawable/sale_cy_bg"
                 android:gravity="right"
                 android:padding="40px"
-                android:text="￥3540"
+                android:text="￥"
                 android:textColor="#E94F51"
                 android:textSize="60px" />
 

@@ -41,6 +41,7 @@ import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.eventbus.RefreshEvent;
 import com.eb.sc.sdk.eventbus.RefreshSubscriber;
+import com.eb.sc.sdk.permission.RedaPhoneStatePermission;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -50,6 +51,7 @@ import com.eb.sc.widget.RestartDialog;
 import com.eb.sc.widget.ShengjiDialog;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
+import org.aisen.android.support.action.IAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +152,7 @@ public class SettingActivity extends BaseActivity {
     public void initData() {
         super.initData();
         TestData();
-        code.setText(Utils.getImui(this) + "");
+        callKefu();
         BaseConfig bg = new BaseConfig(this);
         ip_tcp.setText(bg.getStringValue(Constants.tcp_ip, ""));
         ip_port.setText(bg.getStringValue(Constants.ip_port, ""));
@@ -164,6 +166,23 @@ public class SettingActivity extends BaseActivity {
         }
 
     }
+
+
+    private void callKefu() {
+        if (SettingActivity.this instanceof org.aisen.android.ui.activity.basic.BaseActivity) {
+            org.aisen.android.ui.activity.basic.BaseActivity aisenBaseActivity =
+                    (org.aisen.android.ui.activity.basic.BaseActivity) SettingActivity.this;
+            new IAction(aisenBaseActivity, new RedaPhoneStatePermission(aisenBaseActivity,
+                    null)) {
+                @Override
+                public void doAction() {
+                    code.setText(Utils.getImui(SettingActivity.this) + "");
+                }
+            }.run();
+        }
+    }
+
+
 
     @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state, R.id.tongbu, R.id.submit, R.id.radio, R.id.close_bg})
     void onClick(View v) {

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +26,8 @@ import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.sdk.eventbus.PutSubscriber;
+import com.eb.sc.sdk.permission.CameraPermissionAction;
+import com.eb.sc.sdk.permission.RedaPhoneStatePermission;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -37,6 +40,7 @@ import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
+import org.aisen.android.support.action.IAction;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -123,18 +127,16 @@ public class SelectActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.idcard:
                 int select = bg.getIntValue(Constants.JI_XING, -1);
-                if (select == 1){
+                if (select == 1) {
                     startActivity(new Intent(SelectActivity.this, ScannerActivity.class));
-                } else if (select == 2){
+                } else if (select == 2) {
                     startActivity(new Intent(SelectActivity.this, IDCardActivity.class));
-                }else {
+                } else {
                     startActivity(new Intent(SelectActivity.this, MainActivity.class));
                 }
                 break;
             case R.id.scan:
-                    Intent intent = new Intent(SelectActivity.this, CaptureActivity.class);
-                    intent.putExtra("select", "2");
-                    startActivity(intent);
+                callKefu();
                 break;
             case R.id.top_left:
                 SelectActivity.this.finish();
@@ -153,7 +155,7 @@ public class SelectActivity extends BaseActivity {
                     String updata = Utils.getIdcard(this, id_n);
                     PushManager.getInstance(this).sendMessage(updata);
                 } else {
-                   Toast.makeText(SelectActivity.this,"已与服务器断开连接!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SelectActivity.this, "已与服务器断开连接!", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -164,40 +166,77 @@ public class SelectActivity extends BaseActivity {
         }
     }
 
+
+    private void callKefu() {
+        if (SelectActivity.this instanceof org.aisen.android.ui.activity.basic.BaseActivity) {
+            org.aisen.android.ui.activity.basic.BaseActivity aisenBaseActivity =
+                    (org.aisen.android.ui.activity.basic.BaseActivity) SelectActivity.this;
+            new IAction(aisenBaseActivity, new CameraPermissionAction(aisenBaseActivity,
+                    null)) {
+                @Override
+                public void doAction() {
+                    Intent intent = new Intent(SelectActivity.this, CaptureActivity.class);
+                    intent.putExtra("select", "2");
+                    startActivity(intent);
+                }
+            }.run();
+        }
+    }
+
+
     //在线成功
     PutSubscriber putSubscriber = new PutSubscriber() {
         @Override
         public void onEvent(PutEvent putEvent) {
-            if (!xiumian) {
+            Log.d("dddd", "onEvent xiumian: " + xiumian);
+//            if (!xiumian) {
                 String srt = putEvent.getStrs();
                 String sgs = putEvent.getStrs().substring(0, 2);
-                String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
-                if ("06".equals(sgs)) {
-                    PlayVedio.getInstance().play(SelectActivity.this,8);
-                    showDialogd("团队票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                int renshu = Integer.parseInt(putEvent.getStrs().substring(2, 6),16);
+//                String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
+                Log.d("dddd", "onEvent sgs: " + sgs + ",renshu:" + renshu+",id_n:"+id_n+",xiangmu:"+Utils.getXiangmu(SelectActivity.this));
+
+                if ("01".equals(sgs)) {
+                    showDialogd("成人票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(renshu));
+                    PlayVedio.getInstance().play(SelectActivity.this, 5);
                 } else if ("02".equals(sgs)) {
-                    PlayVedio.getInstance().play(SelectActivity.this,2);
-                    showDialogd("儿童票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
-                } else if ("01".equals(sgs)) {
-                    PlayVedio.getInstance().play(SelectActivity.this,5);
-                    showDialogd("成人票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
-                } else if ("05".equals(sgs)) {
-                    PlayVedio.getInstance().play(SelectActivity.this,3);
-                    showDialogd("老年票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                    PlayVedio.getInstance().play(SelectActivity.this, 2);
+                    showDialogd("儿童票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(renshu));
                 } else if ("03".equals(sgs)) {
-                    PlayVedio.getInstance().play(SelectActivity.this,7);
-                    showDialogd("优惠票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                    PlayVedio.getInstance().play(SelectActivity.this, 7);
+                    showDialogd("优惠票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(renshu));
+                } else if ("04".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this, 7);
+                    showDialogd("招待票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(renshu));
+                } else if ("05".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this, 3);
+                    showDialogd("老年票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(renshu));
+                } else if ("06".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this, 8);
+                    showDialogd("团队票", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(renshu));
                 } else if ("07".equals(sgs)) {
-                    PlayVedio.getInstance().play(SelectActivity.this,6);
+                    PlayVedio.getInstance().play(SelectActivity.this, 6);
                     showDialogMsg("已使用");
-                } else if("09".equals(sgs)){
-                    PlayVedio.getInstance().play(SelectActivity.this,9);
-                    showDialogMsg("已过期");
-                }else {
-                    PlayVedio.getInstance().play(SelectActivity.this,1);
+                } else if ("08".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this, 1);
                     showDialogMsg("无效票");
+                } else if ("09".equals(sgs)) {
+                    PlayVedio.getInstance().play(SelectActivity.this, 9);
+                    showDialogMsg("已过期");
+                } else if ("0A".equals(sgs)) {
+                    showDialogMsg("网络超时");
+                } else if ("0B".equals(sgs)) {
+                    showDialogMsg("票型不符");
+                } else if ("0C".equals(sgs)) {
+                    showDialogMsg("团队满人");
+                } else if ("0D".equals(sgs)) {
+                    showDialogMsg("游玩尚未开始（网购票当天购买要第二天用）");
+                }else if ("0E".equals(sgs)) {
+                    showDialogd("年卡", id_n, Utils.getXiangmu(SelectActivity.this), String.valueOf(renshu));
+                } else if ("10".equals(sgs)) {
+                    showDialogMsg("通道不符");
                 }
-            }
+//            }
         }
     };
 

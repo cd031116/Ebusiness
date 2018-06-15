@@ -1,5 +1,6 @@
 package com.eb.sc.activity;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
+import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -31,6 +33,7 @@ import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.Utils;
+import com.eb.sc.widget.ScanDialog;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
@@ -93,6 +96,7 @@ public class TongbBuActivity extends BaseActivity {
             changeview(false);
         }
     }
+
 
     @Override
     public void initData() {

@@ -185,6 +185,7 @@ public class Utils {
     public static String ToLogin(Context context, String msg) {
         BaseConfig bg = new BaseConfig(context);
         String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        Log.i("ClientSessionHandler","she="+she);
         String nr_16 = HexStr.str2HexStr(msg);
         String data = "4030" + she  + nr_16;
         return data.toUpperCase();
@@ -198,6 +199,14 @@ public class Utils {
         return data.toUpperCase();
     }
 
+    //获取可售票型
+    public static String getSalelList(Context context, String msg) {
+        BaseConfig bg = new BaseConfig(context);
+        String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
+        String nr_16 = HexStr.str2HexStr(msg+"&");
+        String data = "4014" + she  + nr_16;
+        return data.toUpperCase();
+    }
 
     //发送购买参数
     public static String getBuy(Context context, String msg) {
@@ -289,14 +298,41 @@ public class Utils {
         return false;
     }
 
-    //检测到的是设备号
-    public static boolean pullShebei(String sty) {
+    //售票
+    public static boolean getShouPiao(String sty){
         if (TextUtils.isEmpty(sty)) {
             return false;
         }
         String sgs = sty.substring(2, 4);
         Log.i("tttt", "sgs=" + sgs);
-        if ("10".equals(sgs)) {
+        if ("14".equals(sgs)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    //检测到的是设备号
+    public static boolean pullShebei(String sty) {
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        String sgs = sty.substring(0, 4);
+        Log.i("tttt", "sgs=" + sgs);
+        if ("4010".equals(sgs)) {
+            return true;
+        }
+        return false;
+    }
+
+    //检测到的是检票
+    public static boolean pullJp(String sty) {
+        if (TextUtils.isEmpty(sty)) {
+            return false;
+        }
+        String sgs = sty.substring(0, 2);
+        Log.i("tttt", "sgs=" + sgs);
+        if ("40".equals(sgs)) {
             return true;
         }
         return false;
@@ -450,7 +486,6 @@ public class Utils {
         Map<String, List<DataInfo>> resultMap = new HashMap<String, List<DataInfo>>();
         try{
             for(DataInfo tmExcpNew : billingList){
-
                 if(resultMap.containsKey(tmExcpNew.getName())){//map中异常批次已存在，将该数据存放到同一个key（key存放的是异常批次）的map中
                     resultMap.get(tmExcpNew.getName()).add(tmExcpNew);
                 }else{//map中不存在，新建key，用来存放数据

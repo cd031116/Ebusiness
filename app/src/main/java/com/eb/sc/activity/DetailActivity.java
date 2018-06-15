@@ -138,7 +138,7 @@ public class DetailActivity extends BaseActivity {
         if (mdata != null) {
             mdata.clear();
         }
-        mdata = OfflLineDataDb.queryAll();
+        mdata =  OfflLineDataDb.queryAll();
         ticket_num.setText(mdata.size() + "");
         ticket_door.setText(Utils.getXiangmu(DetailActivity.this));
         total_num.setText(mdata.size() + "");

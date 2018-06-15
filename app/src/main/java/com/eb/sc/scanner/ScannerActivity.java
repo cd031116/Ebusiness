@@ -1,7 +1,6 @@
 package com.eb.sc.scanner;
 
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,18 +18,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.eb.sc.R;
-import com.eb.sc.activity.CaptureActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.bean.TicketInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
-import com.eb.sc.priter.PrinterActivity;
 import com.eb.sc.priter.PrinterHelper;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
@@ -361,32 +357,49 @@ public class ScannerActivity extends BaseActivity {
         public void onEvent(PutEvent putEvent) {
             String srt = putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0, 2);
-            String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
-            if ("06".equals(sgs)) {
-                PlayVedio.getInstance().play(ScannerActivity.this,8);
-                showDialogd("团队票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            int renshu = Integer.parseInt(putEvent.getStrs().substring(2, 6),16);
+            Log.d("dddd", "putEvent sgs: " + sgs + ",renshu:" + renshu+",id_n:"+text+",xiangmu:"+Utils.getXiangmu(ScannerActivity.this));
+            if ("01".equals(sgs)) {
+                showDialogd("成人票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(renshu));
+                PlayVedio.getInstance().play(ScannerActivity.this, 5);
             } else if ("02".equals(sgs)) {
-                PlayVedio.getInstance().play(ScannerActivity.this,2);
-                showDialogd("儿童票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
-            } else if ("01".equals(sgs)) {
-                PlayVedio.getInstance().play(ScannerActivity.this,5);
-                showDialogd("成人票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
-            } else if ("05".equals(sgs)) {
-                PlayVedio.getInstance().play(ScannerActivity.this,3);
-                showDialogd("老年票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                PlayVedio.getInstance().play(ScannerActivity.this, 2);
+                showDialogd("儿童票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(renshu));
             } else if ("03".equals(sgs)) {
-                PlayVedio.getInstance().play(ScannerActivity.this,7);
-                showDialogd("优惠票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                PlayVedio.getInstance().play(ScannerActivity.this, 7);
+                showDialogd("优惠票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(renshu));
+            } else if ("04".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this, 7);
+                showDialogd("招待票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(renshu));
+            } else if ("05".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this, 3);
+                showDialogd("老年票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(renshu));
+            } else if ("06".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this, 8);
+                showDialogd("团队票", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(renshu));
             } else if ("07".equals(sgs)) {
-                PlayVedio.getInstance().play(ScannerActivity.this,6);
+                PlayVedio.getInstance().play(ScannerActivity.this, 6);
                 showDialogMsg("已使用");
-            }  else if ("09".equals(sgs)) {
-                PlayVedio.getInstance().play(ScannerActivity.this,9);
-                showDialogMsg("已过期");
-            }else {
-                PlayVedio.getInstance().play(ScannerActivity.this,1);
+            } else if ("08".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this, 1);
                 showDialogMsg("无效票");
+            } else if ("09".equals(sgs)) {
+                PlayVedio.getInstance().play(ScannerActivity.this, 9);
+                showDialogMsg("已过期");
+            } else if ("0A".equals(sgs)) {
+                showDialogMsg("网络超时");
+            } else if ("0B".equals(sgs)) {
+                showDialogMsg("票型不符");
+            } else if ("0C".equals(sgs)) {
+                showDialogMsg("团队满人");
+            } else if ("0D".equals(sgs)) {
+                showDialogMsg("游玩尚未开始（网购票当天购买要第二天用）");
+            }else if ("0E".equals(sgs)) {
+                showDialogd("年卡", text, Utils.getXiangmu(ScannerActivity.this), String.valueOf(renshu));
+            } else if ("10".equals(sgs)) {
+                showDialogMsg("通道不符");
             }
+
         }
     };
 
@@ -530,7 +543,7 @@ public class ScannerActivity extends BaseActivity {
                         OfflLineDataDb.insert(dataInfo);
                     } else if (BusinessManager.isHaveuse(text, cannum) > 0) {
                         int isuse = BusinessManager.isHaveuse(text, cannum);
-                        DataInfo a = OfflLineDataDb.getDB().selectById(null, DataInfo.class, text);
+                        DataInfo a =  OfflLineDataDb.getDB().selectById(null, DataInfo.class, text);
                         a.setCanuse(isuse + 1);
                         OfflLineDataDb.updata(a);
                     }
@@ -570,7 +583,7 @@ public class ScannerActivity extends BaseActivity {
                         OfflLineDataDb.insert(dataInfo);
                     } else {
                         int isuse = BusinessManager.isHaveuse(text, cannum);
-                        DataInfo a = OfflLineDataDb.getDB().selectById(null, DataInfo.class, text);
+                        DataInfo a =  OfflLineDataDb.getDB().selectById(null, DataInfo.class, text);
                         a.setCanuse(isuse + 1);
                         OfflLineDataDb.updata(a);
                     }

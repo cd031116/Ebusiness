@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.offline.SaleDataDb;
 import com.eb.sc.scanner.ClientConfig;
+import com.eb.sc.utils.AidlUtil;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.ClientGlobal;
 import com.eb.sc.utils.Constants;
@@ -33,6 +34,7 @@ public class MyApplication extends GlobalContext{
         SaleDataDb.setup(instance);
         ClientConfig.init(getApplicationContext());
         initSDcard();
+        AidlUtil.getInstance().connectPrinterService(this);
     }
 
 

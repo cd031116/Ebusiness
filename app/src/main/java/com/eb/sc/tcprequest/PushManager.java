@@ -97,8 +97,6 @@ public class PushManager {
     }
 
 
-
-
     public   void add(){
         BaseConfig bg=new BaseConfig(mcontext);
         String dd=bg.getStringValue(Constants.tcp_ip,"");

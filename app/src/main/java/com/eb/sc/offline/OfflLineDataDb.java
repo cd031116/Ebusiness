@@ -3,6 +3,7 @@ package com.eb.sc.offline;/**
  */
 
 import android.content.Context;
+import android.util.Log;
 
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
@@ -13,48 +14,58 @@ import org.aisen.android.component.orm.SqliteUtilityBuilder;
 import java.util.List;
 
 /**
-*
-*@author lyj
-*@description 本地数据存储管理
-*@date 2017/7/28
-*/
+ * @author lyj
+ * @description 本地数据存储管理
+ * @date 2017/7/28
+ */
 public class OfflLineDataDb {
-    public  static void setup(Context context) {
+
+
+    public static void setup(Context context) {
         new SqliteUtilityBuilder().configDBName("OffLineDB").configVersion(2).build(context);
     }
+
     public static SqliteUtility getDB() {
         return SqliteUtility.getInstance("OffLineDB");
     }
 
     //2.存入数据库
-    public static void insert(DataInfo bean){
-        getDB().insert(null,bean);
+    public static void insert(DataInfo bean) {
+        getDB().insertOrReplace(null, bean);
     }
 
 
     //3.上传刷新本地
-    public  static  void updata(DataInfo bean){
+    public static void updata(DataInfo bean) {
         getDB().update(null, bean);
     }
 
-    //删除
-    public static void delete(DataInfo info){
-        getDB().deleteById(null, DataInfo.class,info.getId());
+    //查询所有
+    public static int queryAllSize() {
+        return getDB().select(null, DataInfo.class).size();
     }
+
+
+    //删除
+    public static void delete(DataInfo info) {
+        getDB().deleteById(null, DataInfo.class, info.getId());
+    }
+
     //查询所有
     public static List<DataInfo> queryAll() {
         return getDB().select(null, DataInfo.class);
     }
+
     //shanc 所有
     public static void deleteueryAll() {
-         getDB().deleteAll(null, DataInfo.class);
+        getDB().deleteAll(null, DataInfo.class);
     }
 
-    public static void sysn(String id,String isUp){
-        DataInfo a= getDB().selectById(null,DataInfo.class,id);
-        if("1".equals(isUp)){
+    public static void sysn(String id, String isUp) {
+        DataInfo a = getDB().selectById(null, DataInfo.class, id);
+        if ("1".equals(isUp)) {
             a.setUp(true);
-        }else {
+        } else {
             a.setUp(false);
         }
         updata(a);

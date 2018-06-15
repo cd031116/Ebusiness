@@ -258,7 +258,14 @@ public class CaptureActivity extends BaseActivity implements Callback {
             Bitmap mBitmap = null;
             mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
             tInfo.setStart_bitmap(mBitmap);
-            PrinterHelper.getInstance(CaptureActivity.this).printhexiao(mIzkcService, tInfo);
+
+            int jixing= bg.getIntValue(Constants.JI_XING,-1);
+            if(jixing==4){
+                PrinterHelper.getInstance(CaptureActivity.this).printSunmihexiao(tInfo);
+            }else {
+                PrinterHelper.getInstance(CaptureActivity.this).printhexiao(mIzkcService, tInfo);
+            }
+
         }
     }
 
@@ -323,10 +330,19 @@ public class CaptureActivity extends BaseActivity implements Callback {
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
         if ("1".equals(select)) {
-            Intent intent = new Intent(CaptureActivity.this, PrinterActivity.class);
-            intent.putExtra("scansts", scansts);
-            setResult(RESULT_OK, intent);
+            BaseConfig bg=BaseConfig.getInstance(this);
+          int jixing= bg.getIntValue(Constants.JI_XING,-1);
+            if(jixing==4){
+                Intent intent = new Intent(CaptureActivity.this, SunmiPritActivity.class);
+                intent.putExtra("scansts", scansts);
+                setResult(RESULT_OK, intent);
+            }else {
+                Intent intent = new Intent(CaptureActivity.this, PrinterActivity.class);
+                intent.putExtra("scansts", scansts);
+                setResult(RESULT_OK, intent);
+            }
             CaptureActivity.this.finish();
+
         } else if (!NetWorkUtils.isNetworkConnected(CaptureActivity.this) || !isconnect) {//无网络
             if (BusinessManager.isHaveScan(result, cannum)) {//票已检
                 showDialogMsg("已使用!");
@@ -455,6 +471,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                             dataInfo.setType(2);
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(false);
+                            OfflLineDataDb.insert(dataInfo);
                         } else {
                             dataInfo.setId(code);
                             dataInfo.setNet(false);
@@ -463,11 +480,11 @@ public class CaptureActivity extends BaseActivity implements Callback {
                             dataInfo.setType(2);
                             dataInfo.setInsertTime(System.currentTimeMillis() + "");
                             dataInfo.setUp(false);
+                            OfflLineDataDb.insert(dataInfo);
                         }
-                        OfflLineDataDb.insert(dataInfo);
                     } else if (BusinessManager.isHaveuse(scansts, cannum) > 0){
                         int isuse = BusinessManager.isHaveuse(scansts, cannum);
-                        DataInfo a = OfflLineDataDb.getDB().selectById(null, DataInfo.class, scansts);
+                        DataInfo a =  OfflLineDataDb.getDB().selectById(null, DataInfo.class, scansts);
                         a.setCanuse(isuse + 1);
                         OfflLineDataDb.updata(a);
                         Log.i("mmmm", "BusinessManager=" + String.valueOf(isuse + 1));
@@ -488,6 +505,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             public void onClick(final  Dialog dialog, boolean confirm) {
                 if (confirm) {
                     DataInfo dataInfo = new DataInfo();
+                    Log.i("hhhh","dataInfo");
                     if (BusinessManager.isHaveuse(scansts, cannum) == 0){
                         dataInfo.setCanuse(1);
                         if (code.length()==6){
@@ -510,12 +528,13 @@ public class CaptureActivity extends BaseActivity implements Callback {
                         OfflLineDataDb.insert(dataInfo);
                     } else {
                         int isuse = BusinessManager.isHaveuse(scansts, cannum);
-                        DataInfo a = OfflLineDataDb.getDB().selectById(null, DataInfo.class, scansts);
+                        Log.i("hhhh","isuse="+isuse);
+                        DataInfo a =  OfflLineDataDb.getDB().selectById(null, DataInfo.class, scansts);
                         a.setCanuse(isuse + 1);
                         OfflLineDataDb.updata(a);
                     }
-                    handler.sendEmptyMessage(R.id.restart_preview);
                     dialog.dismiss();
+                    handler.sendEmptyMessage(R.id.restart_preview);
                     toprinter(renshu);
                 }
             }
@@ -528,31 +547,47 @@ public class CaptureActivity extends BaseActivity implements Callback {
         public void onEvent(PutEvent putEvent) {
             String srt = putEvent.getStrs();
             String sgs = putEvent.getStrs().substring(0, 2);
-            String renshu = putEvent.getStrs().substring(srt.length() - 2, srt.length());
-            if ("06".equals(sgs)) {
-                PlayVedio.getInstance().play(CaptureActivity.this,8);
-                showDialogd("团队票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
+            int renshu = Integer.parseInt(putEvent.getStrs().substring(2, 6),16);
+            Log.d("dddd", "putEvent sgs: " + sgs + ",renshu:" + renshu+",id_n:"+scansts+",xiangmu:"+Utils.getXiangmu(CaptureActivity.this));
+            if ("01".equals(sgs)) {
+                showDialogd("成人票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(renshu));
+                PlayVedio.getInstance().play(CaptureActivity.this, 5);
             } else if ("02".equals(sgs)) {
-                PlayVedio.getInstance().play(CaptureActivity.this,2);
-                showDialogd("儿童票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
-            } else if ("01".equals(sgs)) {
-                PlayVedio.getInstance().play(CaptureActivity.this,5);
-                showDialogd("成人票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
-            } else if ("05".equals(sgs)) {
-                PlayVedio.getInstance().play(CaptureActivity.this,3);
-                showDialogd("老年票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                PlayVedio.getInstance().play(CaptureActivity.this, 2);
+                showDialogd("儿童票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(renshu));
             } else if ("03".equals(sgs)) {
-                PlayVedio.getInstance().play(CaptureActivity.this,7);
-                showDialogd("优惠票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(Integer.parseInt(renshu)));
+                PlayVedio.getInstance().play(CaptureActivity.this, 7);
+                showDialogd("优惠票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(renshu));
+            } else if ("04".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this, 7);
+                showDialogd("招待票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(renshu));
+            } else if ("05".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this, 3);
+                showDialogd("老年票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(renshu));
+            } else if ("06".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this, 8);
+                showDialogd("团队票", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(renshu));
             } else if ("07".equals(sgs)) {
-                PlayVedio.getInstance().play(CaptureActivity.this,6);
+                PlayVedio.getInstance().play(CaptureActivity.this, 6);
                 showDialogMsg("已使用");
-            } else if("09".equals(sgs)){
-                PlayVedio.getInstance().play(CaptureActivity.this,9);
-                showDialogMsg("已过期");
-            }else {
-                PlayVedio.getInstance().play(CaptureActivity.this,1);
+            } else if ("08".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this, 1);
                 showDialogMsg("无效票");
+            } else if ("09".equals(sgs)) {
+                PlayVedio.getInstance().play(CaptureActivity.this, 9);
+                showDialogMsg("已过期");
+            } else if ("0A".equals(sgs)) {
+                showDialogMsg("网络超时");
+            } else if ("0B".equals(sgs)) {
+                showDialogMsg("票型不符");
+            } else if ("0C".equals(sgs)) {
+                showDialogMsg("团队满人");
+            } else if ("0D".equals(sgs)) {
+                showDialogMsg("游玩尚未开始（网购票当天购买要第二天用）");
+            }else if ("0E".equals(sgs)) {
+                showDialogd("年卡", scansts, Utils.getXiangmu(CaptureActivity.this), String.valueOf(renshu));
+            } else if ("10".equals(sgs)) {
+                showDialogMsg("通道不符");
             }
         }
     };

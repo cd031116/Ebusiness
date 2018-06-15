@@ -1,22 +1,16 @@
 package com.eb.sc.activity;
 
-import android.app.AlertDialog;
+import android.Manifest;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.RemoteException;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +20,7 @@ import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.bean.ItemInfo;
-import com.eb.sc.bean.Params;
-import com.eb.sc.bean.SaleBean;
-import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
-import com.eb.sc.offline.SaleDataDb;
-import com.eb.sc.priter.PrinterActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -44,31 +33,20 @@ import com.eb.sc.sdk.eventbus.UpdateEvent;
 import com.eb.sc.sdk.eventbus.UpdateEventSubscriber;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
-import com.eb.sc.tcprequest.TcpResponse;
-import com.eb.sc.utils.AnalysisHelp;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.ChangeData;
 import com.eb.sc.utils.Constants;
 import com.eb.sc.utils.DoubleClickExitHelper;
-import com.eb.sc.utils.HexStr;
 import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.InputDialog;
 import com.eb.sc.widget.LogDialog;
 import com.eb.sc.widget.ShengjiDialog;
-import com.eb.sc.widget.ShowMsgDialog;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.PermissionListener;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +60,7 @@ import butterknife.OnClick;
 * */
 
 
-public class CheckActivity extends BaseActivity {
+public class CheckActivity extends BaseActivity{
     @Bind(R.id.top_left)
     LinearLayout top_left;
     @Bind(R.id.top_title)
@@ -94,7 +72,6 @@ public class CheckActivity extends BaseActivity {
     private boolean isconnect = true;
     private DoubleClickExitHelper mDoubleClickExit;
     private List<ItemInfo> mList = new ArrayList<>();
-
     @Override
     protected int getLayoutId(){
         return R.layout.activity_check;
@@ -103,7 +80,6 @@ public class CheckActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-
         mDoubleClickExit = new DoubleClickExitHelper(this);
         BaseConfig bg = BaseConfig.getInstance(this);
         bg.setStringValue(Constants.admin_word, "123456");
@@ -136,12 +112,50 @@ public class CheckActivity extends BaseActivity {
         BaseConfig bg = new BaseConfig(this);
         String she = bg.getStringValue(Constants.shebeihao, "");//后台给的
         if(TextUtils.isEmpty(she)){
-            PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+            Log.i("ClientSessionHandler","shesheshe="+she);
+            callKefu();
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        // 只需要调用这一句，其它的交给AndPermission吧，最后一个参数是PermissionListener。
+        AndPermission.onRequestPermissionsResult(requestCode, permissions, grantResults, listener);
+    }
+
+
+    private PermissionListener listener = new PermissionListener() {
+        @Override
+        public void onSucceed(int requestCode, List<String> grantedPermissions) {
+            PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+        }
+
+        @Override
+        public void onFailed(int requestCode, List<String> deniedPermissions) {
+            // 权限申请失败回调。
+            // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
+            if (AndPermission.hasAlwaysDeniedPermission(CheckActivity.this, deniedPermissions)) {
+                Toast.makeText(CheckActivity.this,"权限以被拒绝,请前往设置中心设置打开",Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    private void callKefu() {
+        if(AndPermission.hasPermission(this, Manifest.permission.READ_PHONE_STATE)){
+            //执行业务
+            PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+        }else {
+            //申请权限
+            AndPermission.with(this)
+                    .requestCode(100)
+                    .permission(Manifest.permission.READ_PHONE_STATE)
+                    .send();
+        }
+    }
+
+
     private void cleardata() {
-        List<DataInfo> mList = OfflLineDataDb.queryAll();
+        List<DataInfo> mList =  OfflLineDataDb.queryAll();
         long times = ChangeData.getNowtime();
         for (int i = 0; i < mList.size(); i++) {
             if (Long.parseLong(mList.get(i).getInsertTime()) < times){
@@ -189,12 +203,6 @@ public class CheckActivity extends BaseActivity {
                 }).setTitle("提示").show();
                 break;
             case R.id.sale://售票
-                String addressd = bg.getStringValue(Constants.address, "");
-//                String she=  bg.getStringValue(Constants.shebeihao,"");
-                if (TextUtils.isEmpty(addressd)) {
-                    Toast.makeText(CheckActivity.this, "您还没设置售票项目,请前往设置中心设置!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 String user_id = bg.getStringValue(Constants.USER_ID, "");
                 if(TextUtils.isEmpty(user_id)){
                     new LogDialog(this, R.style.dialog, "请输入管理员密码？", new LogDialog.OnCloseListener() {
@@ -281,8 +289,8 @@ public class CheckActivity extends BaseActivity {
     UpdateEventSubscriber updateEvent = new UpdateEventSubscriber() {
         @Override
         public void onEvent(UpdateEvent event) {
-            int distance = String.valueOf(BuildConfig.VERSION_CODE).compareTo(event.getCode());
-            if (distance < 0) {
+           int codes=Integer.parseInt( event.getCode());
+            if (BuildConfig.VERSION_CODE <codes) {
                 showDialogMsg();
             }
         }
@@ -294,10 +302,12 @@ public class CheckActivity extends BaseActivity {
             public void onClick(Dialog dialog, boolean confirm, String text) {
                 if (confirm) {
                     dialog.dismiss();
-                    Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.pgyer.com/sIfT"));
-                    it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
-                    CheckActivity.this.startActivity(it);
-
+//                    Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.pgyer.com/sIfT"));
+//                    it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+//                    CheckActivity.this.startActivity(it);
+                    Uri uri = Uri.parse("http://zhushou.360.cn/detail/index/soft_id/3939654?recrefer=SE_D_%E4%BA%91%E6%A0%B8%E9%94%80");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
                 } else {
                     dialog.dismiss();
                 }
@@ -371,7 +381,8 @@ public class CheckActivity extends BaseActivity {
             PushManager.getInstance(CheckActivity.this).add();
         }
         TestData();
-        PushManager.getInstance(CheckActivity.this).sendMessage(Utils.getShebeipul(CheckActivity.this, Utils.getImui(CheckActivity.this)));
+        callKefu();
+
     }
 
     /**
@@ -416,4 +427,5 @@ public class CheckActivity extends BaseActivity {
         super.onResume();
         TestData();
     }
+
 }

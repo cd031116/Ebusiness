@@ -39,7 +39,7 @@ public class ByteArrayDecoder extends CumulativeProtocolDecoder {
                         buf.flip();
                     }
                 }
-            }else if(getmsg.startsWith("4024")||getmsg.startsWith("4011")){
+            }else if(getmsg.startsWith("4024")||getmsg.startsWith("4011")||getmsg.startsWith("4014")){
                 String getbody = HexStr.hexStr2Str((getmsg.toString()).substring(8, getmsg.toString().length()));
                 if(!getbody.endsWith("&")){
                     return false;

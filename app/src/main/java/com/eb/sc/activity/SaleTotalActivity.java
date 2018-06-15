@@ -174,7 +174,13 @@ public class SaleTotalActivity extends BaseActivity {
                     Toast.makeText(SaleTotalActivity.this,"暂无记录!",Toast.LENGTH_SHORT).show();
                     break;
                 }
-                printPurcase();
+                BaseConfig bg = BaseConfig.getInstance(SaleTotalActivity.this);
+                int jixing= bg.getIntValue(Constants.JI_XING,-1);
+                if(jixing==4){
+                    printSunmiPurcase();
+                }else {
+                    printPurcase();
+                }
                 break;
         }
     }
@@ -196,7 +202,28 @@ public class SaleTotalActivity extends BaseActivity {
             top_right_text.setTextColor(Color.parseColor("#EF4B55"));
         }
     }
+    private void printSunmiPurcase( ) {
+        TotalInfo tInfo = new TotalInfo();
 
+        tInfo.setCash_price("￥"+cash);
+        tInfo.setCash_num(num + "");
+
+        tInfo.setWeichat_price("￥" + w_cash + "");
+        tInfo.setWeichat_num(w_num + "");
+
+        tInfo.setAli_price("￥" + a_cash + "");
+        tInfo.setAli_num(A_num + "");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = formatter.format(curDate);
+        tInfo.setPrint_time(str);
+        Bitmap mBitmap = null;
+        mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.prnter);
+        tInfo.setStart_bit(mBitmap);
+
+        PrinterHelper.getInstance(this).printSunmiTotal(tInfo);
+        handler.postDelayed(runnable,1000);
+    }
 
     private void printPurcase( ) {
         TotalInfo tInfo = new TotalInfo();

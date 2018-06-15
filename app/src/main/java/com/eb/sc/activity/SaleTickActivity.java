@@ -6,20 +6,29 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.bean.ItemInfo;
+import com.eb.sc.bean.SaleInfo;
 import com.eb.sc.bean.TickBean;
+import com.eb.sc.business.Myadapter;
 import com.eb.sc.priter.PrinterActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
 import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.eventbus.RefreshEvent;
+import com.eb.sc.sdk.eventbus.SaleEvent;
+import com.eb.sc.sdk.eventbus.SaleSubscriber;
 import com.eb.sc.sdk.eventbus.UpdateEvent;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.tcprequest.PushService;
@@ -29,6 +38,9 @@ import com.eb.sc.utils.NetWorkUtils;
 import com.eb.sc.utils.Utils;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -54,10 +66,13 @@ public class SaleTickActivity extends BaseActivity {
     TextView price;
     @Bind(R.id.p_num)
     TextView p_num;
-
+    @Bind(R.id.spinner)
+    Spinner spinner;
+    private Myadapter madapter;
+    private List<SaleInfo> mList = new ArrayList<>();
     private int buy_num = 1;
     private boolean isconnect = true;
-
+    private int seletItem=0;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_sale_tick;
@@ -67,6 +82,7 @@ public class SaleTickActivity extends BaseActivity {
     public void initView() {
         super.initView();
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
+        NotificationCenter.defaultCenter().subscriber(SaleEvent.class, saleEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         top_title.setText("售票");
         BaseConfig bg = BaseConfig.getInstance(this);
@@ -87,12 +103,38 @@ public class SaleTickActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-        BaseConfig bg = BaseConfig.getInstance(this);
-        final String s = bg.getStringValue(Constants.address, "-1");
-        name.setText(Utils.getXiangmu(this));
-        price.setText("￥" + Utils.getPrice(this));
+        //获取可售票型
+           BaseConfig bg = new BaseConfig(SaleTickActivity.this);
+        String user_id = bg.getStringValue(Constants.USER_ID, "");
+        String updatd = Utils.getSalelList(SaleTickActivity.this, user_id);
+       PushManager.getInstance(SaleTickActivity.this).sendMessage(updatd);
         p_num.setText(buy_num + "");
     }
+
+    private void setview() {
+         madapter = new Myadapter(SaleTickActivity.this,mList);
+        spinner.setAdapter(madapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                seletItem=position;
+                name.setText(mList.get(position).getName());
+                price.setText("￥" +mList.get(position).getPrice());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+//        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//            }
+//        });
+    }
+
 
     @OnClick({R.id.top_left, R.id.submit, R.id.cut_t, R.id.add_t, R.id.total, R.id.close_bg})
     void onBuy(View v) {
@@ -101,13 +143,16 @@ public class SaleTickActivity extends BaseActivity {
                 SaleTickActivity.this.finish();
                 break;
             case R.id.submit:
-                BaseConfig bg = BaseConfig.getInstance(this);
-                final String s = bg.getStringValue(Constants.address, "-1");
+                if(mList.size()<=0){
+                    Toast.makeText(SaleTickActivity.this, "未获取到可售票型", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 TickBean ifo = new TickBean();
-                ifo.setNmae(Utils.getXiangmu(this));
+                ifo.setNmae(mList.get(seletItem).getName());
                 ifo.setpNum(buy_num);
-                ifo.setId_tick(s);
-                ifo.setPrice(Utils.getPrice(this));
+                ifo.setId_tick(mList.get(seletItem).getId()+"");
+                ifo.setPrice(mList.get(seletItem).getPrice());
                 Intent intent = new Intent(SaleTickActivity.this, ToPayActivity.class);
                 Bundle mBundle = new Bundle();
                 mBundle.putSerializable("tick", ifo);
@@ -121,12 +166,12 @@ public class SaleTickActivity extends BaseActivity {
                 }
                 buy_num = buy_num - 1;
                 p_num.setText(buy_num + "");
-                price.setText("￥" + (Double.parseDouble(Utils.getPrice(SaleTickActivity.this)) * buy_num + ""));
+                price.setText("￥" + (Double.parseDouble(mList.get(seletItem).getPrice()) * buy_num + ""));
                 break;
             case R.id.add_t:
                 buy_num = buy_num + 1;
                 p_num.setText(buy_num + "");
-                price.setText("￥" + (Double.parseDouble(Utils.getPrice(SaleTickActivity.this)) * buy_num + ""));
+                price.setText("￥" + (Double.parseDouble(mList.get(seletItem).getPrice()) * buy_num + ""));
                 break;
             case R.id.total:
                 startActivity(new Intent(SaleTickActivity.this, SaleTotalActivity.class));
@@ -155,6 +200,7 @@ public class SaleTickActivity extends BaseActivity {
         super.onDestroy();
         NotificationCenter.defaultCenter().unsubscribe(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
+        NotificationCenter.defaultCenter().unsubscribe(SaleEvent.class, saleEventSubscriber);
     }
 
     //长连接
@@ -192,4 +238,21 @@ public class SaleTickActivity extends BaseActivity {
             }
         }
     };
+    //网络
+    SaleSubscriber saleEventSubscriber = new SaleSubscriber() {
+        @Override
+        public void onEvent(SaleEvent saleEvent) {
+            Log.i("hhhh","saleEvent="+saleEvent.getDatas());
+            try {
+                mList = JSON.parseArray(saleEvent.getDatas(), SaleInfo.class);
+            }catch (Exception e){
+
+            }
+            setview();
+        }
+    };
+
+
+
+
 }

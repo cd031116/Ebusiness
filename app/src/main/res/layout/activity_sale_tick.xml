@@ -38,6 +38,14 @@
                     android:textColor="#cacaca"
                     android:textSize="60px" />
 
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/sale_cy_bg"
+                    android:layout_gravity="center_vertical"
+                    android:padding="40px"/>
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="match_parent"
@@ -45,6 +53,7 @@
                     android:background="@drawable/sale_cy_bg"
                     android:gravity="right"
                     android:padding="40px"
+                    android:visibility="gone"
                     android:text="丛林穿越"
                     android:textColor="#5E84AA"
                     android:textSize="60px" />
@@ -72,7 +81,7 @@
                     android:background="@drawable/sale_jg_bg"
                     android:gravity="right"
                     android:padding="40px"
-                    android:text="￥68"
+                    android:text=""
                     android:textColor="#EB5D5D"
                     android:textSize="60px" />
 

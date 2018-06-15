@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.eb.sc">
 
     <!-- 允许应用程序写入外部存储器 -->
@@ -13,7 +14,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- 允许使用相机 -->
     <uses-feature android:name="android.hardware.camera" />
@@ -22,7 +23,9 @@
     <uses-permission android:name="android.permission.access_wifi_state" />
     <uses-permission android:name="android.permission.access_network_state" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CONNECTIVITY_INTERNAL"
+        tools:ignore="ProtectedPermissions" />
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -33,6 +36,7 @@
         <activity android:name=".activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -86,15 +90,18 @@
         <activity
             android:name=".activity.QureActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-        <activity android:name=".activity.SaleTotalActivity"></activity>
-    <activity android:name=".idcard.IDCardActivity"/>
+        <activity android:name=".activity.SaleTotalActivity" />
+        <activity android:name=".idcard.IDCardActivity" />
+
         <service
             android:name=".offline.ReceiveMsgService"
             android:exported="false">
             <intent-filter android:priority="1000">
-                <action android:name="com.dbjtech.waiqin.destroy"/>
+                <action android:name="com.dbjtech.waiqin.destroy" />
             </intent-filter>
         </service>
+
+        <activity android:name=".activity.SunmiPritActivity"></activity>
     </application>
 
 </manifest>

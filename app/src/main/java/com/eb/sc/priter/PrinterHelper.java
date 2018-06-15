@@ -6,10 +6,12 @@ import android.graphics.BitmapFactory;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.eb.sc.R;
 import com.eb.sc.bean.TicketInfo;
 import com.eb.sc.bean.TotalInfo;
+import com.eb.sc.utils.AidlUtil;
 import com.eb.sc.utils.Utils;
 import com.smartdevice.aidl.IZKCService;
 
@@ -59,11 +61,7 @@ public class PrinterHelper {
                 mIzkcService.printGBKText("中惠旅"+ "\n\n");
                 mIzkcService.printGBKText(mIzkcService_CUT_OFF_RULE + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.SERIAL_NUMBER_TAG + "\t" + ticketInfo.getOrderId() + "\n");
-                if(!TextUtils.isEmpty(ticketInfo.getOrderName())){
-                    mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getOrderName() + "\n");
-                }else {
-                    mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getItem() + "\n");
-                }
+                mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getOrderName() + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_UNIT_PRICE_TAG + "\t" + ticketInfo.getPrice() + "\n");
                 if(!TextUtils.isEmpty(ticketInfo.getpNum())){
                     mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_AMOUNT_TAG + "\t" + ticketInfo.getpNum() + "\n");
@@ -103,10 +101,9 @@ public class PrinterHelper {
                 mIzkcService.printGBKText("中惠旅(核销)"+ "\n\n");
                 mIzkcService.printGBKText(mIzkcService_CUT_OFF_RULE + "\n");
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.SERIAL_NUMBER_TAG + "\t" + ticketInfo.getOrderId() + "\n");
+
                 if(!TextUtils.isEmpty(ticketInfo.getOrderName())){
                     mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getOrderName() + "\n");
-                }else {
-                    mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG + "\t" + ticketInfo.getItem() + "\n");
                 }
                 mIzkcService.printGBKText(PrintTicketTag.PurchaseTag.GOODS_UNIT_PRICE_TAG + "\t" + ticketInfo.getPrice() + "\n");
                 if(!TextUtils.isEmpty(ticketInfo.getpNum())){
@@ -165,6 +162,100 @@ public class PrinterHelper {
             e.printStackTrace();
         }
     }
+
+
+    //商米打印
+    synchronized  public void sunmiprit(TicketInfo ticketInfo,String sttrs){
+        if (ticketInfo.getStart_bitmap() != null) {
+            AidlUtil.getInstance().printBitmap(ticketInfo.getStart_bitmap());
+        }
+        SystemClock.sleep(200);
+        AidlUtil.getInstance().printText("中惠旅",13,false,false);
+        AidlUtil.getInstance().print1Line();
+        AidlUtil.getInstance().printText("--------------------------------",13,false,false);
+        AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.SERIAL_NUMBER_TAG + ticketInfo.getOrderId(),13,false,false);
+
+            AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG  + ticketInfo.getOrderName(),13,false,false);
+
+        AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.GOODS_UNIT_PRICE_TAG  + ticketInfo.getPrice(),13,false,false);
+        if(!TextUtils.isEmpty(ticketInfo.getpNum())){
+            AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.GOODS_AMOUNT_TAG  + ticketInfo.getpNum(),13,false,false);
+        }
+        AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.GOODS_CONTAINS_TYPE + ticketInfo.getItem(),13,false,false);
+        AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.USE_TIME + "\t" + ticketInfo.getOrderTime(),13,false,false);
+        AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.PRINTER_TIME + "\t" + ticketInfo.getpTime(),13,false,false);
+        AidlUtil.getInstance().print1Line();
+        AidlUtil.getInstance().printText("--------------------------------",13,false,false);
+        AidlUtil.getInstance().print1Line();
+        // if(mIzkcService.getBufferState(100)){
+        if (!TextUtils.isEmpty(sttrs)) {
+            SystemClock.sleep(200);
+            AidlUtil.getInstance().printQr(sttrs, 5, 3);
+            Log.i("cccc","sss="+5);
+        }
+        AidlUtil.getInstance().print3Line();
+    }
+
+    synchronized public void printSunmihexiao(TicketInfo ticketInfo) {
+
+        try {
+            if (ticketInfo.getStart_bitmap() != null) {
+                AidlUtil.getInstance().printBitmap(ticketInfo.getStart_bitmap());
+               }
+                SystemClock.sleep(50);
+//				mIzkcService.printGBKText("\n");
+                AidlUtil.getInstance().printText("中惠旅(核销)",13,false,false);
+                AidlUtil.getInstance().print1Line();
+                AidlUtil.getInstance().printText("--------------------------------",13,false,false);
+                AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.SERIAL_NUMBER_TAG + ticketInfo.getOrderId(),13,false,false);
+                if(!TextUtils.isEmpty(ticketInfo.getOrderName())){
+                    AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG  + ticketInfo.getOrderName() ,13,false,false);
+                }else {
+                    AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.GOODS_NAME_TAG  + ticketInfo.getItem(),13,false,false);
+                }
+                AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.GOODS_UNIT_PRICE_TAG  + ticketInfo.getPrice(),13,false,false);
+                if(!TextUtils.isEmpty(ticketInfo.getpNum())){
+                    AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.GOODS_AMOUNT_TAG  + ticketInfo.getpNum(),13,false,false);
+                }
+                AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.GOODS_CONTAINS_TYPE + ticketInfo.getItem(),13,false,false);
+                AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.USE_TIME + "\t" + ticketInfo.getOrderTime(),13,false,false);
+                AidlUtil.getInstance().printText(PrintTicketTag.PurchaseTag.PRINTER_TIME + "\t" + ticketInfo.getpTime(),13,false,false);
+                AidlUtil.getInstance().print1Line();
+                AidlUtil.getInstance().printText("--------------------------------",13,false,false);
+                AidlUtil.getInstance().print3Line();
+                // if(mIzkcService.getBufferState(100)){
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+
+    synchronized public void printSunmiTotal(TotalInfo ticketInfo) {
+        try {
+                if (ticketInfo.getStart_bit() != null) {
+                    AidlUtil.getInstance().printBitmap(ticketInfo.getStart_bit());
+                }
+                SystemClock.sleep(50);
+            AidlUtil.getInstance().printText("中惠旅(售票统计)",13,false,false);
+            AidlUtil.getInstance().print1Line();
+//				mIzkcService.printGBKText("\n");
+            AidlUtil.getInstance().printText("--------------------------------",13,false,false);
+            AidlUtil.getInstance().printText("售票点" + Utils.getXiangmu(mContext) ,13,false,false);
+            AidlUtil.getInstance().printText("现金收款"+ticketInfo.getCash_price() ,13,false,false);
+            AidlUtil.getInstance().printText("现金人数" + ticketInfo.getCash_num(),13,false,false);
+            AidlUtil.getInstance().printText("微信收款" + ticketInfo.getWeichat_price(),13,false,false);
+            AidlUtil.getInstance().printText("售票人数" + ticketInfo.getWeichat_num(),13,false,false);
+            AidlUtil.getInstance().printText("支付宝收款"+ ticketInfo.getAli_price(),13,false,false);
+            AidlUtil.getInstance().printText("售票人数"+ ticketInfo.getAli_num(),13,false,false);
+            AidlUtil.getInstance().printText("--------------------------------",13,false,false);
+            AidlUtil.getInstance().print3Line();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 
 
 }
