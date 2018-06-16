@@ -266,6 +266,28 @@
         </RelativeLayout>
 
 
+        <RelativeLayout
+            android:id="@+id/to_choice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:visibility="visible"
+            android:orientation="horizontal"
+            android:padding="20px">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切换机型"
+                android:padding="20px"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:textColor="#333333"
+                android:textSize="50px" />
+
+        </RelativeLayout>
+
+
         <TextView
             android:id="@+id/submit"
             android:layout_width="match_parent"

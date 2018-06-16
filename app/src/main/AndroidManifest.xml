@@ -24,8 +24,10 @@
     <uses-permission android:name="android.permission.access_network_state" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CONNECTIVITY_INTERNAL"
+    <uses-permission
+        android:name="android.permission.CONNECTIVITY_INTERNAL"
         tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -101,7 +103,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activity.SunmiPritActivity"></activity>
+        <activity android:name=".activity.SunmiPritActivity" />
+        <activity android:name="com.hoare.hand.HandScanActivity"></activity>
     </application>
 
 </manifest>

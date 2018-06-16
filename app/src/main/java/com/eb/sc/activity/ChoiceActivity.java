@@ -43,7 +43,10 @@ public class ChoiceActivity extends BaseActivity {
     ImageView image_two;
     @Bind(R.id.image_three)
     ImageView image_three;
-
+    @Bind(R.id.image_four)
+    ImageView image_four;
+    @Bind(R.id.image_five)
+    ImageView image_five;
     @Bind(R.id.image_one_t)
     ImageView image_one_t;
 
@@ -67,7 +70,7 @@ public class ChoiceActivity extends BaseActivity {
         super.initData();
     }
 
-    @OnClick({R.id.submit,R.id.one,R.id.two,R.id.three,R.id.one_t})
+    @OnClick({R.id.submit,R.id.one,R.id.two,R.id.three,R.id.four,R.id.five,R.id.one_t})
     void onclick(View v) {
         switch (v.getId()) {
             case R.id.submit:
@@ -106,6 +109,20 @@ public class ChoiceActivity extends BaseActivity {
                 select = 4;
                 setview(select);
                 break;
+            case R.id.four:
+                if (select == 5) {
+                    return;
+                }
+                select = 5;
+                setview(select);
+                break;
+            case R.id.five:
+                if (select == 6) {
+                    return;
+                }
+                select = 6;
+                setview(select);
+                break;
         }
     }
     private void setview(int index) {
@@ -113,14 +130,20 @@ public class ChoiceActivity extends BaseActivity {
         image_one_t.setImageResource(R.drawable.order_pay_gray_gou);
         image_two.setImageResource(R.drawable.order_pay_gray_gou);
         image_three.setImageResource(R.drawable.order_pay_gray_gou);
+        image_four.setImageResource(R.drawable.order_pay_gray_gou);
+        image_five.setImageResource(R.drawable.order_pay_gray_gou);
         if (index == 1) {
             image_one.setImageResource(R.drawable.order_pay_red_gou);
         } else if(index == 2){
             image_one_t.setImageResource(R.drawable.order_pay_red_gou);
         }else if(index==3){
             image_two.setImageResource(R.drawable.order_pay_red_gou);
-        }else {
+        }else if (index==4){
             image_three.setImageResource(R.drawable.order_pay_red_gou);
+        }else if (index == 5){
+            image_four.setImageResource(R.drawable.order_pay_red_gou);
+        }else if (index == 6){
+            image_five.setImageResource(R.drawable.order_pay_red_gou);
         }
     }
 

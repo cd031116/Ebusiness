@@ -47,6 +47,7 @@ public class MyApplication extends GlobalContext{
         return activityManager;
     }
 
+
     public boolean isPublic(){
 
         return true;

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -184,7 +185,7 @@ public class SettingActivity extends BaseActivity {
 
 
 
-    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state, R.id.tongbu, R.id.submit, R.id.radio, R.id.close_bg})
+    @OnClick({R.id.top_left, R.id.top_right_text, R.id.amend, R.id.state, R.id.tongbu, R.id.submit, R.id.radio, R.id.close_bg,R.id.to_choice})
     void onClick(View v) {
         BaseConfig bg = new BaseConfig(this);
         switch (v.getId()) {
@@ -252,6 +253,11 @@ public class SettingActivity extends BaseActivity {
                 break;
             case R.id.close_bg:
                 ExitDialog();
+                break;
+            case R.id.to_choice:
+                bg.setIntValue(Constants.JI_XING, -1);
+                   MyApplication.getInstance().getActivityManager().popAllActivity();
+                   startActivity(new Intent(SettingActivity.this, ChoiceActivity.class));
                 break;
         }
     }

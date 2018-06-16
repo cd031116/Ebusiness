@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true">
+    <include layout="@layout/view_top"/>
+
+    <TextView
+        android:id="@+id/et_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="按设备上的F1或者F2键即可扫描\n 无效则按屏幕上的按钮"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:textSize="60px"
+        android:textColor="#0ae15c"
+        android:padding="20px"
+        android:layout_gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/clisk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="30px"
+        android:textSize="60px"
+        android:background="@drawable/xianjin_bg"
+        android:layout_marginRight="80px"
+        android:layout_marginLeft="80px"
+        android:padding="20px"
+        android:textColor="#ffffff"
+        android:text="点击扫描"/>
+
+</RelativeLayout>

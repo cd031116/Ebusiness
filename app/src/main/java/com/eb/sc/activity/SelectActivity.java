@@ -38,6 +38,7 @@ import com.eb.sc.utils.Utils;
 import com.eb.sc.utils.isIdNum;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
+import com.hoare.hand.HandScanActivity;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 import org.aisen.android.support.action.IAction;
@@ -110,13 +111,14 @@ public class SelectActivity extends BaseActivity {
     private void settitle() {
         BaseConfig bg = BaseConfig.getInstance(this);
         int select = bg.getIntValue(Constants.JI_XING, -1);
-        if (select == 1) {
-            t_text.setText("按键扫码");
-            scan.setVisibility(View.GONE);
-        } else if (select == 2) {
+        if (select == 1) {//智联股v1
+            idcard.setVisibility(View.GONE);
+        } else if (select == 2) {//智联股带身份证
             t_text.setText("身份证感应");
-        } else {
+        } else if (select==3){//中控身份证
             t_text.setText("身份证感应");
+        }else if (select==4){//商米
+            idcard.setVisibility(View.GONE);
         }
     }
 
@@ -125,14 +127,16 @@ public class SelectActivity extends BaseActivity {
     void onclick(View v) {
         BaseConfig bg = BaseConfig.getInstance(this);
         switch (v.getId()) {
-            case R.id.idcard:
+            case R.id.idcard://身份证模块
                 int select = bg.getIntValue(Constants.JI_XING, -1);
-                if (select == 1) {
-                    startActivity(new Intent(SelectActivity.this, ScannerActivity.class));
-                } else if (select == 2) {
+                if (select == 2) {
                     startActivity(new Intent(SelectActivity.this, IDCardActivity.class));
-                } else {
+                } else if (select==3){
                     startActivity(new Intent(SelectActivity.this, MainActivity.class));
+                }else if (select==5){//汉德手持机
+
+                }else if (select==6){//汉德平板
+
                 }
                 break;
             case R.id.scan:
@@ -168,6 +172,8 @@ public class SelectActivity extends BaseActivity {
 
 
     private void callKefu() {
+        BaseConfig bg = BaseConfig.getInstance(this);
+      final   int select = bg.getIntValue(Constants.JI_XING, -1);
         if (SelectActivity.this instanceof org.aisen.android.ui.activity.basic.BaseActivity) {
             org.aisen.android.ui.activity.basic.BaseActivity aisenBaseActivity =
                     (org.aisen.android.ui.activity.basic.BaseActivity) SelectActivity.this;
@@ -175,9 +181,26 @@ public class SelectActivity extends BaseActivity {
                     null)) {
                 @Override
                 public void doAction() {
-                    Intent intent = new Intent(SelectActivity.this, CaptureActivity.class);
-                    intent.putExtra("select", "2");
-                    startActivity(intent);
+                    if (select == 1) {
+                        startActivity(new Intent(SelectActivity.this, ScannerActivity.class));
+                    } else if (select == 2) {
+                        Intent intent = new Intent(SelectActivity.this, CaptureActivity.class);
+                        intent.putExtra("select", "2");
+                        startActivity(intent);
+                    } else if (select==3){
+                        Intent intent = new Intent(SelectActivity.this, CaptureActivity.class);
+                        intent.putExtra("select", "2");
+                        startActivity(intent);
+                    }else if (select==4){
+                        Intent intent = new Intent(SelectActivity.this, CaptureActivity.class);
+                        intent.putExtra("select", "2");
+                        startActivity(intent);
+                    }else if (select==5){//汉德手持机
+                        startActivity(new Intent(SelectActivity.this, HandScanActivity.class));
+
+                    }else if (select==6){//汉德平板
+
+                    }
                 }
             }.run();
         }

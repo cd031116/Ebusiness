@@ -21,6 +21,7 @@ import com.eb.sc.base.BaseActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.bean.ItemInfo;
 import com.eb.sc.offline.OfflLineDataDb;
+import com.eb.sc.scanner.ScannerActivity;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
 import com.eb.sc.sdk.eventbus.ConnentSubscriber;
 import com.eb.sc.sdk.eventbus.EventSubscriber;
@@ -168,7 +169,7 @@ public class CheckActivity extends BaseActivity{
     void onBuy(View v) {
       final   BaseConfig bg = new BaseConfig(CheckActivity.this);
         switch (v.getId()) {
-            case R.id.scan:
+            case R.id.scan://检票
                 String address = bg.getStringValue(Constants.address, "");
 //                String she=  bg.getStringValue(Constants.shebeihao,"");
                 if (TextUtils.isEmpty(address)) {
@@ -203,6 +204,11 @@ public class CheckActivity extends BaseActivity{
                 }).setTitle("提示").show();
                 break;
             case R.id.sale://售票
+                int select = bg.getIntValue(Constants.JI_XING, -1);
+                if (select>=5) {
+                    Toast.makeText(CheckActivity.this,"该机型不支持售票",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String user_id = bg.getStringValue(Constants.USER_ID, "");
                 if(TextUtils.isEmpty(user_id)){
                     new LogDialog(this, R.style.dialog, "请输入管理员密码？", new LogDialog.OnCloseListener() {

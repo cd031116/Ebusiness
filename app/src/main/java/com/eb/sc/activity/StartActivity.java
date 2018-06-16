@@ -92,6 +92,7 @@ public class StartActivity extends BaseActivity {
     private void redirectTo() {
         BaseConfig bg=BaseConfig.getInstance(this);
         int jix=bg.getIntValue(Constants.JI_XING,-1);
+        Log.i("bbbb","jix="+jix);
         if(jix<=0){
             startActivity(new Intent(StartActivity.this, ChoiceActivity.class));
         }else {

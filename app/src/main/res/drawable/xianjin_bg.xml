@@ -5,7 +5,7 @@
         <corners
             android:radius="10dp"/>
         <solid
-            android:color="#4076B2"/><!-- 填充的颜色 -->
+            android:color="#5187c4"/><!-- 填充的颜色 -->
     </shape>
 </item>
 <!--单击时是一个带圆角,白色背景,绿色边框的矩形-->
@@ -14,7 +14,7 @@
         <corners
             android:radius="10dp"/>
         <solid
-            android:color="#5ba3f4"/><!-- 填充的颜色 -->
+            android:color="#0b75ed"/><!-- 填充的颜色 -->
     </shape>
 </item>
 </selector>
