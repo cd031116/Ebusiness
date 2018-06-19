@@ -206,7 +206,7 @@ public class CheckActivity extends BaseActivity{
             case R.id.sale://售票
                 int select = bg.getIntValue(Constants.JI_XING, -1);
                 if (select>=5) {
-                    Toast.makeText(CheckActivity.this,"该机型不支持售票",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CheckActivity.this,"本机型不支持售票",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String user_id = bg.getStringValue(Constants.USER_ID, "");

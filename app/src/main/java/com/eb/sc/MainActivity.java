@@ -32,9 +32,6 @@ import com.eb.sc.utils.PlayVedio;
 import com.eb.sc.utils.Utils;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
-import com.zkteco.android.biometric.core.device.ParameterHelper;
-import com.zkteco.android.biometric.core.device.TransportType;
-import com.zkteco.android.biometric.core.utils.LogHelper;
 import com.zkteco.android.biometric.module.fingerprint.FingerprintFactory;
 import com.zkteco.android.biometric.module.fingerprint.FingerprintSensor;
 import com.zkteco.android.biometric.module.fingerprint.exception.FingerprintSensorException;
@@ -96,7 +93,7 @@ public class MainActivity extends BaseActivity {
         NotificationCenter.defaultCenter().subscriber(ConnectEvent.class, connectEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().subscriber(PutEvent.class, putSubscriber);
-        LogHelper.setLevel(Log.VERBOSE);
+//        LogHelper.setLevel(Log.VERBOSE);
         BaseConfig bg = new BaseConfig(this);
         String b = bg.getStringValue(Constants.havelink, "-1");
         if ("1".equals(b)) {
@@ -124,53 +121,53 @@ public class MainActivity extends BaseActivity {
     private void startIDCardReader() {
         // Start fingerprint sensor
         Map idrparams = new HashMap();
-        idrparams.put(ParameterHelper.PARAM_SERIAL_BAUDRATE, baudrate);
-        idrparams.put(ParameterHelper.PARAM_POWRER_STR, idPower);
-        idrparams.put(ParameterHelper.PARAM_WAIT_SETON, 1000);
-        //idrparams.put(ParameterHelper.PARAM_GPIO_STR, -1);
-        idrparams.put(ParameterHelper.PARAM_GPIO_STR, 9);
-        idCardReader = IDCardReaderFactory.createIDCardReader(this, TransportType.SERIALPORT, idrparams);
+//        idrparams.put(ParameterHelper.PARAM_SERIAL_BAUDRATE, baudrate);
+//        idrparams.put(ParameterHelper.PARAM_POWRER_STR, idPower);
+//        idrparams.put(ParameterHelper.PARAM_WAIT_SETON, 1000);
+//        //idrparams.put(ParameterHelper.PARAM_GPIO_STR, -1);
+//        idrparams.put(ParameterHelper.PARAM_GPIO_STR, 9);
+//        idCardReader = IDCardReaderFactory.createIDCardReader(this, TransportType.SERIALPORT, idrparams);
     }
 
     private void startFPSensor() {
         // Start fingerprint sensor
-        Map fpparams = new HashMap();
-        fpparams.put(ParameterHelper.PARAM_SERIAL_BAUDRATE, baudrate);
-        fpparams.put(ParameterHelper.PARAM_POWRER_STR, fpPower);
-        //fpparams.put(ParameterHelper.PARAM_WAIT_SETON, 3000);
-        //fpparams.put(ParameterHelper.PARAM_GPIO_STR, 9);
-        fpparams.put(ParameterHelper.PARAM_WAIT_SETON, 1000);
-        fpparams.put(ParameterHelper.PARAM_GPIO_STR, -1);
-        fingerprintSensor = FingerprintFactory.createFingerprintSensor(this, TransportType.SERIALPORT, fpparams);
+//        Map fpparams = new HashMap();
+//        fpparams.put(ParameterHelper.PARAM_SERIAL_BAUDRATE, baudrate);
+//        fpparams.put(ParameterHelper.PARAM_POWRER_STR, fpPower);
+//        //fpparams.put(ParameterHelper.PARAM_WAIT_SETON, 3000);
+//        //fpparams.put(ParameterHelper.PARAM_GPIO_STR, 9);
+//        fpparams.put(ParameterHelper.PARAM_WAIT_SETON, 1000);
+//        fpparams.put(ParameterHelper.PARAM_GPIO_STR, -1);
+//        fingerprintSensor = FingerprintFactory.createFingerprintSensor(this, TransportType.SERIALPORT, fpparams);
     }
 
-    private boolean openDevices() {
-        boolean bRet = false;
-        try {
-            idCardReader.open(idPort);
-        } catch (IDCardReaderException e) {
-            e.printStackTrace();
-            bRet = false;
-            return bRet;
-        }
-        try {
-            fingerprintSensor.open(fpPort);
-        } catch (FingerprintSensorException e) {
-            e.printStackTrace();
-            bRet = false;
-            try {
-                idCardReader.close(idPort);
-            } catch (IDCardReaderException e1) {
-                e1.printStackTrace();
-            }
-            return bRet;
-        }
-        bRet = true;
-        mbStop = false;
-        workThread = new WorkThread();
-        workThread.start();// 线程启动
-        return bRet;
-    }
+//    private boolean openDevices() {
+//        boolean bRet = false;
+//        try {
+//            idCardReader.open(idPort);
+//        } catch (IDCardReaderException e) {
+//            e.printStackTrace();
+//            bRet = false;
+//            return bRet;
+//        }
+//        try {
+//            fingerprintSensor.open(fpPort);
+//        } catch (FingerprintSensorException e) {
+//            e.printStackTrace();
+//            bRet = false;
+//            try {
+//                idCardReader.close(idPort);
+//            } catch (IDCardReaderException e1) {
+//                e1.printStackTrace();
+//            }
+//            return bRet;
+//        }
+//        bRet = true;
+//        mbStop = false;
+//        workThread = new WorkThread();
+//        workThread.start();// 线程启动
+//        return bRet;
+//    }
 
 
     /**
@@ -224,12 +221,12 @@ public class MainActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         if (!mbVerifying) {
-                            if (!ReadCardInfo()) {
-                                //textView.setText("请放卡...");
-                            } else {
-//                                textView.setText("读卡成功，请放入下一张卡");
-
-                            }
+//                            if (!ReadCardInfo()) {
+//                                //textView.setText("请放卡...");
+//                            } else {
+////                                textView.setText("读卡成功，请放入下一张卡");
+//
+//                            }
                         }
                     }
                 });
@@ -250,27 +247,27 @@ public class MainActivity extends BaseActivity {
         public void run() {
             super.run();
             mbVerifying = true;
-            final int ret = verifyFinger();
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    long time = System.currentTimeMillis();
-                    final Calendar mCalendar = Calendar.getInstance();
-                    mCalendar.setTimeInMillis(time);
-                    String strResult = "";
-                    if (1 == ret) {
-                        strResult = "指纹核验成功...";
-                        playSound(12, 1);
-                    } else {
-                        strResult = "指纹核验失败...";
-                        playSound(13, 1);
-                    }
-//                    infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
-//                            mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
-//                            + " " + mLastName + strResult + "\r\n");
-//                    mbVerifying = false;
-//                    textView.setText("请放卡...");
-                }
-            });
+//            final int ret = verifyFinger();
+//            runOnUiThread(new Runnable() {
+//                public void run() {
+//                    long time = System.currentTimeMillis();
+//                    final Calendar mCalendar = Calendar.getInstance();
+//                    mCalendar.setTimeInMillis(time);
+//                    String strResult = "";
+//                    if (1 == ret) {
+//                        strResult = "指纹核验成功...";
+//                        playSound(12, 1);
+//                    } else {
+//                        strResult = "指纹核验失败...";
+//                        playSound(13, 1);
+//                    }
+////                    infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
+////                            mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
+////                            + " " + mLastName + strResult + "\r\n");
+////                    mbVerifying = false;
+////                    textView.setText("请放卡...");
+//                }
+//            });
 
             try {
                 Thread.sleep(500);
@@ -281,18 +278,18 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private int verifyFinger() {
-        int ret = 0;
-        if (null != feature) {
-            try {
-                ret = fingerprintSensor.verifyByFeature(fpPort, feature);
-            } catch (FingerprintSensorException e) {
-                e.printStackTrace();
-                ret = 0;
-            }
-        }
-        return ret;
-    }
+//    private int verifyFinger() {
+//        int ret = 0;
+//        if (null != feature) {
+//            try {
+//                ret = fingerprintSensor.verifyByFeature(fpPort, feature);
+//            } catch (FingerprintSensorException e) {
+//                e.printStackTrace();
+//                ret = 0;
+//            }
+//        }
+//        return ret;
+//    }
 
 
     //身份证以刷
@@ -311,70 +308,70 @@ public class MainActivity extends BaseActivity {
         workThreadVerFP.start();// 线程启动
     }
 
-    private boolean ReadCardInfo() {
-        try {
-            if (!idCardReader.findCard(idPort) || !idCardReader.selectCard(idPort)) {
-                return false;
-            }
-        } catch (IDCardReaderException e) {
-            e.printStackTrace();
-            return false;
-        }
-        try {
-            feature = null;
-//            textView.setText("正在读卡...");//111111111111111--------------------------------------------------------
-            final IDCardInfo idCardInfo = new IDCardInfo();
-            boolean bReadCard = false;
-            long nTickSet = System.currentTimeMillis();
-            while (System.currentTimeMillis() - nTickSet < 2000) {
-                bReadCard = idCardReader.readCard(idPort, 1, idCardInfo);
-                if (bReadCard) break;
-            }
-            if (bReadCard) {
-                playSound(10, 1);
-                long time = System.currentTimeMillis();
-                final Calendar mCalendar = Calendar.getInstance();
-                mCalendar.setTimeInMillis(time);
-                mLastName = idCardInfo.getName();
-//                infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
-//                        mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
-//                        + " " + mLastName + "刷卡成功！\r\n");
-                idcard_id = idCardInfo.getId();
-                if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
-//                        byte[] updatas = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
-                    String updata = Utils.getIdcard(this, idCardInfo.getId());
-                    PushManager.getInstance(this).sendMessage(updata);
-                } else {
-//                    if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
-//                        showDialogMsg("票已使用!");
-//                    }else {
-//                        showDialog(mLastName, idCardInfo.getId(), "", "");
-//                    }
-                    Toast.makeText(MainActivity.this,"已与服务器断开连接!",Toast.LENGTH_SHORT).show();
-                }
-                feature = idCardInfo.getFpdata();
-//                if (idCardInfo.getPhoto() != null) {
-//                    byte[] buf = new byte[WLTService.imgLength];
-//                    if (1 == WLTService.wlt2Bmp(idCardInfo.getPhoto(), buf)) {
-//                        Bitmap bitmap = IDPhotoHelper.Bgr2Bitmap(buf);
-//                        if (null != bitmap) {
-//
-//
-//                        }
-//                    }
+//    private boolean ReadCardInfo() {
+//        try {
+//            if (!idCardReader.findCard(idPort) || !idCardReader.selectCard(idPort)) {
+//                return false;
+//            }
+//        } catch (IDCardReaderException e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//        try {
+//            feature = null;
+////            textView.setText("正在读卡...");//111111111111111--------------------------------------------------------
+//            final IDCardInfo idCardInfo = new IDCardInfo();
+//            boolean bReadCard = false;
+//            long nTickSet = System.currentTimeMillis();
+//            while (System.currentTimeMillis() - nTickSet < 2000) {
+//                bReadCard = idCardReader.readCard(idPort, 1, idCardInfo);
+//                if (bReadCard) break;
+//            }
+//            if (bReadCard) {
+//                playSound(10, 1);
+//                long time = System.currentTimeMillis();
+//                final Calendar mCalendar = Calendar.getInstance();
+//                mCalendar.setTimeInMillis(time);
+//                mLastName = idCardInfo.getName();
+////                infoResult.append(mCalendar.get(Calendar.YEAR) + "-" + mCalendar.get(Calendar.MONTH) + "-" + mCalendar.get(Calendar.DAY_OF_MONTH) + " " +
+////                        mCalendar.get(Calendar.HOUR) + ":" + mCalendar.get(Calendar.MINUTE) + ":" + mCalendar.get(Calendar.SECOND)
+////                        + " " + mLastName + "刷卡成功！\r\n");
+//                idcard_id = idCardInfo.getId();
+//                if (NetWorkUtils.isNetworkConnected(this) && isconnect) {
+////                        byte[] updatas = HexStr.hex2byte(HexStr.str2HexStr(Utils.getIdcard(this,idCardInfo.getId())));
+//                    String updata = Utils.getIdcard(this, idCardInfo.getId());
+//                    PushManager.getInstance(this).sendMessage(updata);
+//                } else {
+////                    if (BusinessManager.isHave(idCardInfo.getId())) {//票已检
+////                        showDialogMsg("票已使用!");
+////                    }else {
+////                        showDialog(mLastName, idCardInfo.getId(), "", "");
+////                    }
+//                    Toast.makeText(MainActivity.this,"已与服务器断开连接!",Toast.LENGTH_SHORT).show();
 //                }
-                return true;
-            } else {
-                //playSound(9, 0);
-            }
-        } catch (IDCardReaderException e) {
-            e.printStackTrace();
-        }
-
-        playSound(11, 1);
-//        textView.setText("读卡失败...");//------------------------------------------------------------------------------------------------
-        return false;
-    }
+//                feature = idCardInfo.getFpdata();
+////                if (idCardInfo.getPhoto() != null) {
+////                    byte[] buf = new byte[WLTService.imgLength];
+////                    if (1 == WLTService.wlt2Bmp(idCardInfo.getPhoto(), buf)) {
+////                        Bitmap bitmap = IDPhotoHelper.Bgr2Bitmap(buf);
+////                        if (null != bitmap) {
+////
+////
+////                        }
+////                    }
+////                }
+//                return true;
+//            } else {
+//                //playSound(9, 0);
+//            }
+//        } catch (IDCardReaderException e) {
+//            e.printStackTrace();
+//        }
+//
+//        playSound(11, 1);
+////        textView.setText("读卡失败...");//------------------------------------------------------------------------------------------------
+//        return false;
+//    }
 
 
     @Override
@@ -385,8 +382,8 @@ public class MainActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
         mbStop = true;
         // Destroy fingerprint sensor when it's not used
-        IDCardReaderFactory.destroy(idCardReader);
-        FingerprintFactory.destroy(fingerprintSensor);
+//        IDCardReaderFactory.destroy(idCardReader);
+//        FingerprintFactory.destroy(fingerprintSensor);
     }
 
     @OnClick({R.id.top_left,R.id.close_bg})
@@ -467,9 +464,9 @@ public class MainActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            if (!openDevices()) {
-                Toast.makeText(MainActivity.this, "打开设备失败", Toast.LENGTH_SHORT).show();
-            }
+//            if (!openDevices()) {
+//                Toast.makeText(MainActivity.this, "打开设备失败", Toast.LENGTH_SHORT).show();
+//            }
         }
     }
 

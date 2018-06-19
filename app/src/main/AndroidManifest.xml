@@ -104,7 +104,10 @@
         </service>
 
         <activity android:name=".activity.SunmiPritActivity" />
-        <activity android:name="com.hoare.hand.HandScanActivity"></activity>
+        <activity android:name="com.hoare.hand.HandScanActivity" />
+        <activity android:name="com.hoare.hand.idcard.GetCardActivity" />
+        <activity android:name="com.hoare.slab.idcard.SlabIDCardActivity" />
+        <activity android:name="com.hoare.slab.scan.ToScanActivity"></activity>
     </application>
 
 </manifest>

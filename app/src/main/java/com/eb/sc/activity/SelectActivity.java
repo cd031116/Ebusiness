@@ -27,7 +27,6 @@ import com.eb.sc.sdk.eventbus.NetEvent;
 import com.eb.sc.sdk.eventbus.PutEvent;
 import com.eb.sc.sdk.eventbus.PutSubscriber;
 import com.eb.sc.sdk.permission.CameraPermissionAction;
-import com.eb.sc.sdk.permission.RedaPhoneStatePermission;
 import com.eb.sc.tcprequest.PushManager;
 import com.eb.sc.utils.BaseConfig;
 import com.eb.sc.utils.Constants;
@@ -39,6 +38,9 @@ import com.eb.sc.utils.isIdNum;
 import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
 import com.hoare.hand.HandScanActivity;
+import com.hoare.hand.idcard.GetCardActivity;
+import com.hoare.slab.idcard.SlabIDCardActivity;
+import com.hoare.slab.scan.ToScanActivity;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 import org.aisen.android.support.action.IAction;
@@ -134,9 +136,9 @@ public class SelectActivity extends BaseActivity {
                 } else if (select==3){
                     startActivity(new Intent(SelectActivity.this, MainActivity.class));
                 }else if (select==5){//汉德手持机
-
+                    startActivity(new Intent(SelectActivity.this, GetCardActivity.class));
                 }else if (select==6){//汉德平板
-
+                    startActivity(new Intent(SelectActivity.this, SlabIDCardActivity.class));
                 }
                 break;
             case R.id.scan:
@@ -197,9 +199,8 @@ public class SelectActivity extends BaseActivity {
                         startActivity(intent);
                     }else if (select==5){//汉德手持机
                         startActivity(new Intent(SelectActivity.this, HandScanActivity.class));
-
                     }else if (select==6){//汉德平板
-
+                        startActivity(new Intent(SelectActivity.this, ToScanActivity.class));
                     }
                 }
             }.run();

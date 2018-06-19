@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -50,7 +51,7 @@ public class BaseActivity extends org.aisen.android.ui.activity.basic.BaseActivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.instance.getActivityManager().pushActivity(this);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (getLayoutId() != 0) {
             // setContentView(getLayoutId());

@@ -26,7 +26,7 @@ ext {
             compileSdkVersion: 25,
             buildToolsVersion: "25.0.0",
             minSdkVersion    : 16,
-            targetSdkVersion : 25,
+            targetSdkVersion : 21,
             applicationId    : "com.eb.sc",
             versionCode      : 13,
             versionName      : "5.1.1"
