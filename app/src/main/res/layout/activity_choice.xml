@@ -171,7 +171,7 @@
                 android:textSize="60px"
                 android:textColor="#333333"
                 android:gravity="center_vertical"
-                android:text="机型:汉德霍尔手持机" />
+                android:text="机型:惠旅智能(手持机)" />
 
 
             <ImageView
@@ -204,7 +204,7 @@
                 android:textSize="60px"
                 android:textColor="#333333"
                 android:gravity="center_vertical"
-                android:text="机型:汉德霍尔平板" />
+                android:text="机型:惠旅智能(平板)" />
 
 
             <ImageView

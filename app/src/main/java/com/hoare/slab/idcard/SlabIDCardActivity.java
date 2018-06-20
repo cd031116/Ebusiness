@@ -1,12 +1,16 @@
 package com.hoare.slab.idcard;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +19,7 @@ import android.widget.Toast;
 
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.base.BaseSlabActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.offline.OfflLineDataDb;
 import com.eb.sc.sdk.eventbus.ConnectEvent;
@@ -33,19 +38,21 @@ import com.eb.sc.widget.CommomDialog;
 import com.eb.sc.widget.ShowMsgDialog;
 import com.hoare.hand.idcard.GetCardActivity;
 import com.hoare.hand.idcard.IDCardModel;
+import com.hoare.slab.scan.ToScanActivity;
 
 import org.aisen.android.component.eventbus.NotificationCenter;
 
 import java.io.File;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pda.serialport.Tools;
 /**
 *aunthor lyj
 * create 2018/6/19/019 17:45  平板身份证
 **/
-public class SlabIDCardActivity extends BaseActivity {
+public class SlabIDCardActivity extends BaseSlabActivity {
 
     @Bind(R.id.top_right_text)
     TextView top_right_text;
@@ -443,4 +450,5 @@ public class SlabIDCardActivity extends BaseActivity {
             startFlag = true;
         }
     }
+
 }

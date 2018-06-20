@@ -1,8 +1,12 @@
 package com.hoare.slab.scan;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +16,7 @@ import android.widget.TextView;
 
 import com.eb.sc.R;
 import com.eb.sc.base.BaseActivity;
+import com.eb.sc.base.BaseSlabActivity;
 import com.eb.sc.bean.DataInfo;
 import com.eb.sc.business.BusinessManager;
 import com.eb.sc.offline.OfflLineDataDb;
@@ -36,12 +41,13 @@ import com.hoare.hand.scan.Util;
 import org.aisen.android.component.eventbus.NotificationCenter;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 /**
 *aunthor lyj
 * create 2018/6/19/019 17:45  平板扫码
 **/
-public class ToScanActivity extends BaseActivity {
+public class ToScanActivity extends BaseSlabActivity {
     @Bind(R.id.top_right_text)
     TextView top_right_text;
     @Bind(R.id.right_bg)
@@ -56,7 +62,7 @@ public class ToScanActivity extends BaseActivity {
     private ScanThread scanThread;
 
     private Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
+        public void handleMessage(Message msg) {
             if (msg.what == ScanThread.SCAN) {
                  text_code = msg.getData().getString("data");
                 Util.play(1, 0);
@@ -378,6 +384,34 @@ public class ToScanActivity extends BaseActivity {
         NotificationCenter.defaultCenter().unsubscribe(NetEvent.class, netEventSubscriber);
         NotificationCenter.defaultCenter().unsubscribe(PutEvent.class, putSubscriber);
     }
-
+    public void ExitDialog() {
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(this);
+        normalDialog.setTitle("提示");
+        normalDialog.setMessage("确定退出整个应用?");
+        normalDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        BaseConfig bg = new BaseConfig(ToScanActivity.this);
+                        bg.setStringValue(Constants.USER_ID,"");
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                });
+        normalDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        // 显示
+        normalDialog.show();
+    }
 
 }

@@ -6,31 +6,130 @@
     android:orientation="vertical"
     android:clipToPadding="true"
     android:fitsSystemWindows="true">
-    <include layout="@layout/view_top"/>
+    <RelativeLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/top_bg"
+        android:visibility="visible" >
+
+        <LinearLayout
+            android:id="@+id/top_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|center_vertical"
+            android:layout_alignParentLeft="true"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="15px"
+            android:paddingLeft="30px"
+            android:paddingRight="60px"
+            android:paddingTop="15px"
+            android:visibility="visible" >
+
+            <ImageView
+                android:id="@+id/top_image"
+                android:layout_width="wrap_content"
+                android:layout_height="40px"
+                android:clickable="false"
+                android:src="@drawable/return_btn"
+                android:contentDescription="@string/app_name" />
+
+            <TextView
+                android:id="@+id/top_left_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:visibility="visible"
+                android:layout_marginLeft="15px"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/top_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1.0"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="19sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <LinearLayout
+            android:id="@+id/top_r"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center_vertical"
+            android:clickable="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="15px"
+            android:paddingLeft="60px"
+            android:paddingRight="30px"
+            android:paddingTop="15px" >
+            <ImageView
+                android:id="@+id/right_bg"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_marginRight="15px"/>
+
+            <TextView
+                android:id="@+id/top_right_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:textColor="#333333"
+                android:gravity="center"
+                android:textSize="18sp" />
+
+
+            <LinearLayout
+                android:id="@+id/close_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:src="@drawable/guanji"
+                    android:layout_marginRight="15px"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/et_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="按设备上的F1或者F2键即可扫描\n 无效则按屏幕上的按钮"
+        android:text="将二维码对准设备红色光区域"
         android:gravity="center"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_centerInParent="true"
-        android:textSize="60px"
+        android:textSize="40sp"
         android:textColor="#0ae15c"
-        android:padding="20px"
+        android:padding="10dp"
         android:layout_gravity="center"
         />
 
     <TextView
         android:id="@+id/clisk"
         android:layout_width="match_parent"
-        android:layout_height="200px"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:layout_marginBottom="120px"
-
-        android:textSize="60px"
+        android:layout_marginBottom="40dp"
+        android:textSize="40sp"
         android:background="@drawable/xianjin_bg"
         android:layout_marginRight="80px"
         android:layout_marginLeft="80px"
